@@ -76,6 +76,7 @@ function build() {
     yearsSinceLastWire: Math.floor(wire.daysSinceLastSameRail / 365.25),
     minutesSinceAdded: minutesBetween(added.at, wire.at),
     ratio: wire.baselineRatio,
+    scamName: `${key.subtype.split(' / ')[0].toLowerCase()} scam`,
   }
 }
 

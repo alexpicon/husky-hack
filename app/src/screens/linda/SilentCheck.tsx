@@ -14,7 +14,7 @@ function Toggle({ option, on, wide = false }: { option: TapOption; on: boolean; 
       type="button"
       aria-pressed={on}
       onClick={() => toggleTap(option.id)}
-      className={`flex items-center gap-3 rounded-2xl px-3.5 text-left transition active:scale-[0.99] ${wide ? 'h-14 flex-1' : 'min-h-[66px] py-2.5'} ${on ? 'bg-brand text-white shadow-md ring-2 ring-brand' : 'bg-white text-ink ring-1 ring-slate-300 hover:ring-slate-400'}`}
+      className={`flex items-center gap-3 rounded-2xl px-3.5 text-left transition active:scale-[0.99] ${wide ? 'h-12 flex-1' : 'min-h-[66px] py-2.5'} ${on ? 'bg-brand text-white shadow-md ring-2 ring-brand' : 'bg-white text-ink ring-1 ring-slate-300 hover:ring-slate-400'}`}
     >
       <span
         className={`grid size-9 shrink-0 place-items-center rounded-full transition ${on ? 'bg-white text-brand' : 'bg-slate-100 text-ink-2'}`}
@@ -75,7 +75,7 @@ export function SilentCheck() {
 
         <div className="flex items-center gap-2.5">
           <Toggle option={other} on={taps.includes(other.id)} wide />
-          <Button size="lg" onClick={next} className="h-14 px-6">
+          <Button size="lg" onClick={next}>
             Continue <ArrowRight size={18} aria-hidden />
           </Button>
         </div>

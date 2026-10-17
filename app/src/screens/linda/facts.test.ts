@@ -10,6 +10,7 @@ describe("Linda's facts come from the kit", () => {
     expect(f.wire.amount).toBe(8500)
     expect(f.yearsSinceLastWire).toBe(6)
     expect(f.minutesSinceAdded).toBe(7)
+    expect(f.scamName).toBe('grandparent scam')
   })
 
   it('replays the day in order', () => {
