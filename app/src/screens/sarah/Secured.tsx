@@ -5,7 +5,6 @@ import { money } from '../../ui/format'
 import { Source } from '../../ui/primitives'
 import { Compare } from './Compare'
 import { afterPause, sarah } from './facts'
-import { Bubble } from './SoundChrome'
 import { SarahsPhone } from './Thread'
 
 function Done({ children }: { children: ReactNode }) {
@@ -26,14 +25,11 @@ export function Secured() {
     <div className="flex flex-col items-center">
       <SarahsPhone at={afterPause(2)} caption={false}>
         <div className="flex flex-col gap-2 px-4 pt-4">
-          <Bubble from="me" instant>
-            No, it wasn't me
-          </Bubble>
           <motion.div
             initial={{ opacity: 0, y: 12, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ delay: 0.15, duration: 0.4 }}
-            className="mt-2 overflow-hidden rounded-3xl ring-1 ring-line"
+            className="overflow-hidden rounded-3xl ring-1 ring-line"
           >
             <div className="bg-linear-to-br from-teal-50 to-safe-soft px-5 pt-5 pb-4">
               <span className="grid size-11 place-items-center rounded-2xl bg-white text-safe shadow-sm ring-1 ring-teal-200">
@@ -71,7 +67,7 @@ export function Secured() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.4 }}
-        className="relative z-10 -mt-16"
+        className="relative z-10 -mt-20"
       >
         <Compare />
       </motion.div>
