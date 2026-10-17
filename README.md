@@ -22,7 +22,7 @@ One product, two modes.
 
 | Person | Who they are | What happened in the kit's data |
 |---|---|---|
-| **Sarah (M1003)** | A member who got a fake "Sound" text | She typed her password and code into a fake site. In 34 minutes the scammer reset her password, changed her email and phone, added a recipient and sent **$3,006** by P2P. Nobody noticed until 2 days later. Nothing was recovered. |
+| **Sarah (M1003)** | A member who got a fake "Sound" text | She typed her password and code into a fake site. In 34 minutes the scammer reset her password, changed her email and phone, added a recipient and sent **$3,006** in two P2P payments. Nobody noticed until 2 days later. Nothing was recovered. |
 | **Linda (M1001)** | A retired teacher | A fake grandson and a fake lawyer told her to keep it secret. She went to a branch to wire **$8,500**, her first wire in **6.6 years**, to an account added 7 minutes earlier. Sound held it, offered a trusted contact and called her. She insisted, and it was released. **She lost $8,500.** |
 
 Linda's story is the important one: **Sound's current tools already tried, and the secrecy beat them.** Second Look is built to work even when the member has been told not to talk.
@@ -53,7 +53,7 @@ All three on the same account, within the "recent" window in the data:
 > If this was you, we'll confirm it with you using contact details you've had with us for a while, or you can call the number on your card.
 
 ### What Sound staff see
-A case card: the same timeline, the paused amount ($1,574.18), which contact details are "safe" (unchanged) and which just changed, and buttons: **Release** (after verifying) / **Keep stopped and lock account** / **Start recovery**.
+A case card: the same timeline, the paused amount ($1,574.18, the first of the two payments; the second never happens), which contact details are "safe" (unchanged) and which just changed, and buttons: **Release** (after verifying) / **Keep stopped and lock account** / **Start recovery**.
 
 ### The honest look-alike: it bothers some real members
 **M1039** (and M1041, M1051, M1114) really forgot their password, reset it, updated their address after a move, then paid the first month's rent to a new landlord. The trigger catches them too.
@@ -94,7 +94,7 @@ What she tapped (only if she chooses to share it), the facts, a short script for
 
 ## The scam we miss (we show it on purpose)
 
-**Michael (M1002), a romance scam.** His P2P payments grew slowly for weeks, then turned into wires. Our triggers miss most of these cases (only 5 of 12, with too many false alarms), and P2P money can't be recalled.
+**Michael (M1002), a romance scam.** His P2P payments grew slowly for weeks, then turned into wires. Neither trigger flags him. Across the kit's 12 romance cases, the tricked trigger catches only 1, and late. P2P money can't be recalled.
 - **What still helps:** the "I think I was scammed" report path starts recovery faster, and the pilot measures this gap.
 - We say it out loud because the judges asked for it, and it builds trust.
 
@@ -105,7 +105,7 @@ What she tapped (only if she chooses to share it), the facts, a short script for
 | Trigger | Scams it flags | Honest look-alikes it flags |
 |---|---|---|
 | Takeover (reset + contact change + new recipient) | Takeover: **12 of 12** · other scams: 0 · normal members: 0 | 4 of 20 (people who moved) |
-| Tricked (big first wire/cash to someone new) | Family emergency: **10 of 12** · gov't impersonation: 4 of 12 | 4 of 20 (home-closing wires) |
+| Tricked (big first wire/cash to someone new) | Family emergency: **10 of 12** · gov't impersonation: 4 of 12 · romance: 1 of 12 · normal members: 0 | 4 of 20 (home-closing wires) |
 
 The kit is about 41% scam victims by design, and real life is far lower. So these numbers show how the design behaves. **They are not accuracy claims.**
 
@@ -161,3 +161,15 @@ Both modes live, both look-alikes, Michael as the honest miss, the trusted perso
 
 **Today (due 3:00 PM):** takeover mode on Sarah + the M1039 look-alike + the staff case + 2–3 static screens for Linda. Submit at 2:50.
 **Sunday (due 3:00 PM):** Linda's mode working + M1057 + the trusted person + the Michael miss + slides + rehearsal.
+
+---
+
+## Prototype
+
+The app in `app/` runs both triggers live in the browser on the organizers' CSV files in `huskyhacks/`.
+
+```bash
+cd app && npm install && npm run dev
+```
+
+`npm test` checks the triggers against the numbers above. Arrow keys step through a story; keys 1-4 switch stories.
