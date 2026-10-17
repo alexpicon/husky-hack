@@ -4,6 +4,8 @@ import { motion } from 'motion/react'
 import { useStory } from '../../story/engine'
 import { Source } from '../../ui/primitives'
 import { money } from '../../ui/format'
+import { useLook } from '../../ui/look'
+import { CheckSound } from './CheckSound'
 import { facts, HOLD_HOURS, whenLabel } from './facts'
 
 function Noticed({ icon, label, at, source }: { icon: ReactNode; label: string; at: Date; source: string }) {
@@ -22,6 +24,10 @@ function Noticed({ icon, label, at, source }: { icon: ReactNode; label: string; 
 }
 
 export function CheckScreen() {
+  return useLook() === 'sound' ? <CheckSound /> : <ConceptCheckScreen />
+}
+
+function ConceptCheckScreen() {
   const { next } = useStory()
   const { payment, reset, address, recipientAdded } = facts
   return (

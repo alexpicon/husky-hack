@@ -2,10 +2,16 @@ import { Check } from 'lucide-react'
 import { motion } from 'motion/react'
 import { Badge, Source } from '../../ui/primitives'
 import { clock, money } from '../../ui/format'
+import { useLook } from '../../ui/look'
+import { ReleasedSound } from './ReleasedSound'
 import { facts, railLabel } from './facts'
 import { DetailRow, MEMO, RecipientRow } from './parts'
 
 export function ReleasedScreen() {
+  return useLook() === 'sound' ? <ReleasedSound /> : <ConceptReleasedScreen />
+}
+
+function ConceptReleasedScreen() {
   const { payment, recipientAdded } = facts
   return (
     <div className="flex min-h-full flex-col bg-linear-to-b from-safe-soft via-white to-white px-5 pt-8 pb-6">

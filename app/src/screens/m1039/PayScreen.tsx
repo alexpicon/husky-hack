@@ -3,10 +3,16 @@ import { motion } from 'motion/react'
 import { useStory } from '../../story/engine'
 import { Badge, Source } from '../../ui/primitives'
 import { clock, money } from '../../ui/format'
+import { useLook } from '../../ui/look'
+import { PaySound } from './PaySound'
 import { facts, railLabel } from './facts'
 import { AppBar, DetailRow, MEMO, RecipientRow } from './parts'
 
 export function PayScreen() {
+  return useLook() === 'sound' ? <PaySound /> : <ConceptPayScreen />
+}
+
+function ConceptPayScreen() {
   const { next } = useStory()
   const { payment, recipientAdded } = facts
   return (

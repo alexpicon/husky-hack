@@ -4,6 +4,7 @@ import { motion } from 'motion/react'
 import { useStory } from '../../story/engine'
 import { Source } from '../../ui/primitives'
 import { clock, money } from '../../ui/format'
+import { useLook } from '../../ui/look'
 import { facts } from './facts'
 import { SoundMark } from './parts'
 
@@ -23,6 +24,7 @@ function Bubble({ delay, children }: { delay: number; children: ReactNode }) {
 export function TapScreen() {
   const { next } = useStory()
   const { payment } = facts
+  const sender = useLook() === 'sound' ? 'Sound Credit Union' : 'Sound'
   return (
     <div className="flex min-h-full flex-col bg-white">
       <div className="relative flex flex-col items-center border-b border-line/70 bg-slate-50/80 pt-1 pb-3">
@@ -34,7 +36,7 @@ export function TapScreen() {
           <ChevronLeft size={24} />
         </button>
         <SoundMark size={44} />
-        <span className="mt-1 text-[13px] font-medium text-ink">Sound</span>
+        <span className="mt-1 text-[13px] font-medium text-ink">{sender}</span>
       </div>
 
       <div className="flex flex-1 flex-col gap-2 px-4 pt-4">
@@ -43,7 +45,7 @@ export function TapScreen() {
           <Source ids={payment.id} />
         </div>
         <Bubble delay={0.1}>
-          <span className="font-semibold">Sound:</span> Was this you?{' '}
+          <span className="font-semibold">{sender}:</span> Was this you?{' '}
           <span className="num font-semibold">{money(payment.amount)}</span> to a new recipient,
           today at {clock(payment.at)}.
         </Bubble>

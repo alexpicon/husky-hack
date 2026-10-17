@@ -1,11 +1,11 @@
 import { CheckScreen } from '../screens/m1039/CheckScreen'
 import { facts } from '../screens/m1039/facts'
 import { HonestCard } from '../screens/m1039/HonestCard'
+import { MemberPhone } from '../screens/m1039/MemberPhone'
 import { PayScreen } from '../screens/m1039/PayScreen'
 import { ReleasedScreen } from '../screens/m1039/ReleasedScreen'
 import { TapScreen } from '../screens/m1039/TapScreen'
 import { TakeoverCase } from '../screens/staff/TakeoverCase'
-import { Phone } from '../ui/devices'
 import { clock, day, money } from '../ui/format'
 import type { Scenario } from './engine'
 
@@ -25,9 +25,9 @@ export const m1039: Scenario = {
       caption: `Yesterday this member reset a forgotten password at ${clock(reset.at)} and updated their address after a move at ${clock(address.at)}. Now they pay ${money(payment.amount)} to a new landlord. When they press Send, every takeover flag lights up.`,
       clock: paidAt,
       member: (
-        <Phone time={clock(payment.at)} caption="Sound app: paying the new landlord">
+        <MemberPhone time={clock(payment.at)} caption="Sound app: paying the new landlord">
           <PayScreen />
-        </Phone>
+        </MemberPhone>
       ),
       staff: <TakeoverCase member="M1039" stage="watching" />,
     },
@@ -38,9 +38,9 @@ export const m1039: Scenario = {
         'Their email and phone never changed, so Sound asks on the phone they have had with us all along. No lock, no blame.',
       clock: paidAt,
       member: (
-        <Phone time={clock(payment.at)} caption="Sound app: a calm, one-step check">
+        <MemberPhone time={clock(payment.at)} caption="Sound app: a calm, one-step check">
           <CheckScreen />
-        </Phone>
+        </MemberPhone>
       ),
       staff: <TakeoverCase member="M1039" stage="asked" />,
     },
@@ -51,9 +51,9 @@ export const m1039: Scenario = {
         'A text to the number Sound already trusts. No password, no code, no link. One tap answers it.',
       clock: tappedAt,
       member: (
-        <Phone time={clock(tapAt)} caption="Text from Sound to the unchanged phone">
+        <MemberPhone time={clock(tapAt)} caption="Text from Sound to the unchanged phone" app={false}>
           <TapScreen />
-        </Phone>
+        </MemberPhone>
       ),
       staff: <TakeoverCase member="M1039" stage="asked" />,
     },
@@ -64,9 +64,9 @@ export const m1039: Scenario = {
       clock: tappedAt,
       member: (
         <div className="flex flex-col items-center gap-5">
-          <Phone time={clock(tapAt)} caption="Sound app: payment on its way">
+          <MemberPhone time={clock(tapAt)} caption="Sound app: payment on its way">
             <ReleasedScreen />
-          </Phone>
+          </MemberPhone>
           <HonestCard />
         </div>
       ),
