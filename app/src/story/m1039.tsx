@@ -55,7 +55,7 @@ export const m1039: Scenario = {
           <TapScreen />
         </Phone>
       ),
-      staff: <TakeoverCase member="M1039" stage="its-me" />,
+      staff: <TakeoverCase member="M1039" stage="asked" />,
     },
     {
       id: 'released',
