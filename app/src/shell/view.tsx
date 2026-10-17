@@ -1,11 +1,11 @@
 import { Columns2, Smartphone, UserRound } from 'lucide-react'
 
-/** What this laptop shows: both panes, or one of them at full size. */
-export type View = 'both' | 'member' | 'staff'
+/** What this device shows: both panes, one of them at full size, or the phone remote. */
+export type View = 'both' | 'member' | 'staff' | 'remote'
 
 export function initialView(): View {
   const v = new URLSearchParams(window.location.search).get('view')
-  return v === 'member' || v === 'staff' ? v : 'both'
+  return v === 'member' || v === 'staff' || v === 'remote' ? v : 'both'
 }
 
 export function writeViewToUrl(view: View) {
@@ -15,7 +15,7 @@ export function writeViewToUrl(view: View) {
   window.history.replaceState(null, '', url)
 }
 
-const OPTIONS: { id: View; label: string; Icon: typeof Columns2 }[] = [
+const OPTIONS: { id: Exclude<View, 'remote'>; label: string; Icon: typeof Columns2 }[] = [
   { id: 'both', label: 'Both', Icon: Columns2 },
   { id: 'member', label: 'Member', Icon: Smartphone },
   { id: 'staff', label: 'Staff', Icon: UserRound },

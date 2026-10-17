@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Header, type Tab } from './shell/Header'
 import { Narrator } from './shell/Narrator'
 import { PilotView } from './shell/PilotView'
+import { RemoteView } from './shell/RemoteView'
+import { SessionControl } from './shell/SessionControl'
 import { BothStage, MemberStage, StaffStage } from './shell/Stages'
 import { useWindowSync } from './shell/sync'
 import { initialView, ViewToggle, writeViewToUrl, type View } from './shell/view'
@@ -78,9 +80,31 @@ export default function App() {
       onPrev={api.prev}
       onNext={api.next}
       onGo={goTo}
-      extra={<ViewToggle view={view} onChange={changeView} />}
+      extra={
+        <div className="flex flex-wrap justify-end gap-2">
+          <SessionControl />
+          <ViewToggle view={view} onChange={changeView} />
+        </div>
+      }
     />
   )
+  if (view === 'remote') {
+    return (
+      <StoryContext.Provider value={api}>
+        <RemoteView
+          tabs={tabs}
+          active={active}
+          scenario={scenario}
+          index={index}
+          onSelect={setActive}
+          onPrev={api.prev}
+          onNext={api.next}
+          onGo={goTo}
+        />
+      </StoryContext.Provider>
+    )
+  }
+
   return (
     <StoryContext.Provider value={api}>
       <Header tabs={tabs} active={active} onSelect={setActive} />
