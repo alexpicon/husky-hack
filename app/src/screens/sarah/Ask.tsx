@@ -29,7 +29,7 @@ export function Ask() {
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8 }}
+        transition={{ delay: 1 }}
         className="mt-auto flex flex-col gap-2.5 px-4 pt-5 pb-5"
       >
         <NeverACode />

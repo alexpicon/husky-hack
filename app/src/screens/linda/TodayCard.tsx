@@ -12,11 +12,10 @@ function timelineItems(): TimelineItem[] {
   const amount = dollars(f.wire.amount)
   const secrecy = f.confirm.note.split('; ')[1] ?? f.confirm.note
   return [
-    { time: clock(f.visit.at), label: 'Arrives at a branch', source: f.visit.id },
     {
       time: clock(f.added.at),
       label: 'New wire recipient added',
-      detail: f.added.recipientId,
+      detail: `${f.minutesSinceAdded} minutes before the wire`,
       source: f.added.id,
     },
     {
@@ -37,14 +36,18 @@ function timelineItems(): TimelineItem[] {
     {
       time: clock(f.offered.at),
       label: 'Trusted contact offered',
-      detail: f.offered.memberResponse === 'Declined Offer' ? 'She declines' : f.offered.memberResponse,
+      detail:
+        f.offered.memberResponse === 'Declined Offer' ? 'She declines' : f.offered.memberResponse,
       tone: 'brand',
       source: f.offered.id,
     },
     {
       time: clock(f.outreach.at),
       label: 'Sound calls her',
-      detail: f.outreach.memberResponse === 'Confirmed Intended' ? 'She confirms she means it' : f.outreach.memberResponse,
+      detail:
+        f.outreach.memberResponse === 'Confirmed Intended'
+          ? 'She confirms she means it'
+          : f.outreach.memberResponse,
       tone: 'brand',
       source: f.outreach.id,
     },
@@ -54,33 +57,17 @@ function timelineItems(): TimelineItem[] {
       tone: 'danger',
       source: f.released.id,
     },
-    {
-      time: shortDate(f.cashStopped.at),
-      label: `${dollars(f.cash.amount)} cash request stopped`,
-      detail: f.cashStopped.note,
-      tone: 'safe',
-      source: f.cashStopped.id,
-    },
-    {
-      time: shortDate(f.recallFailed.at),
-      label: 'Wire recall unsuccessful',
-      tone: 'danger',
-      source: f.recallFailed.id,
-    },
   ]
 }
 
-function Tool({ icon: Icon, label, source }: { icon: LucideIcon; label: string; source: string }) {
+function Tried({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
   return (
-    <li className="flex flex-1 flex-col gap-2 rounded-2xl bg-slate-50 p-3 ring-1 ring-line/80">
-      <span className="flex items-center justify-between">
-        <Icon size={16} className="text-brand" aria-hidden />
-        <span className="grid size-4 place-items-center rounded-full bg-brand text-white">
-          <Check size={10} strokeWidth={3} aria-hidden />
-        </span>
+    <li className="flex items-center gap-1.5 rounded-full bg-brand-soft py-1 pr-2.5 pl-1 text-xs font-semibold text-brand ring-1 ring-indigo-200 ring-inset">
+      <span className="grid size-5 place-items-center rounded-full bg-brand text-white">
+        <Check size={11} strokeWidth={3} aria-hidden />
       </span>
-      <span className="text-[13px] leading-tight font-semibold text-ink">{label}</span>
-      <Source ids={source} />
+      <Icon size={13} aria-hidden />
+      {label}
     </li>
   )
 }
@@ -94,52 +81,50 @@ export function TodayCard() {
       transition={{ duration: 0.35 }}
     >
       <Card className="w-[420px] overflow-hidden">
-        <div className="p-7 pb-5">
+        <div className="p-6 pb-5">
           <div className="flex items-center justify-between">
             <Eyebrow>What happened today</Eyebrow>
             <span className="num font-mono text-xs text-ink-3">
-              {day(f.wire.at)} · {f.wire.channel}
+              {day(f.visit.at)} · {f.visit.channel}, {clock(f.visit.at)}{' '}
+              <Source ids={f.visit.id} />
             </span>
           </div>
           <div className="mt-4 flex items-baseline gap-3">
-            <span className="num font-display text-[56px] leading-none tracking-tight">
+            <span className="num font-display text-[52px] leading-none tracking-tight">
               {dollars(f.wire.amount)}
             </span>
-            <span className="text-sm font-medium text-ink-2">{f.wire.rail.toLowerCase()} to a new account</span>
+            <span className="text-sm font-medium text-ink-2">
+              {f.wire.rail.toLowerCase()} to a new account
+            </span>
           </div>
-          <p className="mt-3 text-[15px] leading-snug text-ink-2">
-            {f.key.persona}'s first wire in {f.yearsSinceLastWire} years, to an account added{' '}
-            {f.minutesSinceAdded} minutes earlier. <Source ids={[f.added.id, f.wire.id]} />
-          </p>
-
-          <ul className="mt-5 flex gap-2" aria-label="Tools Sound used today">
-            <Tool icon={PauseCircle} label="Held the wire" source={f.held.id} />
-            <Tool icon={UserRoundCheck} label="Offered a trusted contact" source={f.offered.id} />
-            <Tool icon={PhoneCall} label="Called her" source={f.outreach.id} />
+          <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="What Sound tried today">
+            <Tried icon={PauseCircle} label="Held it" />
+            <Tried icon={UserRoundCheck} label="Offered a trusted contact" />
+            <Tried icon={PhoneCall} label="Called her" />
           </ul>
         </div>
 
-        <div className="border-t border-line/80 px-7 py-5">
+        <div className="border-t border-line/80 px-6 py-5">
           <Timeline items={timelineItems()} compact />
         </div>
 
-        <div className="grid grid-cols-[1.2fr_1fr] gap-px border-t border-line/80 bg-line/80">
-          <div className="bg-danger-soft px-7 py-5">
+        <div className="grid grid-cols-2 gap-px border-t border-line/80 bg-line/80">
+          <div className="bg-danger-soft px-6 py-4">
             <div className="text-xs font-semibold text-danger">Lost for good</div>
             <div className="num mt-1 font-display text-[34px] leading-none text-danger">
               {dollars(f.key.netLoss)}
             </div>
-            <div className="mt-2 text-xs text-ink-3">
-              Secrecy beat all three tools. <Source ids={f.recallFailed.id} />
+            <div className="mt-2 text-xs leading-snug text-ink-2">
+              Recall failed {shortDate(f.recallFailed.at)} <Source ids={f.recallFailed.id} />
             </div>
           </div>
-          <div className="bg-safe-soft px-6 py-5">
-            <div className="text-xs font-semibold text-safe">Stopped next day</div>
+          <div className="bg-safe-soft px-6 py-4">
+            <div className="text-xs font-semibold text-safe">Stopped the next day</div>
             <div className="num mt-1 font-display text-[34px] leading-none text-safe">
               {dollars(f.cash.amount)}
             </div>
-            <div className="mt-2 text-xs text-ink-3">
-              Cash for 'bail' <Source ids={f.cashStopped.id} />
+            <div className="mt-2 text-xs leading-snug text-ink-2">
+              Cash for 'bail', {shortDate(f.cashStopped.at)} <Source ids={f.cashStopped.id} />
             </div>
           </div>
         </div>

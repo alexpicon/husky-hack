@@ -38,14 +38,20 @@ export function SarahsPhone({
 
 /** Sound's question, sent only to contact details that did not just change. */
 export function AskMessages({ instant = false }: { instant?: boolean }) {
-  const { paused } = sarah
+  const { paused, emailChange, phoneChange } = sarah
   return (
     <>
       <Bubble instant={instant} delay={0.1}>
         Sound here. We paused a {money(paused.amount)} payment to a new recipient on your account
         at {clock(paused.at)}.
       </Bubble>
-      <Bubble instant={instant} delay={0.45}>Was this you?</Bubble>
+      <Bubble instant={instant} delay={0.4}>
+        The email and phone number on your account were also changed tonight, at{' '}
+        {clock(emailChange.at)} and {clock(phoneChange.at)}.
+      </Bubble>
+      <Bubble instant={instant} delay={0.7}>
+        Was this you?
+      </Bubble>
     </>
   )
 }
