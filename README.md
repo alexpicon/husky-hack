@@ -24,6 +24,10 @@ One product, two modes.
 |---|---|---|
 | **Sarah (M1003)** | A member who got a fake "Sound" text | She typed her password and code into a fake site. In 34 minutes the scammer reset her password, changed her email and phone, added a recipient and sent **$3,006** in two P2P payments. Nobody noticed until 2 days later. Nothing was recovered. |
 | **Linda (M1001)** | A retired teacher | A fake grandson and a fake lawyer told her to keep it secret. She went to a branch to wire **$8,500**, her first wire in **6.6 years**, to an account added 7 minutes earlier. Sound held it, offered a trusted contact and called her. She insisted, and it was released. **She lost $8,500.** |
+| **M1039** (honest look-alike for Sarah) | A real member who moved | Forgot their password, reset it, updated their address after the move, then paid the first month's rent and deposit to a new landlord. **Every takeover signal fires, but it's really them.** Second Look lets them through in one tap. |
+| **M1057** (honest look-alike for Linda) | A real member buying a home | A **$51,587** down-payment wire to a new recipient. Today Sound holds it for 3-4 hours until a callback. Second Look releases it the same day after a quick silent check. |
+
+Sarah (M1003) and Linda (M1001) come from the kit's four anchor personas (M1001–M1004). M1039 and M1057 come from its 20 legitimate look-alikes. The challenge asks for one of each.
 
 Linda's story is the important one: **Sound's current tools already tried, and the secrecy beat them.** Second Look is built to work even when the member has been told not to talk.
 
