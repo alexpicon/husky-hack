@@ -97,8 +97,8 @@ export function TodayCard() {
             </span>
           </div>
           <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="What Sound tried today">
-            <Tried label="Held the wire" />
-            <Tried label="Offered a trusted contact" />
+            <Tried label="Held it" />
+            <Tried label="Offered trusted contact" />
             <Tried label="Called her" />
           </ul>
         </div>

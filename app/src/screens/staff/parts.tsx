@@ -142,7 +142,7 @@ export function ActionButton({
         <span className="block text-sm leading-snug font-semibold">
           {look === 'done' ? (doneLabel ?? label) : label}
         </span>
-        {hint && (
+        {hint && look !== 'done' && (
           <span className={`mt-0.5 block text-xs ${look === 'recommended' ? 'text-white/85' : 'text-ink-3'}`}>
             {hint}
           </span>

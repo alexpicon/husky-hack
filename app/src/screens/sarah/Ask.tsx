@@ -3,7 +3,7 @@ import { motion } from 'motion/react'
 import { useStory } from '../../story/engine'
 import { afterPause } from './facts'
 import { Bubble } from './SoundChrome'
-import { AskMessages, NeverACode, SarahsPhone } from './Thread'
+import { AskMessages, NeverACode, SarahsPhone, ScrollToLatest } from './Thread'
 
 const reply =
   'flex h-14 w-full items-center justify-center rounded-2xl text-[17px] font-semibold transition active:scale-[0.98]'
@@ -22,6 +22,7 @@ export function Ask() {
             <Bubble delay={0.3}>
               Thanks. We'll call you at this number to confirm before we send it.
             </Bubble>
+            <ScrollToLatest after={350} />
           </>
         )}
       </div>

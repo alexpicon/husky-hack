@@ -22,6 +22,12 @@ const moneyState: Record<TakeoverStage, { label: string; tone: Tone }> = {
   released: { label: 'Released to recipient', tone: 'safe' },
 }
 
+const panelTitle: Partial<Record<TakeoverStage, string>> = {
+  watching: 'Outgoing money',
+  secured: 'Stopped payment',
+  released: 'Released payment',
+}
+
 const chip: Record<Tone, string> = {
   neutral: 'bg-slate-100 text-ink-2',
   brand: 'bg-brand-soft text-brand',
@@ -36,7 +42,7 @@ export function MoneyPanel({ f, stage }: { f: TakeoverFacts; stage: TakeoverStag
   const rail = stage === 'watching' ? recipientAdded.rail : hit.rail
   const rule = railRule[rail] ?? 'Paused before send while Sound checks with the member.'
   return (
-    <Panel title={stage === 'watching' ? 'Outgoing money' : 'Paused payment'} icon={<Banknote size={14} />}>
+    <Panel title={panelTitle[stage] ?? 'Paused payment'} icon={<Banknote size={14} />}>
       {stage === 'watching' ? (
         <div className="rounded-xl bg-slate-50 px-4 py-3.5 text-sm text-ink-2">
           No payment to {recipientAdded.recipientId} yet. If one starts, it pauses before it is sent.
