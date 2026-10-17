@@ -2,9 +2,11 @@ import { motion } from 'motion/react'
 import { ArrowRight, Check, Info, PauseCircle } from 'lucide-react'
 import { useStory } from '../../story/engine'
 import { Tablet } from '../../ui/devices'
+import { useLook } from '../../ui/look'
 import { Button, Source } from '../../ui/primitives'
 import { dollars, lindaFacts } from './facts'
 import { TabletHeader } from './parts'
+import { SilentCheckSound } from './SilentCheckSound'
 import { TAP_OPTIONS, toggleTap, useTaps, type TapOption } from './taps'
 
 function Toggle({ option, on, wide = false }: { option: TapOption; on: boolean; wide?: boolean }) {
@@ -26,7 +28,7 @@ function Toggle({ option, on, wide = false }: { option: TapOption; on: boolean; 
   )
 }
 
-export function SilentCheck() {
+function SilentCheckConcept() {
   const f = lindaFacts()
   const { next } = useStory()
   const taps = useTaps()
@@ -82,4 +84,8 @@ export function SilentCheck() {
       </div>
     </Tablet>
   )
+}
+
+export function SilentCheck() {
+  return useLook() === 'sound' ? <SilentCheckSound /> : <SilentCheckConcept />
 }

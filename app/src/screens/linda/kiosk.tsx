@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { PauseCircle } from 'lucide-react'
+import { PauseCircle, type LucideIcon } from 'lucide-react'
 import { SoundLogo } from '../../ui/brand'
 import { Tablet } from '../../ui/devices'
 import { SOUND, soundFont } from '../../ui/soundApp'
@@ -31,6 +31,6 @@ export function SoundKiosk({ caption, children }: { caption: string; children: R
 }
 
 /** A Sound line icon at the size the app uses on its cards. */
-export function NavyIcon({ icon: Icon, size = 28 }: { icon: typeof PauseCircle; size?: number }) {
+export function NavyIcon({ icon: Icon, size = 28 }: { icon: LucideIcon; size?: number }) {
   return <Icon size={size} strokeWidth={1.7} color={SOUND.navy} className="shrink-0" aria-hidden />
 }
