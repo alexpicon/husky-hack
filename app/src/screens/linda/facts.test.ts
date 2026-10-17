@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { clock } from '../../ui/format'
-import { lindaFacts } from './facts'
+import { lindaFacts, storyTimes } from './facts'
 
 describe("Linda's facts come from the kit", () => {
   const f = lindaFacts()
@@ -33,5 +33,17 @@ describe("Linda's facts come from the kit", () => {
     expect(f.cashStopped.note).toContain('bail')
     expect(f.recallFailed.paymentId).toBe(f.wire.paymentId)
     expect(f.key.netLoss).toBe(8500)
+  })
+})
+
+describe("Linda's story clock", () => {
+  it('runs the silent check minutes after the wire is caught', () => {
+    const t = storyTimes()
+    expect([t.caught, t.check, t.match, t.trusted].map(clock)).toEqual([
+      '2:11 PM',
+      '2:12 PM',
+      '2:14 PM',
+      '2:15 PM',
+    ])
   })
 })

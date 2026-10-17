@@ -80,6 +80,17 @@ function build() {
   }
 }
 
+/** Story beats for the silent check, set relative to the wire the trigger caught. */
+export function storyTimes() {
+  const { wire } = lindaFacts()
+  return {
+    caught: wire.at,
+    check: plusMinutes(wire.at, 1),
+    match: plusMinutes(wire.at, 3),
+    trusted: plusMinutes(wire.at, 4),
+  }
+}
+
 export type LindaFacts = ReturnType<typeof build>
 
 let cached: LindaFacts | null = null

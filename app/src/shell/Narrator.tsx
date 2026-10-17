@@ -33,7 +33,7 @@ export function Narrator({ steps, index, onPrev, onNext, onGo }: Props) {
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.2 }}
           >
-            <h1 className="mt-2 font-display text-[44px] leading-[1.05] tracking-tight">
+            <h1 className="mt-2 font-display text-[40px] leading-[1.05] tracking-tight">
               {step.title}
             </h1>
             <p className="mt-2 max-w-3xl text-[17px] text-ink-2">{step.caption}</p>

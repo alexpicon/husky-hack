@@ -64,7 +64,7 @@ export default function App() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.25 }}
-                className="mt-8 grid items-start gap-10 xl:grid-cols-[auto_1fr]"
+                className="stage-fit mt-6 grid items-start gap-10 xl:grid-cols-[auto_1fr]"
               >
                 <div className="flex flex-col items-center gap-3">
                   <Eyebrow>What the member sees</Eyebrow>

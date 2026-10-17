@@ -50,3 +50,15 @@ body {
 .num {
   font-variant-numeric: tabular-nums;
 }
+
+@media (max-height: 1040px) {
+  .stage-fit {
+    zoom: 0.84;
+  }
+}
+
+@media (max-height: 860px) {
+  .stage-fit {
+    zoom: 0.74;
+  }
+}
