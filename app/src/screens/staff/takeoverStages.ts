@@ -28,3 +28,13 @@ export const isOpen = (s: TakeoverStage) => s !== 'watching'
 export const heardNo = (s: TakeoverStage) => s === 'not-me' || s === 'secured'
 export const heardYes = (s: TakeoverStage) => s === 'its-me' || s === 'released'
 export const wasAsked = (s: TakeoverStage) => s !== 'watching' && s !== 'paused'
+
+export const stageHint: Record<TakeoverStage, string> = {
+  watching: 'Nothing to do yet. Second Look acts on its own if all three signals line up.',
+  paused: 'Sound is asking the member on a safe contact. No action needed yet.',
+  asked: 'Waiting for the member. Release needs a YES on a safe contact.',
+  'not-me': 'The member says it was not them. Keep it stopped and lock the account.',
+  secured: 'Locked. The case stays open while the member gets back in.',
+  'its-me': 'The member confirmed on a safe contact. Release is one click.',
+  released: 'Done. No call, no branch visit.',
+}

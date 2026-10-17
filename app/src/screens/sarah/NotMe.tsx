@@ -3,7 +3,7 @@ import { motion } from 'motion/react'
 import { clock } from '../../ui/format'
 import { afterPause } from './facts'
 import { Bubble } from './SoundChrome'
-import { AskMessages, NeverACode, SarahsPhone } from './Thread'
+import { AskMessages, NeverACode, SarahsPhone, ScrollToLatest } from './Thread'
 
 /** Sarah's "No" is in, and Sound tells her what happens next. */
 export function NotMe() {
@@ -34,6 +34,7 @@ export function NotMe() {
       <div className="mt-auto px-4 pt-5 pb-6">
         <NeverACode />
       </div>
+      <ScrollToLatest />
     </SarahsPhone>
   )
 }

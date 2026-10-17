@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import { Lock } from 'lucide-react'
 import { Phone } from '../../ui/devices'
 import { clock, money } from '../../ui/format'
@@ -63,4 +63,18 @@ export function NeverACode() {
       Sound will never ask you for a code.
     </p>
   )
+}
+
+/** Scrolls the phone's thread to its latest message, like a messages app does. */
+export function ScrollToLatest({ after = 400 }: { after?: number }) {
+  const ref = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      let el = ref.current?.parentElement ?? null
+      while (el && getComputedStyle(el).overflowY !== 'auto') el = el.parentElement
+      el?.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
+    }, after)
+    return () => window.clearTimeout(id)
+  }, [after])
+  return <div ref={ref} aria-hidden />
 }

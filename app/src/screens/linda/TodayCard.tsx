@@ -1,5 +1,5 @@
 import { motion } from 'motion/react'
-import { Check, PhoneCall, PauseCircle, UserRoundCheck, type LucideIcon } from 'lucide-react'
+import { Check } from 'lucide-react'
 import { clock, day } from '../../ui/format'
 import { Card, Eyebrow, Source } from '../../ui/primitives'
 import { Timeline, type TimelineItem } from '../../ui/timeline'
@@ -60,13 +60,12 @@ function timelineItems(): TimelineItem[] {
   ]
 }
 
-function Tried({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
+function Tried({ label }: { label: string }) {
   return (
-    <li className="flex items-center gap-1.5 rounded-full bg-brand-soft py-1 pr-2.5 pl-1 text-xs font-semibold text-brand ring-1 ring-indigo-200 ring-inset">
+    <li className="flex items-center gap-1.5 rounded-full bg-brand-soft py-1 pr-3 pl-1 text-xs font-semibold text-brand ring-1 ring-indigo-200 ring-inset">
       <span className="grid size-5 place-items-center rounded-full bg-brand text-white">
         <Check size={11} strokeWidth={3} aria-hidden />
       </span>
-      <Icon size={13} aria-hidden />
       {label}
     </li>
   )
@@ -84,23 +83,23 @@ export function TodayCard() {
         <div className="p-6 pb-5">
           <div className="flex items-center justify-between">
             <Eyebrow>What happened today</Eyebrow>
-            <span className="num font-mono text-xs text-ink-3">
-              {day(f.visit.at)} · {f.visit.channel}, {clock(f.visit.at)}{' '}
-              <Source ids={f.visit.id} />
-            </span>
+            <span className="num font-mono text-xs text-ink-3">{day(f.wire.at)}</span>
           </div>
           <div className="mt-4 flex items-baseline gap-3">
             <span className="num font-display text-[52px] leading-none tracking-tight">
               {dollars(f.wire.amount)}
             </span>
-            <span className="text-sm font-medium text-ink-2">
-              {f.wire.rail.toLowerCase()} to a new account
+            <span className="text-sm leading-snug text-ink-2">
+              <span className="block font-semibold text-ink">
+                {f.wire.rail} to a new account
+              </span>
+              At a {f.visit.channel.toLowerCase()}, {clock(f.visit.at)} <Source ids={f.visit.id} />
             </span>
           </div>
           <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="What Sound tried today">
-            <Tried icon={PauseCircle} label="Held it" />
-            <Tried icon={UserRoundCheck} label="Offered a trusted contact" />
-            <Tried icon={PhoneCall} label="Called her" />
+            <Tried label="Held the wire" />
+            <Tried label="Offered a trusted contact" />
+            <Tried label="Called her" />
           </ul>
         </div>
 

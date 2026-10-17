@@ -28,7 +28,7 @@ export function Panel({
       <header className="mb-3 flex items-center gap-2">
         {icon && <span className="text-ink-3">{icon}</span>}
         <h3 className="text-[11px] font-semibold tracking-[0.14em] text-ink-3 uppercase">{title}</h3>
-        {aside && <div className="ml-auto">{aside}</div>}
+        {aside && <div className="ml-auto min-w-0 pl-2 text-right">{aside}</div>}
       </header>
       {children}
     </motion.section>
@@ -130,20 +130,24 @@ export function ActionButton({
       type="button"
       disabled={look === 'off' || look === 'done'}
       onClick={onClick}
-      className={`group flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-left transition active:scale-[0.99] disabled:cursor-default ${look === 'off' ? 'opacity-40' : ''} ${style}`}
+      className={`relative flex h-full w-full items-start gap-3 rounded-xl px-3.5 py-3 text-left transition active:scale-[0.99] disabled:cursor-default ${look === 'off' ? 'opacity-40' : ''} ${style}`}
     >
-      <span className="shrink-0">{look === 'done' ? <Check size={18} /> : icon}</span>
-      <span className="min-w-0 flex-1">
-        <span className="block text-sm font-semibold">{look === 'done' ? (doneLabel ?? label) : label}</span>
-        {hint && (
-          <span className={`block text-xs ${look === 'recommended' ? 'text-white/80' : 'text-ink-3'}`}>{hint}</span>
-        )}
-      </span>
       {look === 'recommended' && (
-        <span className="shrink-0 rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-semibold tracking-wider uppercase">
+        <span className="absolute -top-2 right-3 rounded-full bg-ink px-2 py-0.5 text-[10px] font-semibold tracking-wider text-white uppercase shadow-sm">
           Recommended
         </span>
       )}
+      <span className="mt-0.5 shrink-0">{look === 'done' ? <Check size={18} /> : icon}</span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-sm leading-snug font-semibold">
+          {look === 'done' ? (doneLabel ?? label) : label}
+        </span>
+        {hint && (
+          <span className={`mt-0.5 block text-xs ${look === 'recommended' ? 'text-white/85' : 'text-ink-3'}`}>
+            {hint}
+          </span>
+        )}
+      </span>
     </button>
   )
 }
