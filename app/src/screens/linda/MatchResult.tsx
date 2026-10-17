@@ -3,24 +3,19 @@ import { AnimatePresence, motion } from 'motion/react'
 import { HeartHandshake, MessageCircle, PauseCircle, Phone, PhoneCall } from 'lucide-react'
 import { useStory } from '../../story/engine'
 import { Tablet } from '../../ui/devices'
+import { useLook } from '../../ui/look'
+import { AUTONOMY, matchHeadline, matchSubline, replies, shownTaps, type Reply } from './copy'
 import { dollars, lindaFacts } from './facts'
+import { MatchResultSound } from './MatchResultSound'
 import { TabletHeader } from './parts'
-import { STORY_TAPS, TAP_OPTIONS, useTaps } from './taps'
+import { useTaps } from './taps'
 
-type Reply = 'calling' | 'staff' | null
-
-const replies: Record<Exclude<Reply, null>, string> = {
-  calling: 'Take your time. Your wire stays paused while you call.',
-  staff: 'Someone from our team is on the way. You can still send it.',
-}
-
-export function MatchResult() {
+function MatchResultConcept() {
   const f = lindaFacts()
   const { next } = useStory()
   const tapped = useTaps()
   const [reply, setReply] = useState<Reply>(null)
-  const shown = TAP_OPTIONS.filter((o) => (tapped.length ? tapped : STORY_TAPS).includes(o.id))
-  const matches = shown.some((o) => o.scamSignal)
+  const { shown, matches } = shownTaps(tapped)
 
   return (
     <Tablet caption="Branch tablet - Linda chose to share her taps with staff">
@@ -49,14 +44,10 @@ export function MatchResult() {
 
         <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
           <h2 className="font-display text-[30px] leading-[1.1] text-ink">
-            {matches
-              ? `What you tapped matches how the “${f.scamName}” works.`
-              : 'Nothing you tapped matches a scam we know.'}
+            {matchHeadline(matches, f.scamName)}
           </h2>
           <p className="mt-1.5 text-[17px] text-ink-2">
-            {matches
-              ? "Real lawyers don't ask families to keep bail a secret."
-              : 'One quick check before it goes, just in case.'}
+            {matchSubline(matches)}
           </p>
         </motion.div>
 
@@ -107,7 +98,7 @@ export function MatchResult() {
               className={`text-base font-semibold ${reply ? 'text-safe' : 'text-ink'}`}
               aria-live="polite"
             >
-              {reply ? replies[reply] : "It's your money and your decision."}
+              {reply ? replies[reply] : AUTONOMY}
             </motion.p>
           </AnimatePresence>
           <button
@@ -122,4 +113,8 @@ export function MatchResult() {
       </div>
     </Tablet>
   )
+}
+
+export function MatchResult() {
+  return useLook() === 'sound' ? <MatchResultSound /> : <MatchResultConcept />
 }
