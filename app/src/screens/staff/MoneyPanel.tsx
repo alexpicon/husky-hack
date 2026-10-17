@@ -1,5 +1,5 @@
 import { Banknote, PauseCircle } from 'lucide-react'
-import { clock, minutesBetween, money } from '../../ui/format'
+import { minutesBetween, money } from '../../ui/format'
 import { Source, type Tone } from '../../ui/primitives'
 import { when } from './helpers'
 import { FactRow, Panel } from './parts'
@@ -78,9 +78,10 @@ export function MoneyPanel({ f, stage }: { f: TakeoverFacts; stage: TakeoverStag
       <p className="mt-3 rounded-xl bg-brand-soft/60 px-3 py-2 text-xs leading-relaxed text-brand">{rule}</p>
       {followUp && stage !== 'watching' && stage !== 'released' && (
         <p className="mt-2 text-xs leading-relaxed text-ink-3">
-          In the kit, a second {followUp.rail} payment of {money(followUp.amount)} to the same
-          recipient started at <span className="font-mono">{clock(followUp.at)}</span>.{' '}
-          {stage === 'secured' ? 'The lock stops it too.' : 'Locking the account stops it too.'}{' '}
+          Without a lock, the kit shows a second {followUp.rail} payment of{' '}
+          {money(followUp.amount)} to the same recipient{' '}
+          {minutesBetween(hit.at, followUp.at)} minutes later.{' '}
+          {stage === 'secured' ? 'The lock stops it.' : 'Locking the account stops it.'}{' '}
           <Source ids={followUp.id} />
         </p>
       )}
