@@ -33,7 +33,7 @@ export function CheckSound() {
       <div className="flex flex-col gap-2.5">
         <SoundCard>
           <div className="flex gap-3">
-            <MessageSquareText size={38} strokeWidth={1.6} color={SOUND.navy} className="shrink-0" aria-hidden />
+            <MessageSquareText size={40} strokeWidth={1.5} color={SOUND.navy} className="shrink-0" aria-hidden />
             <div className="min-w-0">
               <h3 className="text-[19px] leading-tight font-bold">One quick check</h3>
               <p className="mt-1 text-[15px] leading-snug" style={muted}>
@@ -59,7 +59,7 @@ export function CheckSound() {
 
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
           <SoundCard className="flex gap-3">
-            <Smartphone size={38} strokeWidth={1.6} color={SOUND.navy} className="shrink-0" aria-hidden />
+            <Smartphone size={40} strokeWidth={1.5} color={SOUND.navy} className="shrink-0" aria-hidden />
             <div className="min-w-0">
               <div className="text-[17px] leading-tight font-bold">We texted your phone</div>
               <p className="mt-1 text-[15px] leading-snug" style={muted}>

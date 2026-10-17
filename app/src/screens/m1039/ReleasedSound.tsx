@@ -24,8 +24,8 @@ export function ReleasedSound() {
             <Check size={26} strokeWidth={3} />
           </motion.span>
           <div className="min-w-0">
-            <h3 className="text-[19px] leading-tight font-bold">Your payment is on its way</h3>
-            <p className="mt-1 text-[15px] leading-snug" style={muted}>
+            <h3 className="text-[19px] leading-tight font-bold text-balance">Your payment is on its way</h3>
+            <p className="mt-1 text-[15px] leading-snug text-balance" style={muted}>
               Thanks for confirming. That's all we needed.
             </p>
           </div>

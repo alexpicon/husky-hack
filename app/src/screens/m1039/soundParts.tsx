@@ -17,7 +17,7 @@ export function SoundChip({ tone = 'blue', children }: { tone?: 'blue' | 'green'
 
 export function SoundHeading({ children }: { children: ReactNode }) {
   return (
-    <div className="text-[13px] font-bold tracking-wide uppercase" style={{ color: SOUND.navy }}>
+    <div className="text-[12px] font-bold tracking-wide uppercase" style={muted}>
       {children}
     </div>
   )
@@ -26,7 +26,7 @@ export function SoundHeading({ children }: { children: ReactNode }) {
 export function SoundRecipient({ addedAt, source, badge }: { addedAt: string; source: string; badge?: ReactNode }) {
   return (
     <div className="flex items-center gap-3">
-      <House size={36} strokeWidth={1.6} color={SOUND.navy} className="shrink-0" aria-hidden />
+      <House size={40} strokeWidth={1.5} color={SOUND.navy} className="shrink-0" aria-hidden />
       <div className="min-w-0 flex-1">
         <div className="text-[17px] leading-tight font-bold">{RECIPIENT_LABEL}</div>
         <div className="mt-0.5 flex flex-wrap items-baseline gap-x-2 text-[15px]" style={muted}>
