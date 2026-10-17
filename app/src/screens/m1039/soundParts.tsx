@@ -3,10 +3,7 @@ import { House } from 'lucide-react'
 import { Source } from '../../ui/primitives'
 import { SOUND } from '../../ui/soundApp'
 import { RECIPIENT_LABEL } from './parts'
-
-export const SOUND_OK = '#1e7d4f'
-
-export const muted = { color: SOUND.muted }
+import { muted, SOUND_OK } from './soundTokens'
 
 export function SoundChip({ tone = 'blue', children }: { tone?: 'blue' | 'green'; children: ReactNode }) {
   const style =

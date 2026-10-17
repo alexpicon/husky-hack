@@ -5,7 +5,8 @@ import { Source } from '../../ui/primitives'
 import { SOUND, SoundAppScreen, SoundCard, SoundRow } from '../../ui/soundApp'
 import { facts, railLabel } from './facts'
 import { MEMO } from './parts'
-import { muted, SOUND_OK, SoundChip, SoundRecipient } from './soundParts'
+import { SoundChip, SoundRecipient } from './soundParts'
+import { muted, SOUND_OK } from './soundTokens'
 
 export function ReleasedSound() {
   const { payment, recipientAdded } = facts

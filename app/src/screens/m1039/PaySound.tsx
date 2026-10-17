@@ -6,7 +6,8 @@ import { Source } from '../../ui/primitives'
 import { SOUND, SoundAppScreen, SoundButton, SoundCard, SoundRow } from '../../ui/soundApp'
 import { facts, railLabel } from './facts'
 import { MEMO } from './parts'
-import { muted, SoundChip, SoundHeading, SoundRecipient } from './soundParts'
+import { SoundChip, SoundHeading, SoundRecipient } from './soundParts'
+import { muted } from './soundTokens'
 
 export function PaySound() {
   const { next } = useStory()

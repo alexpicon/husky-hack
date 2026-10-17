@@ -6,7 +6,7 @@ import { money } from '../../ui/format'
 import { Source } from '../../ui/primitives'
 import { SOUND, SoundAppScreen, SoundButton, SoundCard, SoundRow } from '../../ui/soundApp'
 import { facts, HOLD_HOURS, whenLabel } from './facts'
-import { muted, SOUND_OK } from './soundParts'
+import { muted, SOUND_OK } from './soundTokens'
 
 const ICON = { size: 18, color: SOUND.navy, className: 'shrink-0', 'aria-hidden': true } as const
 
