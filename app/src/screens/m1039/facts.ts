@@ -1,0 +1,124 @@
+import { eventsFor, keyFor, memberKeys, type KitEvent } from '../../data/kit'
+import { evaluate, firstHit, isTakeover } from '../../data/triggers'
+import { clock, day, minutesBetween } from '../../ui/format'
+
+export const MEMBER = 'M1039'
+
+/** Kit policy (Starter Kit, "Holds"): an ACH payment can be paused up to 4 hours. */
+export const HOLD_HOURS = 4
+
+/** Design assumption for the fast path: the member answers about a minute after the text. */
+export const TAP_MINUTES = 1
+
+const FAILED_LOGIN_WINDOW_MIN = 30
+
+function must<T>(value: T | undefined, what: string): T {
+  if (value === undefined) throw new Error(`${MEMBER} story: expected ${what} in the kit data`)
+  return value
+}
+
+const sameDay = (a: Date, b: Date) => a.toDateString() === b.toDateString()
+
+const all = eventsFor(MEMBER)
+const key = keyFor(MEMBER)
+if (!key.lookalike) throw new Error(`${MEMBER} story: expected an honest look-alike in the member key`)
+
+const payment = must(firstHit(MEMBER, isTakeover), 'a payment that trips the takeover trigger')
+const before = all.filter((e) => e.at <= payment.at)
+const lastBefore = (type: string) =>
+  must(before.findLast((e) => e.type === type), `a ${type} event before ${payment.id}`)
+
+const reset = lastBefore('Password Reset')
+const address = lastBefore('Address Change')
+
+const failedLogins = before.filter(
+  (e) =>
+    e.type === 'Failed Login' &&
+    e.at <= reset.at &&
+    minutesBetween(e.at, reset.at) <= FAILED_LOGIN_WINDOW_MIN,
+)
+if (failedLogins.length === 0) throw new Error(`${MEMBER} story: expected failed logins before the reset`)
+
+const code = must(
+  before.find((e) => e.type === 'One-Time Code Sent' && e.at >= reset.at),
+  'a one-time code after the reset',
+)
+const alert = must(
+  before.find((e) => e.type === 'Profile Change Alert Sent' && e.at >= address.at),
+  'a profile change alert after the address change',
+)
+const recipientAdded = must(
+  before.find((e) => e.type === 'Recipient Added' && e.recipientId === payment.recipientId),
+  `the Recipient Added event for ${payment.recipientId}`,
+)
+const completed = must(
+  all.find((e) => e.type === 'Payment Completed' && e.paymentId === payment.paymentId),
+  `the Payment Completed event for ${payment.paymentId}`,
+)
+
+const contactChanges = all.filter((e) => e.type === 'Email Change' || e.type === 'Phone Change')
+if (contactChanges.length > 0) {
+  throw new Error(
+    `${MEMBER} story assumes email and phone never changed, but the kit has ${contactChanges.map((e) => e.id).join(', ')}`,
+  )
+}
+
+const tapAt = new Date(payment.at.getTime() + TAP_MINUTES * 60_000)
+const releasedCompletion = new Date(completed.at.getTime() + TAP_MINUTES * 60_000)
+if (!sameDay(payment.at, releasedCompletion)) {
+  throw new Error(`${MEMBER} story claims same-day delivery, but ${completed.id} would slip a day`)
+}
+
+const lookalikes = must(
+  evaluate(isTakeover).find((g) => g.group === 'Look-alike'),
+  'a Look-alike group in the takeover design check',
+)
+const flaggedLookalikes = memberKeys.filter((k) => k.lookalike && firstHit(k.member, isTakeover))
+const movedLookalikes = flaggedLookalikes.filter((k) =>
+  eventsFor(k.member).some((e) => e.type === 'Address Change'),
+)
+
+export type M1039Facts = {
+  payment: KitEvent
+  reset: KitEvent
+  failedLogins: KitEvent[]
+  code: KitEvent
+  address: KitEvent
+  alert: KitEvent
+  recipientAdded: KitEvent
+  completed: KitEvent
+  tapAt: Date
+  todayMinutes: number
+  outcome: string
+  lookalikes: { flagged: number; total: number; moved: number }
+}
+
+export const facts: M1039Facts = {
+  payment,
+  reset,
+  failedLogins,
+  code,
+  address,
+  alert,
+  recipientAdded,
+  completed,
+  tapAt,
+  todayMinutes: minutesBetween(payment.at, completed.at),
+  outcome: key.outcome,
+  lookalikes: {
+    flagged: lookalikes.flagged,
+    total: lookalikes.total,
+    moved: movedLookalikes.length,
+  },
+}
+
+export const railLabel = (rail: string) => (rail === 'ACH' ? 'ACH bank transfer' : rail)
+
+/** "Today, 12:50 PM" or "Yesterday, 11:51 AM", relative to the rent payment. */
+export function whenLabel(d: Date) {
+  const days = Math.round(
+    (new Date(payment.at.toDateString()).getTime() - new Date(d.toDateString()).getTime()) / 86_400_000,
+  )
+  const prefix = days === 0 ? 'Today' : days === 1 ? 'Yesterday' : day(d)
+  return `${prefix}, ${clock(d)}`
+}
