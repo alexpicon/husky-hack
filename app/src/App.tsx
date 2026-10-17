@@ -13,9 +13,16 @@ const scenarios: Scenario[] = [sarah, m1039, linda]
 const PILOT: Tab = { id: 'pilot', label: 'Design check', sublabel: 'Kit data + pilot', tone: 'brand' }
 const tabs: Tab[] = [...scenarios, PILOT]
 
+/** Deep link: #sarah/3 opens Sarah's third step. */
+function fromHash(): { active: string; steps: Record<string, number> } {
+  const [id, n] = window.location.hash.slice(1).split('/')
+  const active = tabs.some((t) => t.id === id) ? id : scenarios[0].id
+  return { active, steps: n ? { [active]: Number(n) - 1 || 0 } : {} }
+}
+
 export default function App() {
-  const [active, setActive] = useState(scenarios[0].id)
-  const [steps, setSteps] = useState<Record<string, number>>({})
+  const [active, setActive] = useState(() => fromHash().active)
+  const [steps, setSteps] = useState<Record<string, number>>(() => fromHash().steps)
   const scenario = scenarios.find((s) => s.id === active)
   const index = Math.min(steps[active] ?? 0, Math.max(0, (scenario?.steps.length ?? 1) - 1))
   const count = scenario?.steps.length ?? 0
@@ -40,6 +47,11 @@ export default function App() {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [api])
+
+  useEffect(() => {
+    const hash = scenario ? `#${active}/${index + 1}` : `#${active}`
+    if (window.location.hash !== hash) window.history.replaceState(null, '', hash)
+  }, [active, index, scenario])
 
   const step = scenario?.steps[index]
   return (
