@@ -49,7 +49,7 @@ export function OutcomeBanner({ f, stage }: { f: TakeoverFacts; stage: 'secured'
         {secured ? (
           <SecuredFootnote f={f} />
         ) : changeOf(f, 'phone') ? (
-          'The member confirmed by calling the number on their card.'
+          'The member confirmed on a contact detail that did not change.'
         ) : (
           <>
             Their phone number never changed, so "Was this you?" went straight to it. The{' '}
