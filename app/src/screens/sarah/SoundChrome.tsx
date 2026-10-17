@@ -1,31 +1,14 @@
 import type { ReactNode } from 'react'
-import { AudioLines, ChevronLeft } from 'lucide-react'
+import { ChevronLeft } from 'lucide-react'
 import { motion } from 'motion/react'
+import { SoundMark as BrandMark, SoundLogo } from '../../ui/brand'
 
 export function SoundMark({ size = 'sm' }: { size?: 'sm' | 'lg' }) {
-  const box = size === 'lg' ? 'size-11 rounded-2xl' : 'size-7 rounded-[10px]'
-  return (
-    <span
-      className={`grid shrink-0 place-items-center bg-linear-to-br from-indigo-500 via-brand to-indigo-900 text-white shadow-sm ${box}`}
-      aria-hidden
-    >
-      <AudioLines size={size === 'lg' ? 22 : 15} strokeWidth={2.4} />
-    </span>
-  )
+  return <BrandMark size={size === 'lg' ? 44 : 28} />
 }
 
 export function SoundWordmark() {
-  return (
-    <span className="flex items-center gap-2">
-      <SoundMark />
-      <span className="leading-none">
-        <span className="block text-[17px] font-bold tracking-tight text-ink">Sound</span>
-        <span className="block text-[9px] font-semibold tracking-[0.18em] text-ink-3 uppercase">
-          Credit Union
-        </span>
-      </span>
-    </span>
-  )
+  return <SoundLogo height={17} />
 }
 
 /** Top bar of the Sound banking app or website on a phone. */

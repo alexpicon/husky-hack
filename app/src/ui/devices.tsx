@@ -5,11 +5,14 @@ type PhoneProps = {
   time: string
   caption?: string
   dark?: boolean
+  /** 'navy' matches a Sound app screen's title bar. */
+  statusBar?: 'navy'
   children: ReactNode
 }
 
 /** A 390 x 780 phone; screens fill it and scroll inside. */
-export function Phone({ time, caption, dark = false, children }: PhoneProps) {
+export function Phone({ time, caption, dark = false, statusBar, children }: PhoneProps) {
+  const bar = statusBar === 'navy' ? 'bg-[#0b1f5c] text-white' : dark ? 'text-white' : 'text-ink'
   return (
     <figure className="flex flex-col items-center gap-3">
       <div className="relative rounded-[3.2rem] bg-slate-900 p-3 shadow-device ring-1 ring-slate-700">
@@ -18,7 +21,7 @@ export function Phone({ time, caption, dark = false, children }: PhoneProps) {
         >
           <div className="absolute top-2.5 left-1/2 z-20 h-7 w-28 -translate-x-1/2 rounded-full bg-black" />
           <div
-            className={`relative z-10 flex h-12 items-end justify-between px-7 pb-1 text-[13px] font-semibold ${dark ? 'text-white' : 'text-ink'}`}
+            className={`relative z-10 flex h-12 items-end justify-between px-7 pb-1 text-[13px] font-semibold ${bar}`}
           >
             <span className="num">{time}</span>
             <span className="flex items-center gap-1">

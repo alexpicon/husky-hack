@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { SoundLogo } from '../../ui/brand'
 import { motion } from 'motion/react'
 import { Info, Sparkles } from 'lucide-react'
 import { Badge } from '../../ui/primitives'
@@ -29,16 +30,7 @@ export function Stage({ children, note }: { children: ReactNode; note?: ReactNod
 
 /** Sound's wordmark as it appears on member screens. */
 export function SoundMark({ dark = false }: { dark?: boolean }) {
-  return (
-    <span className="flex items-center gap-2">
-      <span className="grid size-7 place-items-center rounded-lg bg-brand text-[13px] font-bold text-white">
-        S
-      </span>
-      <span className={`text-[15px] font-semibold ${dark ? 'text-white' : 'text-ink'}`}>
-        Sound
-      </span>
-    </span>
-  )
+  return <SoundLogo height={16} inverted={dark} />
 }
 
 /** Small header strip for the branch tablet. */

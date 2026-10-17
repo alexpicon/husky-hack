@@ -1,5 +1,6 @@
 import { Database } from 'lucide-react'
 import { events, memberKeys } from '../data/kit'
+import { LookToggle } from '../ui/look'
 import { toneDot, type Tone } from '../ui/primitives'
 
 export type Tab = { id: string; label: string; sublabel: string; tone: Tone }
@@ -46,8 +47,9 @@ export function Header({ tabs, active, onSelect }: HeaderProps) {
             </button>
           ))}
         </nav>
+        <LookToggle />
         <div
-          className="hidden items-center gap-2 rounded-xl bg-white px-3 py-2 text-xs text-ink-2 ring-1 ring-line xl:flex"
+          className="hidden items-center gap-2 rounded-xl bg-white px-3 py-2 text-xs text-ink-2 ring-1 ring-line 2xl:flex"
           title="Triggers run live in the browser on the organizers' CSV files"
         >
           <Database size={14} className="text-brand" />

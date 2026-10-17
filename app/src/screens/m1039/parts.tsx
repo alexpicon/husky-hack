@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { ChevronLeft, House } from 'lucide-react'
+import { SoundMark as BrandMark } from '../../ui/brand'
 import { Source } from '../../ui/primitives'
 
 /** The member's own words from the key: "paid first month + deposit to a new landlord". */
@@ -7,18 +8,7 @@ export const RECIPIENT_LABEL = 'Your new landlord'
 export const MEMO = 'First month + deposit'
 
 export function SoundMark({ size = 28 }: { size?: number }) {
-  return (
-    <span
-      aria-hidden
-      style={{ width: size, height: size }}
-      className="grid shrink-0 place-items-center rounded-[30%] bg-linear-to-br from-indigo-500 to-brand text-white shadow-sm"
-    >
-      <svg viewBox="0 0 20 20" className="size-[60%]" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-        <path d="M3 12c2-4 4-4 6 0s4 4 6 0" />
-        <path d="M3 7c2-3 4-3 6 0s4 3 6 0" opacity="0.55" />
-      </svg>
-    </span>
-  )
+  return <BrandMark size={size} />
 }
 
 export function AppBar({ title }: { title: string }) {
