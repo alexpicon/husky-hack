@@ -1,122 +1,84 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { AnimatePresence, motion } from 'motion/react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Header, type Tab } from './shell/Header'
+import { Narrator } from './shell/Narrator'
+import { PilotView } from './shell/PilotView'
+import { StoryContext, type Scenario } from './story/engine'
+import { linda } from './story/linda'
+import { m1039 } from './story/m1039'
+import { sarah } from './story/sarah'
+import { Eyebrow } from './ui/primitives'
 
-function App() {
-  const [count, setCount] = useState(0)
+const scenarios: Scenario[] = [sarah, m1039, linda]
+const PILOT: Tab = { id: 'pilot', label: 'Design check', sublabel: 'Kit data + pilot', tone: 'brand' }
+const tabs: Tab[] = [...scenarios, PILOT]
 
+export default function App() {
+  const [active, setActive] = useState(scenarios[0].id)
+  const [steps, setSteps] = useState<Record<string, number>>({})
+  const scenario = scenarios.find((s) => s.id === active)
+  const index = Math.min(steps[active] ?? 0, Math.max(0, (scenario?.steps.length ?? 1) - 1))
+  const count = scenario?.steps.length ?? 0
+
+  const goTo = useCallback(
+    (i: number) => setSteps((s) => ({ ...s, [active]: Math.max(0, Math.min(count - 1, i)) })),
+    [active, count],
+  )
+  const api = useMemo(
+    () => ({ index, count, goTo, next: () => goTo(index + 1), prev: () => goTo(index - 1) }),
+    [index, count, goTo],
+  )
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement) return
+      if (e.key === 'ArrowRight') api.next()
+      if (e.key === 'ArrowLeft') api.prev()
+      const n = Number(e.key)
+      if (n >= 1 && n <= tabs.length) setActive(tabs[n - 1].id)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [api])
+
+  const step = scenario?.steps[index]
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+    <StoryContext.Provider value={api}>
+      <Header tabs={tabs} active={active} onSelect={setActive} />
+      <main className="mx-auto max-w-[1440px] px-8 pt-8 pb-16">
+        {!scenario && <PilotView />}
+        {scenario && !step && <p className="text-ink-3">This story is being built.</p>}
+        {scenario && step && (
+          <>
+            <Narrator
+              steps={scenario.steps}
+              index={index}
+              onPrev={api.prev}
+              onNext={api.next}
+              onGo={goTo}
+            />
+            <AnimatePresence mode="wait">
+              <motion.section
+                key={`${scenario.id}-${step.id}`}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                className="mt-8 grid grid-cols-[auto_1fr] items-start gap-10"
+              >
+                <div className="flex flex-col items-center gap-3">
+                  <Eyebrow>What the member sees</Eyebrow>
+                  {step.member}
+                </div>
+                <div className="flex min-w-0 flex-col gap-3">
+                  <Eyebrow>What Sound staff see</Eyebrow>
+                  {step.staff}
+                </div>
+              </motion.section>
+            </AnimatePresence>
+          </>
+        )}
+      </main>
+    </StoryContext.Provider>
   )
 }
-
-export default App
