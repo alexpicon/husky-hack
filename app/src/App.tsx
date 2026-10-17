@@ -67,7 +67,7 @@ export default function App() {
                 className="stage-fit mt-6 grid items-start gap-10 xl:grid-cols-[auto_1fr]"
               >
                 <div className="flex flex-col items-center gap-3">
-                  <Eyebrow>What the member sees</Eyebrow>
+                  <Eyebrow>{step.memberLabel ?? 'What the member sees'}</Eyebrow>
                   {step.member}
                 </div>
                 <div className="flex min-w-0 flex-col gap-3">

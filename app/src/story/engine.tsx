@@ -11,6 +11,8 @@ export type Step = {
   clock: string
   member: ReactNode
   staff: ReactNode
+  /** Overrides the label above the member pane. */
+  memberLabel?: string
 }
 
 export type Scenario = {
