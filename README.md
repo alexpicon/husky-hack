@@ -173,3 +173,5 @@ cd app && npm install && npm run dev
 ```
 
 `npm test` checks the triggers against the numbers above. Arrow keys step through a story; keys 1-4 switch stories.
+
+**Presenting on several laptops.** One laptop runs `npm run demo` and shares its network address (Vite prints it, e.g. `http://192.168.1.20:5173`). The other laptops open that address with `?view=member` (the phone, full size) or `?view=staff` (the staff console, full width); the switch next to Back/Next does the same. Next, Back, tabs and the phone look stay in sync on every laptop. If the Wi-Fi blocks laptop-to-laptop traffic, use a phone hotspot. Without a network, each laptop works on its own.
