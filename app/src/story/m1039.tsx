@@ -22,7 +22,7 @@ export const m1039: Scenario = {
     {
       id: 'signals',
       title: 'Same signals, honest member',
-      caption: `Yesterday this member reset a forgotten password at ${clock(reset.at)} and updated their address after a move at ${clock(address.at)}. Now they pay ${money(payment.amount)} to a new landlord. Every takeover flag lights up.`,
+      caption: `Yesterday this member reset a forgotten password at ${clock(reset.at)} and updated their address after a move at ${clock(address.at)}. Now they pay ${money(payment.amount)} to a new landlord. When they press Send, every takeover flag lights up.`,
       clock: paidAt,
       member: (
         <Phone time={clock(payment.at)} caption="Sound app: paying the new landlord">

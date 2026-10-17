@@ -23,7 +23,7 @@ export function MatchResult() {
   const matches = shown.some((o) => o.scamSignal)
 
   return (
-    <Tablet caption="Branch tablet - still private, on Linda's screen only">
+    <Tablet caption="Branch tablet - Linda chose to share her taps with staff">
       <div className="flex min-h-full flex-col gap-3 p-6">
         <TabletHeader
           right={

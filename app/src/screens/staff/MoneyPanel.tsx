@@ -4,12 +4,13 @@ import { Source, type Tone } from '../../ui/primitives'
 import { when } from './helpers'
 import { FactRow, Panel } from './parts'
 import type { TakeoverFacts } from './takeoverFacts'
+import { HOLD_HOURS } from './trickedFacts'
 import type { TakeoverStage } from './TakeoverCase'
 
 const railRule: Record<string, string> = {
   P2P: "P2P can't be recalled once sent, so it's paused before send.",
-  ACH: 'ACH can be held up to 4 hours while Sound checks with the member.',
-  Wire: 'A wire can be held up to 4 hours while Sound checks with the member.',
+  ACH: `ACH can be held up to ${HOLD_HOURS} hours while Sound checks with the member.`,
+  Wire: `A wire can be held up to ${HOLD_HOURS} hours while Sound checks with the member.`,
 }
 
 const moneyState: Record<TakeoverStage, { label: string; tone: Tone }> = {
