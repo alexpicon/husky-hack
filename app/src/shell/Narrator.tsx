@@ -14,8 +14,8 @@ type Props = {
 export function Narrator({ steps, index, onPrev, onNext, onGo }: Props) {
   const step = steps[index]
   return (
-    <div className="flex items-end gap-8">
-      <div className="min-w-0 flex-1">
+    <div className="flex flex-wrap items-end gap-x-8 gap-y-4">
+      <div className="min-w-[280px] flex-1">
         <div className="flex items-center gap-3 text-xs font-medium text-ink-3">
           <span className="num font-mono">
             {String(index + 1).padStart(2, '0')} / {String(steps.length).padStart(2, '0')}

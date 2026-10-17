@@ -104,7 +104,7 @@ export function PilotView() {
       <h1 className="mt-2 font-display text-[44px] leading-[1.05] tracking-tight">
         Tested on the organizers’ data. Honest about the miss.
       </h1>
-      <div className="mt-8 grid grid-cols-[1.35fr_1fr] gap-6">
+      <div className="mt-8 grid gap-6 xl:grid-cols-[1.35fr_1fr]">
         <ResultsMatrix />
         <div className="flex flex-col gap-6">
           <MichaelMiss />

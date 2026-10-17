@@ -27,7 +27,7 @@ type HeaderProps = { tabs: Tab[]; active: string; onSelect: (id: string) => void
 export function Header({ tabs, active, onSelect }: HeaderProps) {
   return (
     <header className="sticky top-0 z-30 border-b border-white/60 bg-white/70 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-[1440px] items-center gap-6 px-8 py-3.5">
+      <div className="mx-auto flex max-w-[1440px] flex-wrap items-center gap-x-6 gap-y-3 px-6 py-3.5 lg:px-8">
         <Logo />
         <nav className="mx-auto flex rounded-2xl bg-slate-100/80 p-1 ring-1 ring-line" aria-label="Stories">
           {tabs.map((t) => (
@@ -41,13 +41,13 @@ export function Header({ tabs, active, onSelect }: HeaderProps) {
               <span className={`size-2 rounded-full ${toneDot[t.tone]}`} />
               <span className="leading-tight">
                 <span className="block text-sm font-semibold">{t.label}</span>
-                <span className="block text-[11px] text-ink-3">{t.sublabel}</span>
+                <span className="hidden text-[11px] text-ink-3 lg:block">{t.sublabel}</span>
               </span>
             </button>
           ))}
         </nav>
         <div
-          className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 text-xs text-ink-2 ring-1 ring-line"
+          className="hidden items-center gap-2 rounded-xl bg-white px-3 py-2 text-xs text-ink-2 ring-1 ring-line xl:flex"
           title="Triggers run live in the browser on the organizers' CSV files"
         >
           <Database size={14} className="text-brand" />

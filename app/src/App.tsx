@@ -45,7 +45,7 @@ export default function App() {
   return (
     <StoryContext.Provider value={api}>
       <Header tabs={tabs} active={active} onSelect={setActive} />
-      <main className="mx-auto max-w-[1440px] px-8 pt-8 pb-16">
+      <main className="mx-auto max-w-[1440px] px-6 pt-8 pb-16 lg:px-8">
         {!scenario && <PilotView />}
         {scenario && !step && <p className="text-ink-3">This story is being built.</p>}
         {scenario && step && (
@@ -64,7 +64,7 @@ export default function App() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.25 }}
-                className="mt-8 grid grid-cols-[auto_1fr] items-start gap-10"
+                className="mt-8 grid items-start gap-10 xl:grid-cols-[auto_1fr]"
               >
                 <div className="flex flex-col items-center gap-3">
                   <Eyebrow>What the member sees</Eyebrow>
