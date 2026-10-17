@@ -67,16 +67,18 @@ export function ThreadHeader({ when }: { when: string }) {
 export function Bubble({
   from = 'sound',
   delay = 0,
+  instant = false,
   children,
 }: {
   from?: 'sound' | 'me'
   delay?: number
+  instant?: boolean
   children: ReactNode
 }) {
   const mine = from === 'me'
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8, scale: 0.98 }}
+      initial={instant ? false : { opacity: 0, y: 8, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ delay, duration: 0.32, ease: [0.2, 0.7, 0.2, 1] }}
       className={`max-w-[85%] rounded-[22px] px-4 py-2.5 text-[16px] leading-snug ${mine ? 'self-end rounded-br-md bg-brand text-white' : 'self-start rounded-bl-md bg-slate-100 text-ink'}`}
