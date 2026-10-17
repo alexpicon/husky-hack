@@ -1,5 +1,6 @@
 import { ArrowLeft, ArrowRight, Clock } from 'lucide-react'
-import { AnimatePresence, motion } from 'motion/react'
+import { motion } from 'motion/react'
+import type { ReactNode } from 'react'
 import type { Step } from '../story/engine'
 import { Button } from '../ui/primitives'
 
@@ -9,9 +10,11 @@ type Props = {
   onPrev: () => void
   onNext: () => void
   onGo: (i: number) => void
+  /** Presenter controls shown above the step dots. */
+  extra?: ReactNode
 }
 
-export function Narrator({ steps, index, onPrev, onNext, onGo }: Props) {
+export function Narrator({ steps, index, onPrev, onNext, onGo, extra }: Props) {
   const step = steps[index]
   return (
     <div className="flex flex-wrap items-end gap-x-8 gap-y-4">
@@ -25,22 +28,20 @@ export function Narrator({ steps, index, onPrev, onNext, onGo }: Props) {
             <span className="num">{step.clock}</span>
           </span>
         </div>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={step.id}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: 0.2 }}
-          >
-            <h1 className="mt-2 font-display text-[40px] leading-[1.05] tracking-tight">
-              {step.title}
-            </h1>
-            <p className="mt-2 max-w-3xl text-[17px] text-ink-2">{step.caption}</p>
-          </motion.div>
-        </AnimatePresence>
+        <motion.div
+          key={step.id}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          <h1 className="mt-2 font-display text-[40px] leading-[1.05] tracking-tight">
+            {step.title}
+          </h1>
+          <p className="mt-2 max-w-3xl text-[17px] text-ink-2">{step.caption}</p>
+        </motion.div>
       </div>
       <div className="flex shrink-0 flex-col items-end gap-3">
+        {extra}
         <div className="flex gap-1.5" role="tablist" aria-label="Steps">
           {steps.map((s, i) => (
             <button

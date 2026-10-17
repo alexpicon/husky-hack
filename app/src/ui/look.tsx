@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import { Smartphone } from 'lucide-react'
+import { useWindowSync } from '../shell/sync'
 
 /** How phone mockups render: our concept design, or Sound's current app. */
 export type Look = 'concept' | 'sound'
@@ -25,6 +26,7 @@ function initialLook(): Look {
 
 export function LookProvider({ children }: { children: ReactNode }) {
   const [look, setLook] = useState<Look>(initialLook)
+  useWindowSync('look', look, setLook)
   useEffect(() => {
     try {
       window.localStorage.setItem(KEY, look)
