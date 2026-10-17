@@ -38,8 +38,9 @@ export function TapScreen() {
       </div>
 
       <div className="flex flex-1 flex-col gap-2 px-4 pt-4">
-        <div className="mb-2 text-center text-[12px] font-medium text-ink-3">
-          Text Message · Today {clock(payment.at)}
+        <div className="mb-2 flex items-baseline justify-center gap-2 text-[12px] font-medium text-ink-3">
+          <span>Text Message · Today {clock(payment.at)}</span>
+          <Source ids={payment.id} />
         </div>
         <Bubble delay={0.1}>
           <span className="font-semibold">Sound:</span> Was this you?{' '}
@@ -49,9 +50,6 @@ export function TapScreen() {
         <Bubble delay={0.35}>
           Tap Yes and it goes right away. We'll never ask for your password or a code.
         </Bubble>
-        <div className="pl-1">
-          <Source ids={payment.id} />
-        </div>
       </div>
 
       <motion.div

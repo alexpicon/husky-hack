@@ -16,7 +16,7 @@ export function Paused() {
         <div className="flex min-h-full flex-col bg-white">
           <SoundBar channel={paused.channel} />
 
-          <div className="px-5 pt-5 pb-6">
+          <div className="px-5 pt-4 pb-4">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -32,7 +32,7 @@ export function Paused() {
               We've paused this payment to keep your account safe.
             </h2>
 
-            <div className="mt-4 flex items-center justify-between rounded-2xl bg-warn-soft px-4 py-2.5 ring-1 ring-amber-200/80">
+            <div className="mt-4 flex items-center justify-between rounded-2xl bg-warn-soft px-4 py-2 ring-1 ring-amber-200/80">
               <div>
                 <div className="num text-[18px] font-semibold">{money(paused.amount)}</div>
                 <div className="text-[13px] text-ink-2">
@@ -44,7 +44,7 @@ export function Paused() {
               </span>
             </div>
 
-            <p className="mt-5 text-[16px] font-semibold">Here's what changed on your account tonight:</p>
+            <p className="mt-4 text-[16px] font-semibold">Here's what changed on your account tonight:</p>
             <ul className="mt-2 divide-y divide-line rounded-2xl ring-1 ring-line">
               {changesTonight.map(({ label, event }, i) => (
                 <motion.li
@@ -52,10 +52,10 @@ export function Paused() {
                   initial={{ opacity: 0, x: -6 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.15 + i * 0.08 }}
-                  className="flex items-center gap-3 px-4 py-2"
+                  className="flex items-center gap-2.5 px-3.5 py-2"
                 >
-                  <span className="flex w-[64px] shrink-0 flex-col leading-tight">
-                    <span className="num font-mono text-[13px] text-ink-2">{clock(event.at)}</span>
+                  <span className="flex w-[60px] shrink-0 flex-col leading-tight">
+                    <span className="num font-mono text-[12px] text-ink-2">{clock(event.at)}</span>
                     <Source ids={event.id} />
                   </span>
                   <span className="text-[16px] font-medium">{label}</span>

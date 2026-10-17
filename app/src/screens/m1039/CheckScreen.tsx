@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { Clock, KeyRound, MapPin, MessageSquareText, Phone, Smartphone, UserPlus } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useStory } from '../../story/engine'
-import { Badge, Source } from '../../ui/primitives'
+import { Source } from '../../ui/primitives'
 import { money } from '../../ui/format'
 import { facts, HOLD_HOURS, whenLabel } from './facts'
 
@@ -26,18 +26,20 @@ export function CheckScreen() {
   const { payment, reset, address, recipientAdded } = facts
   return (
     <div className="flex min-h-full flex-col bg-linear-to-b from-brand-soft via-white to-white px-5 pt-4 pb-6">
-      <motion.span
-        initial={{ scale: 0.85, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        className="grid size-14 place-items-center rounded-2xl bg-white text-brand shadow-float ring-1 ring-indigo-100"
-      >
-        <MessageSquareText size={26} />
-      </motion.span>
-      <h2 className="mt-4 font-display text-[36px] leading-[1.05] tracking-tight text-ink">
-        One quick check
-      </h2>
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="font-display text-[36px] leading-[1.05] tracking-tight text-ink">
+          One quick check
+        </h2>
+        <motion.span
+          initial={{ scale: 0.85, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="grid size-11 shrink-0 place-items-center rounded-2xl bg-white text-brand shadow-float ring-1 ring-indigo-100"
+        >
+          <MessageSquareText size={22} />
+        </motion.span>
+      </div>
       <p className="mt-2 text-[17px] leading-snug text-ink-2">
-        A few things on your account are new, so we'd like a quick yes from you before{' '}
+        A few things on your account are new, so we'd like a quick yes before{' '}
         <span className="num font-semibold text-ink">{money(payment.amount)}</span> goes.
       </p>
 
@@ -56,16 +58,14 @@ export function CheckScreen() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
-        className="mt-4 flex gap-3 rounded-2xl bg-safe-soft p-4 ring-1 ring-teal-100"
+        className="mt-3 flex gap-3 rounded-2xl bg-safe-soft p-4 ring-1 ring-teal-100"
       >
         <Smartphone size={22} className="mt-0.5 shrink-0 text-safe" />
         <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[16px] font-semibold text-ink">We texted your phone</span>
-            <Badge tone="safe">Unchanged</Badge>
-          </div>
-          <p className="mt-1 text-[15px] leading-snug text-ink-2">
-            The number you've had with us all along.
+          <div className="text-[16px] font-semibold text-ink">We texted your phone</div>
+          <p className="mt-0.5 text-[15px] leading-snug text-ink-2">
+            The number you've had with us all along.{' '}
+            <span className="font-semibold text-safe">It hasn't changed.</span>
           </p>
         </div>
       </motion.div>
@@ -82,7 +82,7 @@ export function CheckScreen() {
       <div className="mt-4 space-y-2.5 text-[14px] leading-snug text-ink-3">
         <p className="flex gap-2">
           <Clock size={16} className="mt-0.5 shrink-0" />
-          Your payment is saved. It can wait up to {HOLD_HOURS} hours and goes as soon as you say yes.
+          Your payment is saved. It goes as soon as you say yes, and can wait up to {HOLD_HOURS} hours.
         </p>
         <p className="flex gap-2">
           <Phone size={16} className="mt-0.5 shrink-0" />

@@ -21,7 +21,7 @@ export function ReleasedScreen() {
         <h2 className="mt-5 font-display text-[34px] leading-[1.05] tracking-tight text-ink">
           Your payment is on its way
         </h2>
-        <p className="mt-2 text-[17px] text-ink-2">Thanks for confirming. That's all we needed.</p>
+        <p className="mt-2 text-[17px] text-balance text-ink-2">Thanks for confirming. That's all we needed.</p>
       </div>
 
       <motion.div

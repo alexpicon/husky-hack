@@ -68,7 +68,7 @@ export function HonestCard() {
               <span className="num font-semibold text-ink">
                 {lookalikes.flagged} of {lookalikes.total}
               </span>{' '}
-              honest look-alikes in the kit.{' '}
+              honest <span className="whitespace-nowrap">look-alikes</span> in the kit.{' '}
               {allMoved
                 ? `All ${lookalikes.flagged} had just moved.`
                 : `${lookalikes.moved} had just moved.`}

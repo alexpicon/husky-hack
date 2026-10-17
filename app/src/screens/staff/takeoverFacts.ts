@@ -1,6 +1,6 @@
 import { eventsFor, keyFor, type KitEvent } from '../../data/kit'
 import { firstHit, isTakeover, takeoverSignals, type TakeoverSignals } from '../../data/triggers'
-import { need } from './helpers'
+import { need, when } from './helpers'
 
 export type ContactKind = 'email' | 'phone' | 'address'
 
@@ -78,3 +78,11 @@ export function takeoverFacts(member: string): TakeoverFacts {
 
 export const changeOf = (f: TakeoverFacts, kind: ContactKind) =>
   f.changes.find((c) => c.kind === kind)
+
+/** How Sound refers to a contact detail it can trust: the one on file before any change. */
+export function priorContact(f: TakeoverFacts, kind: 'email' | 'phone', noun: string) {
+  const c = changeOf(f, kind)
+  return c
+    ? { label: `${noun} on file before ${when(c.event, f.hit)}`, ids: [c.event.id], changed: true }
+    : { label: `${noun} on file, unchanged`, ids: [] as string[], changed: false }
+}
