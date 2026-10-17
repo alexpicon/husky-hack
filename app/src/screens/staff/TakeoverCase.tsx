@@ -47,7 +47,7 @@ export function TakeoverCase({ member, stage }: { member: 'M1003' | 'M1039'; sta
         <TakeoverActions name={f.name} stage={stage} />
         <div className="grid items-start gap-4 @2xl:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
           <div className="space-y-4">
-            <SignalsPanel f={f} watching={watching} />
+            <SignalsPanel f={f} watching={watching} confirmed={heardYes(stage)} />
             <ChangeTimeline f={f} watching={watching} confirmed={heardYes(stage)} />
           </div>
           <div className="space-y-4">

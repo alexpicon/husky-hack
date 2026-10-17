@@ -80,7 +80,7 @@ export function CaseHeader({
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline gap-2">
           <h2 className="text-xl font-semibold tracking-tight text-ink">{name}</h2>
-          <span className="font-mono text-xs text-ink-3">{member}</span>
+          {!name.includes(member) && <span className="font-mono text-xs text-ink-3">{member}</span>}
         </div>
         <div className="mt-0.5 flex flex-wrap items-center gap-x-2 text-[13px] text-ink-3">
           <span>{kind}</span>

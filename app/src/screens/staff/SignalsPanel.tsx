@@ -8,6 +8,9 @@ import type { ContactKind, TakeoverFacts } from './takeoverFacts'
 
 const kindLabel: Record<ContactKind, string> = { email: 'Email', phone: 'Phone', address: 'Address' }
 
+const lookAlert = { bar: 'bg-rose-500', row: 'bg-danger-soft/70', icon: 'text-danger', check: 'bg-rose-500 text-white' }
+const lookConfirmed = { bar: 'bg-teal-500', row: 'bg-safe-soft/70', icon: 'text-safe', check: 'bg-teal-500 text-white' }
+
 type Signal = {
   icon: ReactNode
   label: string
@@ -16,7 +19,15 @@ type Signal = {
   ids: string[]
 }
 
-export function SignalsPanel({ f, watching }: { f: TakeoverFacts; watching: boolean }) {
+export function SignalsPanel({
+  f,
+  watching,
+  confirmed,
+}: {
+  f: TakeoverFacts
+  watching: boolean
+  confirmed: boolean
+}) {
   const { hit, reset, changes, recipientAdded, signals } = f
   const list: Signal[] = [
     {
@@ -43,6 +54,7 @@ export function SignalsPanel({ f, watching }: { f: TakeoverFacts; watching: bool
       ids: watching ? [recipientAdded.id] : [recipientAdded.id, hit.id],
     },
   ]
+  const on = confirmed ? lookConfirmed : lookAlert
   const lit = list.filter((s) => s.on).length
   const all = lit === list.length
   return (
@@ -50,23 +62,23 @@ export function SignalsPanel({ f, watching }: { f: TakeoverFacts; watching: bool
       title="Takeover signals"
       icon={<Radar size={14} />}
       aside={
-        <span className={`text-xs font-semibold ${all ? 'text-danger' : 'text-ink-3'}`}>
-          {lit} of {list.length} signals
+        <span className={`text-xs font-semibold ${confirmed ? 'text-safe' : all ? 'text-danger' : 'text-ink-3'}`}>
+          {lit} of {list.length} signals{confirmed && ' · member confirmed'}
         </span>
       }
     >
       <div className="mb-3 flex gap-1" aria-hidden>
         {list.map((s) => (
-          <span key={s.label} className={`h-1.5 flex-1 rounded-full ${s.on ? 'bg-rose-500' : 'bg-slate-200'}`} />
+          <span key={s.label} className={`h-1.5 flex-1 rounded-full ${s.on ? on.bar : 'bg-slate-200'}`} />
         ))}
       </div>
       <ul className="space-y-1.5">
         {list.map((s) => (
           <li
             key={s.label}
-            className={`flex items-start gap-3 rounded-xl px-3 py-2.5 ${s.on ? 'bg-danger-soft/70' : 'bg-slate-50'}`}
+            className={`flex items-start gap-3 rounded-xl px-3 py-2.5 ${s.on ? on.row : 'bg-slate-50'}`}
           >
-            <span className={`mt-0.5 ${s.on ? 'text-danger' : 'text-ink-3'}`}>{s.icon}</span>
+            <span className={`mt-0.5 ${s.on ? on.icon : 'text-ink-3'}`}>{s.icon}</span>
             <div className="min-w-0 flex-1">
               <div className="text-sm font-semibold text-ink">{s.label}</div>
               <div className="mt-0.5 flex flex-wrap items-baseline gap-x-2 text-xs text-ink-2">
@@ -75,7 +87,7 @@ export function SignalsPanel({ f, watching }: { f: TakeoverFacts; watching: bool
               </div>
             </div>
             <span
-              className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full ${s.on ? 'bg-rose-500 text-white' : 'ring-1 ring-slate-300 ring-inset'}`}
+              className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full ${s.on ? on.check : 'ring-1 ring-slate-300 ring-inset'}`}
               aria-label={s.on ? 'Signal present' : 'Signal not yet present'}
             >
               {s.on && <Check size={12} strokeWidth={3} />}

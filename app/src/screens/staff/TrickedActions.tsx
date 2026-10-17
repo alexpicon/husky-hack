@@ -23,7 +23,7 @@ export function TrickedActions({ name }: { name: string }) {
         )
       }
     >
-      <div className="grid gap-2.5 pt-1 @xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2.5 pt-1 @3xl:grid-cols-4">
         {actions.map((a) => (
           <ActionButton
             key={a.label}

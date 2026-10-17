@@ -19,7 +19,7 @@ export function OutcomeBanner({ f, stage }: { f: TakeoverFacts; stage: 'secured'
         { label: 'Paused', value: clock(f.hit.at) },
         { label: 'Member', value: 'Tapped YES' },
         { label: 'Payment', value: 'Released' },
-        { label: 'Pause to release', value: 'Minutes' },
+        { label: 'Member effort', value: 'One tap' },
       ]
   return (
     <motion.div
@@ -52,8 +52,9 @@ export function OutcomeBanner({ f, stage }: { f: TakeoverFacts; stage: 'secured'
           'The member confirmed on a contact detail that did not change.'
         ) : (
           <>
-            Their phone number never changed, so "Was this you?" went straight to it. The{' '}
-            {f.hit.rail} payment of {money(f.hit.amount)} goes out the same day.{' '}
+            Their phone number never changed, so "Was this you?" went straight to it. Minutes from
+            pause to release, and the {f.hit.rail} payment of {money(f.hit.amount)} goes out the
+            same day.{' '}
             <Source ids={f.hit.id} />
           </>
         )}

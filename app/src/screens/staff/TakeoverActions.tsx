@@ -15,7 +15,7 @@ export function TakeoverActions({ name, stage }: { name: string; stage: Takeover
       aside={<span className="text-xs font-medium text-ink-2">{stageHint[stage]}</span>}
       delay={0.05}
     >
-      <div className="grid gap-2.5 pt-1 @xl:grid-cols-3">
+      <div className="grid gap-2.5 pt-1 @2xl:grid-cols-3">
         <ActionButton
           look={plan.release}
           accent="safe"
