@@ -1,7 +1,13 @@
+import { fileURLToPath } from 'node:url'
+import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
-// https://vite.dev/config/
+const kitDir = fileURLToPath(new URL('../huskyhacks', import.meta.url))
+
 export default defineConfig({
-  plugins: [react()],
+  base: './',
+  plugins: [react(), tailwindcss()],
+  resolve: { alias: { '@kit': kitDir } },
+  server: { fs: { allow: ['..'] } },
 })
