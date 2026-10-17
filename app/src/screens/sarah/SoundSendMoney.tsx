@@ -20,7 +20,7 @@ export function SoundSendMoney() {
       caption="Sarah's account, but it's the scammer holding the phone"
     >
       <SoundAppScreen title="Pay Anyone" tab="move" back>
-        <div className="flex flex-col gap-3">
+        <div className="flex min-h-full flex-col gap-3">
           <SoundCard className="flex items-center gap-3.5">
             <CardIcon icon={UserPlus} />
             <div className="min-w-0 flex-1">
@@ -67,10 +67,12 @@ export function SoundSendMoney() {
             {paused.rail} payments can't be pulled back once they're sent.
           </p>
 
-          <SoundButton onClick={next}>
-            Send {money(paused.amount)}
-            <ArrowUpRight size={18} aria-hidden />
-          </SoundButton>
+          <div className="mt-auto pt-2">
+            <SoundButton onClick={next}>
+              Send {money(paused.amount)}
+              <ArrowUpRight size={18} aria-hidden />
+            </SoundButton>
+          </div>
         </div>
       </SoundAppScreen>
     </Phone>
