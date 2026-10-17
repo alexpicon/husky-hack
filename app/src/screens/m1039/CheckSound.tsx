@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react'
-import { Clock, KeyRound, MapPin, MessageSquareText, Phone, Smartphone, UserPlus } from 'lucide-react'
+import { KeyRound, MapPin, MessageSquareText, Smartphone, UserPlus } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useStory } from '../../story/engine'
 import { money } from '../../ui/format'
 import { Source } from '../../ui/primitives'
-import { SOUND, SoundAppScreen, SoundButton, SoundCard, SoundRow } from '../../ui/soundApp'
+import { SOUND, SoundAppScreen, SoundButton, SoundCard } from '../../ui/soundApp'
 import { facts, HOLD_HOURS, whenLabel } from './facts'
 import { muted, SOUND_OK } from './soundTokens'
 
@@ -12,20 +12,16 @@ const ICON = { size: 18, color: SOUND.navy, className: 'shrink-0', 'aria-hidden'
 
 function Changed({ icon, label, at, source }: { icon: ReactNode; label: string; at: Date; source: string }) {
   return (
-    <SoundRow
-      label={
-        <span className="flex items-center gap-2.5">
-          {icon}
-          {label}
-        </span>
-      }
-      value={
-        <span className="flex flex-col items-end leading-tight">
-          <span className="num">{whenLabel(at)}</span>
-          <Source ids={source} />
-        </span>
-      }
-    />
+    <div className="flex items-center justify-between gap-2 border-b border-black/[0.07] py-2 whitespace-nowrap last:border-0">
+      <span className="flex items-center gap-2 text-[15px]" style={muted}>
+        {icon}
+        {label}
+      </span>
+      <span className="flex flex-col items-end leading-tight">
+        <span className="num text-[14px] font-medium">{whenLabel(at)}</span>
+        <Source ids={source} />
+      </span>
+    </div>
   )
 }
 
@@ -34,7 +30,7 @@ export function CheckSound() {
   const { payment, reset, address, recipientAdded } = facts
   return (
     <SoundAppScreen title="Bill Pay" tab="payments" back>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2.5">
         <SoundCard>
           <div className="flex gap-3">
             <MessageSquareText size={38} strokeWidth={1.6} color={SOUND.navy} className="shrink-0" aria-hidden />
@@ -81,15 +77,9 @@ export function CheckSound() {
           Check your messages
         </SoundButton>
 
-        <div className="space-y-1.5 px-1 text-[14px] leading-snug" style={muted}>
-          <p className="flex gap-2">
-            <Clock size={15} className="mt-0.5 shrink-0" />
-            Your payment is saved. It can wait up to {HOLD_HOURS} hours.
-          </p>
-          <p className="flex gap-2">
-            <Phone size={15} className="mt-0.5 shrink-0" />
-            No phone handy? Call the number on your card.
-          </p>
+        <div className="space-y-1 pt-0.5 text-center text-[13px] leading-snug text-balance" style={muted}>
+          <p>Your payment is saved. It can wait up to {HOLD_HOURS} hours.</p>
+          <p>No phone handy? Call the number on your card.</p>
         </div>
       </div>
     </SoundAppScreen>
