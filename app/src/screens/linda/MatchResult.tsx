@@ -50,7 +50,7 @@ export function MatchResult() {
         <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
           <h2 className="font-display text-[30px] leading-[1.1] text-ink">
             {matches
-              ? `What you tapped matches how the "${f.scamName}" works.`
+              ? `What you tapped matches how the “${f.scamName}” works.`
               : 'Nothing you tapped matches a scam we know.'}
           </h2>
           <p className="mt-1.5 text-[17px] text-ink-2">

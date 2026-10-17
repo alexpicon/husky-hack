@@ -14,10 +14,10 @@ export function TrustedPhone() {
 
   return (
     <Phone time={clock(at)} caption={`${name}'s trusted person gets one message`} dark>
-      <div className="flex min-h-full flex-col bg-[radial-gradient(120%_70%_at_20%_0%,#3730a3_0%,transparent_60%),radial-gradient(90%_60%_at_100%_100%,#115e59_0%,transparent_60%)] px-4 pt-6 pb-8">
+      <div className="flex min-h-full flex-col bg-[radial-gradient(120%_70%_at_20%_0%,#3730a3_0%,transparent_60%),radial-gradient(90%_60%_at_100%_100%,#115e59_0%,transparent_60%)] px-4 pt-5 pb-6">
         <div className="text-center text-white">
           <div className="text-[17px] font-medium text-white/80">{day(at)}</div>
-          <div className="num text-[84px] leading-none font-extralight tracking-tight">
+          <div className="num text-[76px] leading-none font-extralight tracking-tight">
             {lockClock(at)}
           </div>
         </div>
@@ -26,7 +26,7 @@ export function TrustedPhone() {
           initial={{ opacity: 0, y: -16, scale: 0.97 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ type: 'spring', stiffness: 260, damping: 24, delay: 0.3 }}
-          className="mt-10 rounded-3xl bg-white/95 p-4 text-ink shadow-2xl backdrop-blur"
+          className="mt-7 rounded-3xl bg-white/95 p-4 text-ink shadow-2xl backdrop-blur"
           aria-label={`Message from Sound: ${name} would like you to call her.`}
         >
           <div className="flex items-center justify-between">
@@ -60,7 +60,7 @@ export function TrustedPhone() {
           </p>
         </motion.div>
 
-        <p className="mt-auto pt-6 text-center text-base leading-snug text-white/70">
+        <p className="mt-auto pt-4 text-center text-base leading-snug text-white/70">
           {name} chose you as her trusted person. You can stop these messages anytime.
         </p>
       </div>
