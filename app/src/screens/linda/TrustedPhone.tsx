@@ -1,9 +1,9 @@
 import { motion } from 'motion/react'
 import { EyeOff, Phone as PhoneIcon } from 'lucide-react'
+import { SoundMark } from '../../ui/brand'
 import { clock, day } from '../../ui/format'
 import { Phone } from '../../ui/devices'
 import { lindaFacts, storyTimes } from './facts'
-import { SoundMark } from './parts'
 
 const lockClock = (d: Date) =>
   d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }).replace(/\s?[AP]M$/, '')
@@ -27,11 +27,12 @@ export function TrustedPhone() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ type: 'spring', stiffness: 260, damping: 24, delay: 0.3 }}
           className="mt-7 rounded-3xl bg-white/95 p-4 text-ink shadow-2xl backdrop-blur"
-          aria-label={`Message from Sound: ${name} would like you to call her.`}
+          aria-label={`Message from Sound Credit Union: ${name} would like you to call her.`}
         >
-          <div className="flex items-center justify-between">
-            <SoundMark />
-            <span className="text-sm text-ink-3">now</span>
+          <div className="flex items-center gap-2.5">
+            <SoundMark size={30} />
+            <span className="text-[15px] font-semibold text-ink-2">Sound Credit Union</span>
+            <span className="ml-auto text-sm text-ink-3">now</span>
           </div>
           <h2 className="mt-3 text-[19px] leading-snug font-semibold">
             {name} would like you to call her.

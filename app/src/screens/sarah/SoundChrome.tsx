@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { ChevronLeft } from 'lucide-react'
 import { motion } from 'motion/react'
 import { SoundMark as BrandMark, SoundLogo } from '../../ui/brand'
+import { useLook } from '../../ui/look'
 
 export function SoundMark({ size = 'sm' }: { size?: 'sm' | 'lg' }) {
   return <BrandMark size={size === 'lg' ? 44 : 28} />
@@ -37,11 +38,12 @@ export function ScreenTitle({ children, back = true }: { children: ReactNode; ba
 
 /** Header of a text thread from Sound in the phone's Messages app. */
 export function ThreadHeader({ when }: { when: string }) {
+  const sender = useLook() === 'sound' ? 'Sound Credit Union' : 'Sound'
   return (
     <div className="sticky top-0 z-10 flex flex-col items-center gap-1 border-b border-line/70 bg-slate-50/95 pt-1 pb-3 backdrop-blur">
       <ChevronLeft size={24} className="absolute top-3 left-3 text-brand" aria-hidden />
       <SoundMark size="lg" />
-      <span className="text-[13px] font-semibold text-ink">Sound</span>
+      <span className="text-[13px] font-semibold text-ink">{sender}</span>
       <span className="text-[11px] text-ink-3">Text message · {when}</span>
     </div>
   )
