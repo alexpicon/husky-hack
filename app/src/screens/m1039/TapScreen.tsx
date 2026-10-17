@@ -72,7 +72,7 @@ export function TapScreen() {
         >
           No
         </button>
-        <p className="mt-1 flex items-center justify-center gap-1.5 text-[14px] text-ink-3">
+        <p className="mt-1 flex items-center justify-center gap-1.5 text-[16px] text-ink-3">
           <Phone size={14} />
           Not sure? Call the number on your card.
         </p>

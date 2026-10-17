@@ -50,7 +50,7 @@ export function ReleasedScreen() {
         </div>
       </motion.div>
 
-      <p className="mt-auto pt-5 text-center text-[15px] text-ink-3">
+      <p className="mt-auto pt-5 text-center text-[16px] text-ink-3">
         You're all set. Nothing else to do.
       </p>
     </div>

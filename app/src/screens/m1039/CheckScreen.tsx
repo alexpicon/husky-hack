@@ -79,14 +79,14 @@ export function CheckScreen() {
         Check your messages
       </button>
 
-      <div className="mt-4 space-y-2.5 text-[14px] leading-snug text-ink-3">
+      <div className="mt-4 space-y-2 text-[16px] leading-snug text-ink-3">
         <p className="flex gap-2">
-          <Clock size={16} className="mt-0.5 shrink-0" />
-          Your payment is saved. It goes as soon as you say yes, and can wait up to {HOLD_HOURS} hours.
+          <Clock size={16} className="mt-1 shrink-0" />
+          Your payment is saved. It can wait up to {HOLD_HOURS} hours.
         </p>
         <p className="flex gap-2">
-          <Phone size={16} className="mt-0.5 shrink-0" />
-          No phone handy? Call the number on the back of your card.
+          <Phone size={16} className="mt-1 shrink-0" />
+          No phone handy? Call the number on your card.
         </p>
       </div>
     </div>

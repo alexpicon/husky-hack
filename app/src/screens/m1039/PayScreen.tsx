@@ -54,9 +54,6 @@ export function PayScreen() {
             Send {money(payment.amount)}
             <ArrowRight size={18} />
           </button>
-          <p className="mt-3 text-center text-[13px] text-ink-3">
-            {railLabel(payment.rail)} from your Sound account
-          </p>
         </div>
       </div>
     </div>
