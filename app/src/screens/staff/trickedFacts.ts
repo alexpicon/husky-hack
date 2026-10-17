@@ -25,6 +25,7 @@ export type TrickedFacts = {
   hit: KitEvent
   recipientAdded: KitEvent
   minutesSinceAdded: number
+  daysSinceSameRail: number
   yearsSinceSameRail: number
   ratio: string
   holdEnds: Date
@@ -49,6 +50,7 @@ export function trickedFacts(member: string): TrickedFacts {
     hit,
     recipientAdded,
     minutesSinceAdded: minutesBetween(recipientAdded.at, hit.at),
+    daysSinceSameRail: days,
     yearsSinceSameRail: Math.floor(days / 365.25),
     ratio: ratio.toFixed(1),
     holdEnds: new Date(hit.at.getTime() + HOLD_HOURS * 3_600_000),
