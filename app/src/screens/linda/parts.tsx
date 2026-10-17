@@ -28,16 +28,11 @@ export function Stage({ children, note }: { children: ReactNode; note?: ReactNod
   )
 }
 
-/** Sound's wordmark as it appears on member screens. */
-export function SoundMark({ dark = false }: { dark?: boolean }) {
-  return <SoundLogo height={16} inverted={dark} />
-}
-
 /** Small header strip for the branch tablet. */
 export function TabletHeader({ right }: { right: ReactNode }) {
   return (
     <div className="flex items-center justify-between">
-      <SoundMark />
+      <SoundLogo height={16} />
       <span className="flex items-center gap-2 text-sm font-medium text-ink-2">{right}</span>
     </div>
   )
