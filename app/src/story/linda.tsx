@@ -22,6 +22,7 @@ export const linda: Scenario = {
   steps: [
     {
       id: 'today',
+      memberLabel: 'What happened, from the kit',
       title: 'Sound already tried. Secrecy won.',
       caption: `Linda's ${amount} wire was held, a trusted contact was offered, and Sound called her. She had been told to keep it secret, so it went anyway.`,
       clock: at(t.caught),
@@ -60,6 +61,7 @@ export const linda: Scenario = {
     },
     {
       id: 'trusted',
+      memberLabel: 'What her trusted person sees',
       title: 'One tap tells someone she trusts',
       caption:
         'If Linda picked a trusted person earlier, one tap asks them to call her. They never see an amount or her account.',

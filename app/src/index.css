@@ -53,12 +53,12 @@ body {
 
 @media (max-height: 1040px) {
   .stage-fit {
-    zoom: 0.84;
+    zoom: 0.78;
   }
 }
 
 @media (max-height: 860px) {
   .stage-fit {
-    zoom: 0.74;
+    zoom: 0.7;
   }
 }
