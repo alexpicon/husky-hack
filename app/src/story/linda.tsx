@@ -36,7 +36,7 @@ export const linda: Scenario = {
       id: 'silent-check',
       title: 'A true fact, then a silent check',
       caption:
-        "Sound shows one fact from its own records, then lets Linda tap what is going on. She never has to say it out loud.",
+        'Sound shows one fact from its own records, then lets Linda tap what is going on. She never has to say it out loud.',
       clock: at(t.check),
       member: (
         <Stage>
