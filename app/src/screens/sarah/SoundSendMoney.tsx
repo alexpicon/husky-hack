@@ -21,7 +21,13 @@ export function SoundSendMoney() {
       <SoundAppScreen title="Pay Anyone" tab="move" back>
         <div className="flex flex-col gap-3">
           <SoundCard className="flex items-center gap-3.5">
-            <UserPlus size={40} strokeWidth={1.5} style={{ color: SOUND.navy }} aria-hidden />
+            <UserPlus
+              size={40}
+              strokeWidth={1.5}
+              className="shrink-0"
+              style={{ color: SOUND.navy }}
+              aria-hidden
+            />
             <div className="min-w-0 flex-1">
               <div className="text-[12px] font-bold tracking-wide uppercase" style={muted}>
                 To
