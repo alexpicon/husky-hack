@@ -56,7 +56,8 @@ const completed = must(
   `the Payment Completed event for ${payment.paymentId}`,
 )
 
-const contactChanges = all.filter((e) => e.type === 'Email Change' || e.type === 'Phone Change')
+const isContactChange = (e: KitEvent) => e.type === 'Email Change' || e.type === 'Phone Change'
+const contactChanges = all.filter(isContactChange)
 if (contactChanges.length > 0) {
   throw new Error(
     `${MEMBER} story assumes email and phone never changed, but the kit has ${contactChanges.map((e) => e.id).join(', ')}`,
@@ -77,6 +78,9 @@ const flaggedLookalikes = memberKeys.filter((k) => k.lookalike && firstHit(k.mem
 const movedLookalikes = flaggedLookalikes.filter((k) =>
   eventsFor(k.member).some((e) => e.type === 'Address Change'),
 )
+const samePhoneLookalikes = flaggedLookalikes.filter(
+  (k) => !eventsFor(k.member).some(isContactChange),
+)
 
 export type M1039Facts = {
   payment: KitEvent
@@ -90,7 +94,7 @@ export type M1039Facts = {
   tapAt: Date
   todayMinutes: number
   outcome: string
-  lookalikes: { flagged: number; total: number; moved: number }
+  lookalikes: { flagged: number; total: number; moved: number; samePhone: number }
 }
 
 export const facts: M1039Facts = {
@@ -109,6 +113,7 @@ export const facts: M1039Facts = {
     flagged: lookalikes.flagged,
     total: lookalikes.total,
     moved: movedLookalikes.length,
+    samePhone: samePhoneLookalikes.length,
   },
 }
 

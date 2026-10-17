@@ -60,7 +60,7 @@ export const m1039: Scenario = {
     {
       id: 'released',
       title: 'One tap. Rent goes today.',
-      caption: `Today this payment went through with no friction. With Second Look it costs one tap and about a minute, and the rent still arrives the same day. The trigger catches ${lookalikes.flagged} of ${lookalikes.total} honest look-alikes, and each one gets this fast path.`,
+      caption: `Today this payment went through with no friction. With Second Look it costs one tap and about a minute, and the rent still arrives the same day. The trigger catches ${lookalikes.flagged} of ${lookalikes.total} honest look-alikes, and ${lookalikes.samePhone === lookalikes.flagged ? 'every one' : lookalikes.samePhone} kept the same phone, so they get this fast path.`,
       clock: tappedAt,
       member: (
         <div className="flex flex-col items-center gap-5">
