@@ -5,6 +5,7 @@ import { clock, money } from '../../ui/format'
 import { Source } from '../../ui/primitives'
 import { SOUND, SoundAppScreen, SoundButton, SoundCard, SoundRow } from '../../ui/soundApp'
 import { sarah } from './facts'
+import { CardIcon } from './soundIcon'
 
 const muted = { color: SOUND.muted }
 
@@ -21,13 +22,7 @@ export function SoundSendMoney() {
       <SoundAppScreen title="Pay Anyone" tab="move" back>
         <div className="flex flex-col gap-3">
           <SoundCard className="flex items-center gap-3.5">
-            <UserPlus
-              size={40}
-              strokeWidth={1.5}
-              className="shrink-0"
-              style={{ color: SOUND.navy }}
-              aria-hidden
-            />
+            <CardIcon icon={UserPlus} />
             <div className="min-w-0 flex-1">
               <div className="text-[12px] font-bold tracking-wide uppercase" style={muted}>
                 To

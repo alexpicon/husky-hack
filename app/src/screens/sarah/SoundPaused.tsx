@@ -5,6 +5,7 @@ import { clock, money } from '../../ui/format'
 import { Source } from '../../ui/primitives'
 import { SOUND, SoundAppScreen, SoundCard } from '../../ui/soundApp'
 import { changesTonight, sarah } from './facts'
+import { CardIcon } from './soundIcon'
 
 const muted = { color: SOUND.muted }
 
@@ -26,13 +27,7 @@ export function SoundPaused() {
           >
             <SoundCard className="py-3.5">
               <div className="flex items-start gap-3">
-                <Hand
-                  size={40}
-                  strokeWidth={1.5}
-                  className="shrink-0"
-                  style={{ color: SOUND.navy }}
-                  aria-hidden
-                />
+                <CardIcon icon={Hand} />
                 <div className="min-w-0">
                   <div className="text-[17px] leading-tight font-bold">Payment paused</div>
                   <p className="mt-0.5 text-[15px] leading-snug" style={muted}>
