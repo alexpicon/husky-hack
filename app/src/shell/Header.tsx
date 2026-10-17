@@ -42,14 +42,14 @@ export function Header({ tabs, active, onSelect }: HeaderProps) {
               <span className={`size-2 rounded-full ${toneDot[t.tone]}`} />
               <span className="leading-tight">
                 <span className="block text-sm font-semibold">{t.label}</span>
-                <span className="hidden text-[11px] text-ink-3 lg:block">{t.sublabel}</span>
+                <span className="hidden text-[11px] text-ink-3 min-[1400px]:block">{t.sublabel}</span>
               </span>
             </button>
           ))}
         </nav>
         <LookToggle />
         <div
-          className="hidden items-center gap-2 rounded-xl bg-white px-3 py-2 text-xs text-ink-2 ring-1 ring-line 2xl:flex"
+          className="hidden items-center gap-2 rounded-xl bg-white px-3 py-2 text-xs text-ink-2 ring-1 ring-line lg:flex"
           title="Triggers run live in the browser on the organizers' CSV files"
         >
           <Database size={14} className="text-brand" />
