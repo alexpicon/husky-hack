@@ -6,24 +6,40 @@ import { HOLD_HOURS } from './trickedFacts'
 
 export function TrickedActions({ name }: { name: string }) {
   const [picked, setPicked] = useState<string | null>(null)
-  const pick = (label: string) => () => setPicked(label)
   const hold = `Keep holding (up to ${HOLD_HOURS}h)`
+  const actions = [
+    { label: 'Release', accent: 'safe', icon: <Send size={18} />, hint: 'If she still wants to send' },
+    { label: hold, accent: 'warn', icon: <Hourglass size={18} />, hint: `Up to ${plural(HOLD_HOURS, 'hour')} in total` },
+    { label: 'Escalate', accent: 'danger', icon: <ArrowUpRight size={18} />, hint: 'To a fraud specialist' },
+    { label: 'Open a case', accent: 'brand', icon: <FolderOpen size={18} />, hint: 'Log the hold and what she shares' },
+  ] as const
   return (
     <Panel
       title="Actions"
       delay={0.05}
       aside={
-        <span className="text-xs font-medium text-ink-2">
-          {picked ? `Preview: "${picked}" goes live Sunday.` : `${name} decides: Sound can delay and advise, not refuse.`}
-        </span>
+        picked && (
+          <span className="text-xs font-medium text-ink-3">Preview: "{picked}" goes live Sunday.</span>
+        )
       }
     >
       <div className="grid gap-2.5 pt-1 @xl:grid-cols-4">
-        <ActionButton look="on" accent="safe" icon={<Send size={18} />} label="Release" hint="If she still wants to send" onClick={pick('Release')} />
-        <ActionButton look="recommended" accent="warn" icon={<Hourglass size={18} />} label={hold} hint={`Up to ${plural(HOLD_HOURS, 'hour')} in total`} onClick={pick(hold)} />
-        <ActionButton look="on" accent="danger" icon={<ArrowUpRight size={18} />} label="Escalate" hint="Fraud specialist" onClick={pick('Escalate')} />
-        <ActionButton look="on" accent="brand" icon={<FolderOpen size={18} />} label="Open a case" hint="Log what she shared" onClick={pick('Open a case')} />
+        {actions.map((a) => (
+          <ActionButton
+            key={a.label}
+            look={a.label === hold ? 'recommended' : 'on'}
+            accent={a.accent}
+            icon={a.icon}
+            label={a.label}
+            hint={a.hint}
+            onClick={() => setPicked(a.label)}
+          />
+        ))}
       </div>
+      <p className="mt-3 text-xs text-ink-2">
+        <span className="font-semibold text-ink">{name} decides:</span> Sound can delay and advise,
+        not refuse.
+      </p>
     </Panel>
   )
 }
