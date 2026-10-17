@@ -2,6 +2,7 @@ import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig, type Plugin } from 'vite'
+import { devSessionApi } from './dev/sessionApi.ts'
 
 const kitDir = fileURLToPath(new URL('../huskyhacks', import.meta.url))
 
@@ -22,7 +23,7 @@ function demoSync(): Plugin {
 
 export default defineConfig({
   base: './',
-  plugins: [react(), tailwindcss(), demoSync()],
+  plugins: [react(), tailwindcss(), demoSync(), devSessionApi()],
   resolve: { alias: { '@kit': kitDir } },
   server: { fs: { allow: ['..'] } },
 })
