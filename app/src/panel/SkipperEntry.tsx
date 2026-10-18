@@ -1,6 +1,6 @@
 import { motion } from 'motion/react'
 import { MessageCircle, RotateCcw } from 'lucide-react'
-import { useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
 import { MAX_TEXT } from '../skipper/verify'
 import { Button, Eyebrow } from '../ui/primitives'
 import { hearPanel, PANEL_TAPS, type Heard, type PanelTap, type Source } from './classify'
@@ -35,6 +35,14 @@ export function SkipperEntry({ code, mode, judge, after, onPosted }: Props) {
   const [text, setText] = useState('')
   const [phase, setPhase] = useState<Phase>({ at: 'write' })
   const ticket = useRef(0)
+  const lead = useRef<HTMLParagraphElement>(null)
+  const area = useRef<HTMLTextAreaElement>(null)
+
+  // Each step unmounts the button she pressed, so focus moves to the new block's first line,
+  // which a screen reader then reads. Never on load, so a phone's keyboard stays down.
+  useEffect(() => {
+    if (phase.at !== 'write') lead.current?.focus()
+  }, [phase.at])
 
   const send = async (mine: number, result: string) => {
     if (!code) return
@@ -68,6 +76,7 @@ export function SkipperEntry({ code, mode, judge, after, onPosted }: Props) {
     ticket.current++
     setText('')
     setPhase({ at: 'write' })
+    area.current?.focus()
   }
 
   const editing = phase.at === 'write' || phase.at === 'asking'
@@ -77,6 +86,7 @@ export function SkipperEntry({ code, mode, judge, after, onPosted }: Props) {
       <label className="flex flex-col gap-1.5">
         <span className="text-sm font-semibold text-ink-2">{TYPE_HINT}</span>
         <textarea
+          ref={area}
           value={text}
           onChange={(e) => setText(e.target.value.slice(0, MAX_TEXT))}
           onKeyDown={keepKeys}
@@ -100,7 +110,7 @@ export function SkipperEntry({ code, mode, judge, after, onPosted }: Props) {
 
       {phase.at === 'asking' && (
         <div className="flex flex-col gap-2" role="status">
-          <p className="text-[15px] text-ink-2">{READING}</p>
+          <p ref={lead} tabIndex={-1} className="text-[15px] text-ink-2">{READING}</p>
           <Button variant="secondary" size="lg" onClick={() => pick(NO_MATCH)} className="min-h-11 w-full">
             Tap what fits instead
           </Button>
@@ -109,7 +119,7 @@ export function SkipperEntry({ code, mode, judge, after, onPosted }: Props) {
 
       {phase.at === 'heard' && (
         <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-3">
-          <p className="text-[17px] font-semibold">{HEARD}</p>
+          <p ref={lead} tabIndex={-1} className="text-[17px] font-semibold">{HEARD}</p>
           <ul className="flex flex-col gap-2">
             {phase.heard.taps.map(({ tap, quote }) => (
               <li key={tap.id} className="rounded-2xl bg-brand-soft px-3.5 py-2.5 ring-2 ring-indigo-300">
@@ -137,7 +147,7 @@ export function SkipperEntry({ code, mode, judge, after, onPosted }: Props) {
 
       {phase.at === 'pick' && (
         <div className="flex flex-col gap-3">
-          <p className="text-[17px] font-semibold">{phase.note}</p>
+          <p ref={lead} tabIndex={-1} className="text-[17px] font-semibold">{phase.note}</p>
           <TapPicker
             chosen={phase.chosen}
             heard={phase.heard}
@@ -163,7 +173,7 @@ export function SkipperEntry({ code, mode, judge, after, onPosted }: Props) {
         <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-3">
           <div className="rounded-2xl bg-white p-4 ring-1 ring-line" role="status">
             <Eyebrow>Your result</Eyebrow>
-            <p className="mt-1 font-display text-[26px] leading-tight">{phase.result}</p>
+            <p ref={lead} tabIndex={-1} className="mt-1 font-display text-[26px] leading-tight">{phase.result}</p>
             {phase.taps.length > 0 && (
               <ul className="mt-2 flex flex-wrap gap-1.5">
                 {phase.taps.map((t) => (
@@ -177,7 +187,16 @@ export function SkipperEntry({ code, mode, judge, after, onPosted }: Props) {
             {code && <p className="mt-2 text-sm font-semibold">{postLine(phase.post)}</p>}
           </div>
           {code && phase.post !== 'sending' && !phase.post.ok && phase.post.reason !== 'full' && (
-            <Button variant="secondary" size="lg" onClick={() => finish(phase.taps)} className="min-h-11 w-full">
+            <Button
+              variant="secondary"
+              size="lg"
+              onClick={() => {
+                // This button hides while it sends, so focus waits on the result it is sending.
+                lead.current?.focus()
+                finish(phase.taps)
+              }}
+              className="min-h-11 w-full"
+            >
               Try sending again
             </Button>
           )}
