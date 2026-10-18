@@ -24,7 +24,7 @@ describe('the copy that leaves her window', () => {
     const skipped = edit(initialCase, act.finishCheck)
     const answered = edit(edit(initialCase, (c) => act.tap(c, 'none')), act.finishCheck)
     expect(skipped.skipped).toBe(true)
-    expect({ ...outbound(skipped), v: 0 }).toEqual({ ...outbound(answered), v: 0 })
+    expect({ ...outbound(skipped), v: 0, mv: 0 }).toEqual({ ...outbound(answered), v: 0, mv: 0 })
   })
 
   it('always carries her request to talk privately, which staff always see', () => {
@@ -79,5 +79,31 @@ describe('her tablet and the wire desk', () => {
     expect(send(reset, tapped)).toEqual(reset)
     const run = edit(tapped, (c) => act.startRun(c, 5))
     expect(send(run, tapped)).toEqual(run)
+  })
+})
+
+describe('her stop-sharing against staff clicks made before the desk heard it', () => {
+  const desk = send(shared, initialCase)
+  const tablet = edit(shared, (c) => act.share(c, false))
+
+  it('stays off after two clicks, in both windows, whichever copy arrives first', () => {
+    const stale = edit(edit(desk, (c) => act.staff(c, 'escalated')), (c) => act.staff(c, 'case-opened'))
+    expect(stale.v).toBeGreaterThan(tablet.v)
+    const deskAfter = send(tablet, stale)
+    const tabletAfter = send(stale, tablet)
+    expect(deskAfter).toMatchObject({ shared: false, taps: [], staffActions: ['escalated', 'case-opened'] })
+    expect(tabletAfter).toMatchObject({ shared: false, taps: ['family', 'bail'], staffActions: ['escalated', 'case-opened'] })
+    expect(send(tabletAfter, deskAfter)).toMatchObject({ shared: false, taps: [] })
+  })
+
+  it('stays off after one click at the same edit count, whatever her taps', () => {
+    const secret = edit(edit(edit(initialCase, (c) => act.tap(c, 'secret')), (c) => act.tap(c, 'private')), (c) =>
+      act.share(c, true),
+    )
+    const unshared = edit(secret, (c) => act.share(c, false))
+    const stale = edit(send(secret, initialCase), (c) => act.staff(c, 'escalated'))
+    expect(stale.v).toBe(unshared.v)
+    expect(send(stale, unshared)).toMatchObject({ shared: false, taps: ['secret', 'private'] })
+    expect(send(unshared, stale)).toMatchObject({ shared: false, taps: ['private'] })
   })
 })

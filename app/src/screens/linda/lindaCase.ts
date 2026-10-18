@@ -9,12 +9,14 @@ export type StaffAction = 'holding' | 'escalated' | 'case-opened'
 /**
  * One wire hold. Every window showing Linda's story has the same case, except what she hasn't
  * shared (see `outbound`). `run` is the demo run it belongs to and `round` grows on each reset, so
- * a fresh case beats an old one; `v` counts edits so the newer copy of a field wins.
+ * a fresh case beats an old one; `v` counts edits so the newer copy of a field wins. `mv` counts
+ * only her own answers and her share switch, so no staff click can overwrite her choices.
  */
 export type LindaCase = {
   run: number
   round: number
   v: number
+  mv: number
   taps: TapId[]
   skipped: boolean
   shared: boolean
@@ -27,6 +29,7 @@ export const initialCase: LindaCase = {
   run: 0,
   round: 0,
   v: 0,
+  mv: 0,
   taps: [],
   skipped: false,
   shared: false,
@@ -45,16 +48,17 @@ const fresh = (c: LindaCase, run: number): LindaCase => ({ ...initialCase, run, 
 export const caseActions = {
   tap: (c: LindaCase, id: TapId): LindaCase => ({
     ...c,
+    mv: c.mv + 1,
     taps: toggleTap(c.taps, id),
     skipped: false,
   }),
   /** Taps each listed answer that is off, in order, by the same rules; one already on stays on. */
   addTaps: (c: LindaCase, ids: readonly TapId[]): LindaCase => {
     const taps = ids.reduce((on, id) => (on.includes(id) ? on : toggleTap(on, id)), c.taps)
-    return taps === c.taps ? c : { ...c, taps, skipped: false }
+    return taps === c.taps ? c : { ...c, mv: c.mv + 1, taps, skipped: false }
   },
-  finishCheck: (c: LindaCase): LindaCase => ({ ...c, skipped: c.taps.length === 0 }),
-  share: (c: LindaCase, shared: boolean): LindaCase => ({ ...c, shared }),
+  finishCheck: (c: LindaCase): LindaCase => ({ ...c, mv: c.mv + 1, skipped: c.taps.length === 0 }),
+  share: (c: LindaCase, shared: boolean): LindaCase => ({ ...c, mv: c.mv + 1, shared }),
   askToSend: (c: LindaCase): LindaCase => (final(c) ? c : { ...c, wantsToSend: true }),
   decide: (c: LindaCase, kind: OutcomeKind, at: Date, reason?: string): LindaCase =>
     final(c) ? c : { ...c, outcome: { kind, at: at.getTime(), ...(reason ? { reason } : {}) } },
@@ -80,19 +84,32 @@ function pickOutcome(a: Outcome | null, b: Outcome | null): Outcome | null {
   return a.at !== b.at ? (a.at < b.at ? a : b) : larger(a, b)
 }
 
+/** The copy with her latest answers or share switch; on a tie, the one that does not share. */
+function herLatest(a: LindaCase, b: LindaCase): LindaCase | null {
+  if (a.mv !== b.mv) return a.mv > b.mv ? a : b
+  if (a.shared !== b.shared) return a.shared ? b : a
+  return null
+}
+
 /**
  * Combines this window's case with one another window sent. The result is the same whichever
  * side runs it, so every window settles on one case: a later run, then a later round, replaces the
  * case; within a round the more-edited copy wins, an outcome is never undone, and staff actions add up.
+ * Her answers and her share switch come from her own latest edit, so a staff click never undoes them.
  */
 export function mergeCases(local: LindaCase, incoming: LindaCase): LindaCase {
   if (local.run !== incoming.run) return local.run > incoming.run ? local : incoming
   if (local.round !== incoming.round) return local.round > incoming.round ? local : incoming
   const base =
     local.v === incoming.v ? larger(local, incoming) : local.v > incoming.v ? local : incoming
+  const hers = herLatest(local, incoming) ?? base
   return {
     ...base,
     v: Math.max(local.v, incoming.v),
+    mv: hers.mv,
+    taps: hers.taps,
+    skipped: hers.skipped,
+    shared: hers.shared,
     wantsToSend: local.wantsToSend || incoming.wantsToSend,
     outcome: pickOutcome(local.outcome, incoming.outcome),
     staffActions: STAFF_ORDER.filter(
