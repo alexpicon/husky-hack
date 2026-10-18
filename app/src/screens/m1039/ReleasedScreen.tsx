@@ -24,8 +24,8 @@ function ConceptReleasedScreen() {
         >
           <Check size={30} strokeWidth={3} />
         </motion.span>
-        <h2 className="mt-5 font-display text-[34px] leading-[1.05] tracking-tight text-ink">
-          Your payment is on its way
+        <h2 className="mt-5 font-display text-[34px] leading-[1.05] tracking-tight text-balance text-ink">
+          Your payment was sent for processing
         </h2>
         <p className="mt-2 text-[17px] text-balance text-ink-2">Thanks for confirming. That's all we needed.</p>
       </div>
@@ -40,7 +40,9 @@ function ConceptReleasedScreen() {
           <span className="num text-[32px] leading-none font-semibold tracking-tight text-ink">
             {money(payment.amount)}
           </span>
-          <Badge tone="safe">Same day</Badge>
+          <Badge tone="safe">
+            <span className="whitespace-nowrap">Released today</span>
+          </Badge>
         </div>
         <div className="mt-4">
           <RecipientRow addedAt={`today, ${clock(recipientAdded.at)}`} source={recipientAdded.id} />
@@ -48,7 +50,7 @@ function ConceptReleasedScreen() {
         <dl className="mt-3 divide-y divide-line border-t border-line">
           <DetailRow label="Memo">{MEMO}</DetailRow>
           <DetailRow label="Sent by">{railLabel(payment.rail)}</DetailRow>
-          <DetailRow label="Arrives">Today</DetailRow>
+          <DetailRow label="Status">Sent for processing</DetailRow>
         </dl>
         <div className="mt-1 flex items-center justify-between">
           <span className="font-mono text-[12px] text-ink-3">{payment.paymentId}</span>

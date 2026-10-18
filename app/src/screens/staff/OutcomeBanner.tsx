@@ -52,9 +52,9 @@ export function OutcomeBanner({ f, stage }: { f: TakeoverFacts; stage: 'secured'
           'The member confirmed on a contact detail that did not change.'
         ) : (
           <>
-            Their phone number never changed, so "Was this you?" went straight to it. Minutes from
-            pause to release, and the {f.hit.rail} payment of {money(f.hit.amount)} goes out the
-            same day.{' '}
+            Their phone number never changed, so "Was this you?" went straight to it. The{' '}
+            {f.hit.rail} payment of {money(f.hit.amount)} is released for processing when they
+            tap.{' '}
             <Source ids={f.hit.id} />
           </>
         )}

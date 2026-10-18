@@ -44,7 +44,7 @@ export function PaySound() {
           <div className="mt-2">
             <SoundRow label="Memo" value={MEMO} />
             <SoundRow label="Sent by" value={railLabel(payment.rail)} />
-            <SoundRow label="Arrives" value="Today" />
+            <SoundRow label="Send date" value="Today" />
             <SoundRow label="Payment" value={<span className="font-mono text-[14px]">{payment.paymentId}</span>} />
           </div>
         </SoundCard>

@@ -51,7 +51,7 @@ export function ContactsPanel({ f, asked }: { f: TakeoverFacts; asked: boolean }
           <div className="rounded-xl bg-safe-soft/70 p-3 ring-1 ring-teal-100">
             <div className="mb-2 flex items-center gap-1.5 text-xs font-semibold text-safe">
               <ShieldCheck size={13} />
-              Safe to use
+              Unchanged contacts
             </div>
             <ul className="space-y-2">
               {safeContacts(f).map((c) => (

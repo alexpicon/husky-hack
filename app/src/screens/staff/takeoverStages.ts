@@ -38,11 +38,11 @@ export const yesReleases = (
 
 const hint: Record<TakeoverStage, string> = {
   watching: 'Nothing to do yet. Second Look acts on its own if all three signals line up.',
-  paused: 'Sound is asking the member on a safe contact. No action needed yet.',
-  asked: 'Waiting for the member. Release needs a YES on a safe contact.',
+  paused: 'Sound is asking the member on an unchanged contact. No action needed yet.',
+  asked: 'Waiting for the member. Release needs a YES on an unchanged contact.',
   'not-me': 'The member says it was not them. Keep it stopped and lock the account.',
   secured: 'Locked. The case stays open while the member gets back in.',
-  'its-me': 'The member confirmed on a safe contact. Release is one click.',
+  'its-me': 'The member confirmed on an unchanged contact. Release is one click.',
   released: 'Done. No call, no branch visit.',
 }
 
@@ -56,7 +56,9 @@ export const stageHint = (stage: TakeoverStage, yesOk: boolean) =>
   (yesOk ? undefined : callbackHint[stage]) ?? hint[stage]
 
 export function releaseHint(stage: TakeoverStage, yesOk: boolean) {
-  if (yesOk) return stage === 'its-me' ? 'YES came from a safe contact' : 'Needs a YES on a safe contact'
+  if (yesOk) {
+    return stage === 'its-me' ? 'YES came from an unchanged contact' : 'Needs a YES on an unchanged contact'
+  }
   return stage === 'its-me'
     ? 'Call the number on file before the change first'
     : 'Needs a callback to the number on file before the change'

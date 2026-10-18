@@ -45,7 +45,7 @@ function ConceptPayScreen() {
 
         <dl className="mt-5 divide-y divide-line border-y border-line">
           <DetailRow label="Memo">{MEMO}</DetailRow>
-          <DetailRow label="Arrives">Today</DetailRow>
+          <DetailRow label="Send date">Today</DetailRow>
           <DetailRow label="Payment">
             <span className="font-mono text-[14px]">{payment.paymentId}</span>
           </DetailRow>

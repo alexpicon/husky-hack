@@ -53,7 +53,8 @@ export function TapScreen({ answered = null }: { answered?: TapAnswer | null }) 
           today at {clock(payment.at)}.
         </Bubble>
         <Bubble delay={0.35}>
-          Tap Yes and it goes right away. We'll never ask for your password or a code.
+          Tap Yes and we'll release it for processing. If a website or caller told you to expect this
+          text, tap No. We'll never ask for your password or a code.
         </Bubble>
         {answer && (
           <>

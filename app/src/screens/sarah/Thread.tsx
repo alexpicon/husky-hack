@@ -60,9 +60,10 @@ export function AskMessages({ instant = false }: { instant?: boolean }) {
 
 export function NeverACode() {
   return (
-    <p className="flex items-center justify-center gap-1.5 px-6 text-center text-[13px] font-medium text-ink-3">
-      <Lock size={13} aria-hidden />
-      Sound will never ask you for a code.
+    <p className="flex items-start justify-center gap-1.5 px-3 pt-1 text-center text-[13px] leading-snug font-medium text-ink-3">
+      <Lock size={13} className="mt-0.5 shrink-0" aria-hidden />
+      Sound will never call or text to ask for a code. If a website or caller asks for one, it's a
+      scam.
     </p>
   )
 }

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { Building2, Check, Phone as PhoneIcon, ShieldCheck } from 'lucide-react'
 import { motion } from 'motion/react'
+import { POLICY } from '../../data/policy'
 import { ReportRow } from '../../report/ReportRow'
 import { money } from '../../ui/format'
 import { Source } from '../../ui/primitives'
@@ -16,6 +17,12 @@ function Done({ children }: { children: ReactNode }) {
       <span className="text-[16px] leading-snug">{children}</span>
     </li>
   )
+}
+
+/** What else stays held while her case is open, as POLICY.caseHold (D2) sets it. */
+const memberHold: Record<typeof POLICY.caseHold, string> = {
+  all: "Until we've talked, every payment from your account waits for your OK.",
+  risky: 'Bills and autopays you already set up keep running. New payees wait until we talk.',
 }
 
 /** Sarah's phone after the account is locked. */
@@ -35,8 +42,8 @@ export function Secured() {
               <span className="grid size-11 place-items-center rounded-2xl bg-white text-safe shadow-sm ring-1 ring-teal-200">
                 <ShieldCheck size={24} aria-hidden />
               </span>
-              <h2 className="mt-3 font-display text-[30px] leading-none tracking-tight">
-                Your account is safe
+              <h2 className="mt-3 font-display text-[26px] leading-[1.05] tracking-tight text-balance">
+                We stopped the payment and locked online access
               </h2>
             </div>
             <ul className="flex flex-col gap-3 px-5 py-4">
@@ -44,7 +51,8 @@ export function Secured() {
                 We stopped the {money(paused.amount)} payment before it was sent.{' '}
                 <Source ids={paused.id} />
               </Done>
-              <Done>Online access is locked. No one can sign in.</Done>
+              <Done>No one can sign in online until you call us.</Done>
+              <Done>{memberHold[POLICY.caseHold]}</Done>
               <Done>Nothing left your account.</Done>
             </ul>
             <div className="border-t border-line bg-slate-50/70 px-5 py-4">

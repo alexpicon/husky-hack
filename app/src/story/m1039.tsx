@@ -59,12 +59,12 @@ export const m1039: Scenario = {
     },
     {
       id: 'released',
-      title: 'One tap. Rent goes today.',
+      title: 'One tap. Rent released when they tap.',
       caption: `In the kit, without Second Look, this payment went in ${todayMinutes} minutes with no check. With Second Look it is released when they tap. We add one tap for the ${lookalikes.flagged} movers; ${honest.untouched} of ${honest.total} honest members see nothing.`,
       clock: tappedAt,
       member: (
         <div className="flex flex-col items-center gap-5">
-          <MemberPhone time={clock(tapAt)} caption="Sound app: payment on its way">
+          <MemberPhone time={clock(tapAt)} caption="Sound app: payment sent for processing">
             <ReleasedScreen />
           </MemberPhone>
           <HonestCard />

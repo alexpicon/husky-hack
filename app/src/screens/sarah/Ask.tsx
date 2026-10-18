@@ -24,6 +24,9 @@ export function Ask() {
             <ScrollToLatest after={350} />
           </>
         )}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
+          <NeverACode />
+        </motion.div>
       </div>
 
       <motion.div
@@ -32,7 +35,6 @@ export function Ask() {
         transition={{ delay: 1 }}
         className="sticky bottom-0 mt-auto flex flex-col gap-2 bg-white px-4 pt-3 pb-5"
       >
-        <NeverACode />
         <button
           type="button"
           onClick={() => setSaidYes(true)}

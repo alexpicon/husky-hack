@@ -53,7 +53,7 @@ export function HonestCard() {
             lines={
               <>
                 About a minute more.
-                <span className="mt-1 block font-semibold text-safe">Still same day.</span>
+                <span className="mt-1 block font-semibold text-safe">Released when they tap.</span>
               </>
             }
           />

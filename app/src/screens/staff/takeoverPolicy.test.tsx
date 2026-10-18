@@ -32,8 +32,9 @@ describe('releasing a full stop (D1)', () => {
   it('releases on a YES from the prior contact when the policy is "yes"', () => {
     expect(yesReleases(true, 'yes')).toBe(true)
     expect(yesReply(true)).toBe("Thanks. We've released the payment for processing.")
-    expect(releaseHint('asked', true)).toBe('Needs a YES on a safe contact')
-    expect(stageHint('asked', true)).toBe('Waiting for the member. Release needs a YES on a safe contact.')
+    expect(releaseHint('asked', true)).toBe('Needs a YES on an unchanged contact')
+    expect(releaseHint('its-me', true)).toBe('YES came from an unchanged contact')
+    expect(stageHint('asked', true)).toBe('Waiting for the member. Release needs a YES on an unchanged contact.')
   })
 
   it('needs a callback to the prior number when the policy is "callback"', () => {
@@ -51,10 +52,10 @@ describe('releasing a full stop (D1)', () => {
   })
 
   it('shows the matching release rule on the staff case', () => {
-    expect(staffText('M1003', 'asked')).toContain('Needs a YES on a safe contact')
+    expect(staffText('M1003', 'asked')).toContain('Needs a YES on an unchanged contact')
     POLICY.fullStopRelease = 'callback'
     expect(staffText('M1003', 'asked')).toContain('Needs a callback to the number on file before the change')
-    expect(staffText('M1039', 'asked')).toContain('Needs a YES on a safe contact')
+    expect(staffText('M1039', 'asked')).toContain('Needs a YES on an unchanged contact')
   })
 })
 

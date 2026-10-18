@@ -24,7 +24,7 @@ export function ReleasedSound() {
             <Check size={26} strokeWidth={3} />
           </motion.span>
           <div className="min-w-0">
-            <h3 className="text-[19px] leading-tight font-bold text-balance">Your payment is on its way</h3>
+            <h3 className="text-[19px] leading-tight font-bold text-balance">Your payment was sent for processing</h3>
             <p className="mt-1 text-[15px] leading-snug text-balance" style={muted}>
               Thanks for confirming. That's all we needed.
             </p>
@@ -40,7 +40,7 @@ export function ReleasedSound() {
               >
                 {money(payment.amount)}
               </span>
-              <SoundChip tone="green">Same day</SoundChip>
+              <SoundChip tone="green">Released today</SoundChip>
             </div>
             <div className="mt-4">
               <SoundRecipient addedAt={`today, ${clock(recipientAdded.at)}`} source={recipientAdded.id} />
@@ -48,7 +48,7 @@ export function ReleasedSound() {
             <div className="mt-2">
               <SoundRow label="Memo" value={MEMO} />
               <SoundRow label="Sent by" value={railLabel(payment.rail)} />
-              <SoundRow label="Arrives" value="Today" />
+              <SoundRow label="Status" value="Sent for processing" />
               <SoundRow
                 label="Payment"
                 value={
