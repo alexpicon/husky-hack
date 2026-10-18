@@ -110,7 +110,7 @@ In the kit's 12 family emergencies, 4 with no hold or question lost $28,500, 4 w
 - **One tap** files the report and says what happens next: "We've paused outgoing payments and opened case [ref]. A specialist will call you on a number you've had with us for a while, by [time]." The time is 20 minutes after the report: all 27 scam reports in the kit had a case open within 20 minutes.
 - **Three states:** report received, recall requested, money recovered ("Only if that bank sends it back. P2P recalls usually fail: 6 of 8 in the kit.").
 - "Anyone who asks for a fee to get your money back is a scammer."
-- **Staff** see "Scam reported in the app" on that member's case with the time, the callback deadline and a **Request recall** button, in every window and on every laptop in a shared session.
+- **Staff** see "Scam reported in the app" ("at the branch" from Linda's tablet, "by text" from Sarah's thread) on that member's case with the time, the callback deadline and a **Request recall** button, in every window and on every laptop in a shared session.
 
 ---
 

@@ -69,7 +69,7 @@ export function Secured() {
               </div>
             </div>
           </motion.div>
-          <ReportRow />
+          <ReportRow channel="text" />
         </div>
       </SarahsPhone>
     </div>

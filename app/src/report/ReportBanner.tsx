@@ -1,7 +1,13 @@
 import { Flag, Undo2 } from 'lucide-react'
 import { motion } from 'motion/react'
 import { CALLBACK_MINUTES } from './kitFacts'
-import { callbackBy, reportRef, staffPausedLine, useReport } from './report'
+import { callbackBy, reportRef, staffPausedLine, useReport, type ReportChannel } from './report'
+
+const REPORTED: Record<ReportChannel, string> = {
+  app: 'Scam reported in the app',
+  branch: 'Scam reported at the branch',
+  text: 'Scam reported by text',
+}
 
 /** The member's report as it lands on the staff case, the same moment it is filed anywhere. */
 export function ReportBanner({ member }: { member: string }) {
@@ -23,7 +29,10 @@ export function ReportBanner({ member }: { member: string }) {
       </span>
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-baseline gap-x-2">
-          <span className="text-[16px] font-semibold text-ink">Scam reported in the app</span>
+          <span className="text-[16px] font-semibold text-ink">
+            {/* A window still on an older build syncs reports without a channel. */}
+            {REPORTED[report.channel] ?? REPORTED.app}
+          </span>
           <span className="font-mono text-xs text-ink-3">{reportRef(report)}</span>
         </div>
         <div className="mt-0.5 text-[14px] text-ink-2">

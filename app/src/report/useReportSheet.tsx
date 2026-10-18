@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useZoneTone } from '../story/engine'
-import { reportLinkShown, useReport } from './report'
+import { reportLinkShown, useReport, type ReportChannel } from './report'
 import { ReportSheet } from './ReportSheet'
 
 /**
@@ -8,13 +8,13 @@ import { ReportSheet } from './ReportSheet'
  * outside any positioned element inside the phone, so it covers the phone's screen.
  * `available` is false outside a story: with no member to file for, a link would do nothing.
  */
-export function useReportSheet() {
+export function useReportSheet(channel: ReportChannel = 'app') {
   const { file, place } = useReport()
   const [open, setOpen] = useState(false)
   return {
     available: place !== null,
     open: () => {
-      file()
+      file(channel)
       setOpen(true)
     },
     sheet: open ? <ReportSheet onClose={() => setOpen(false)} /> : null,

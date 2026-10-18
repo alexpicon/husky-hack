@@ -1,4 +1,5 @@
 import { ChevronRight, Flag } from 'lucide-react'
+import type { ReportChannel } from './report'
 import { useReportSheet } from './useReportSheet'
 
 /**
@@ -6,8 +7,8 @@ import { useReportSheet } from './useReportSheet'
  * app open, or of a branch tablet screen. It stays in view however long the screen above it is.
  * `edge` cancels the parent's side padding (and bottom padding, if any) so the row spans the screen.
  */
-export function ReportRow({ edge = '-mx-4 px-4' }: { edge?: string }) {
-  const report = useReportSheet()
+export function ReportRow({ channel, edge = '-mx-4 px-4' }: { channel: ReportChannel; edge?: string }) {
+  const report = useReportSheet(channel)
   if (!report.available) return null
   return (
     <>

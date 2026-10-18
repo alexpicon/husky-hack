@@ -109,7 +109,7 @@ function DecideConcept({ at }: { at: Date }) {
             </div>
           </>
         )}
-        <ReportRow edge="-mx-6 -mb-5 px-6" />
+        <ReportRow channel="branch" edge="-mx-6 -mb-5 px-6" />
       </div>
     </Tablet>
   )

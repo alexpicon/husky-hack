@@ -1,6 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useWindowSync } from '../shell/sync'
-import { initialReport, mergeReports, ReportContext, reportActions, type ReportState } from './report'
+import {
+  initialReport,
+  mergeReports,
+  ReportContext,
+  reportActions,
+  type ReportChannel,
+  type ReportState,
+} from './report'
 
 type Props = {
   /** The story on screen; a report closes when the demo leaves the story it was filed in. */
@@ -35,8 +42,8 @@ export function ReportProvider({ story, member, clock, children }: Props) {
     return {
       state,
       place,
-      file: () => {
-        if (place) change((s) => reportActions.file(s, place))
+      file: (channel?: ReportChannel) => {
+        if (place) change((s) => reportActions.file(s, place, channel))
       },
       requestRecall: () => change(reportActions.requestRecall),
     }

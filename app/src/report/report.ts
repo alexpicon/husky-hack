@@ -6,6 +6,9 @@ import { clock } from '../ui/format'
 /** Recovery, in order. Money is recovered only if the receiving bank returns it. */
 export type ReportStage = 'received' | 'recall-requested' | 'recovered'
 
+/** Where the member told us: a Sound app screen, the branch tablet, or Sound's text thread. */
+export type ReportChannel = 'app' | 'branch' | 'text'
+
 /** A member's "I think I've been scammed", filed at a moment of the story. */
 export type Report = {
   member: string
@@ -13,6 +16,7 @@ export type Report = {
   story: string
   /** Story clock when it was filed, e.g. "Tue, Oct 6 · 12:55 PM". */
   clock: string
+  channel: ReportChannel
   stage: ReportStage
 }
 
@@ -28,8 +32,8 @@ const bump = (s: ReportState, report: Report | null): ReportState => ({ v: s.v +
 
 export const reportActions = {
   /** One tap files the report; tapping again shows the same case. */
-  file: (s: ReportState, at: ReportPlace): ReportState =>
-    s.report?.member === at.member ? s : bump(s, { ...at, stage: 'received' }),
+  file: (s: ReportState, at: ReportPlace, channel: ReportChannel = 'app'): ReportState =>
+    s.report?.member === at.member ? s : bump(s, { ...at, channel, stage: 'received' }),
   requestRecall: (s: ReportState): ReportState =>
     s.report?.stage === 'received' ? bump(s, { ...s.report, stage: 'recall-requested' }) : s,
   /** The demo moves on to another story. */
@@ -94,7 +98,7 @@ type Api = {
   state: ReportState
   /** Where a tap would file the report; null outside a story. */
   place: ReportPlace | null
-  file: () => void
+  file: (channel?: ReportChannel) => void
   requestRecall: () => void
 }
 

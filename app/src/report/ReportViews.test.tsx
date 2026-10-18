@@ -8,7 +8,14 @@ import { BothStage } from '../shell/Stages'
 import { linda } from '../story/linda'
 import { m1039 } from '../story/m1039'
 import { sarah } from '../story/sarah'
-import { initialReport, ReportContext, reportActions, type ReportPlace, type ReportState } from './report'
+import {
+  initialReport,
+  ReportContext,
+  reportActions,
+  type ReportChannel,
+  type ReportPlace,
+  type ReportState,
+} from './report'
 import { ReportBanner } from './ReportBanner'
 import { ReportSheet } from './ReportSheet'
 
@@ -82,6 +89,13 @@ describe('the staff banner', () => {
     expect(text).toContain('Outgoing payments paused while this case is open. Call back by 1:15 PM')
     expect(text).toContain('Request recall')
     expect(render(<ReportBanner member="M1039" />, reportActions.requestRecall(filed))).toContain('Recall requested')
+  })
+
+  it('says where the member reported it', () => {
+    const at = (channel: ReportChannel) => reportActions.file(initialReport, atM1039, channel)
+    expect(render(<ReportBanner member="M1039" />, at('branch'))).toContain('Scam reported at the branch')
+    expect(render(<ReportBanner member="M1039" />, at('text'))).toContain('Scam reported by text')
+    expect(render(<ReportBanner member="M1039" />, at('app'))).toContain('Scam reported in the app')
   })
 
   it("stays off another member's case", () => {

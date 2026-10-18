@@ -45,7 +45,7 @@ describe('kit numbers on the report screen', () => {
 describe('filing and sharing a report', () => {
   it('files once per member and keeps the case on a second tap', () => {
     const filed = reportActions.file(initialReport, atM1039)
-    expect(filed).toEqual({ v: 1, report: { ...atM1039, stage: 'received' } })
+    expect(filed).toEqual({ v: 1, report: { ...atM1039, channel: 'app', stage: 'received' } })
     expect(reportActions.file(filed, atM1039)).toBe(filed)
   })
 

@@ -50,7 +50,7 @@ export function DecideSound({ at }: { at: Date }) {
             <p className="text-[17px] leading-snug font-semibold">{SEQUEL}</p>
           </SoundCard>
         </motion.div>
-        <ReportRow edge={KIOSK_EDGE} />
+        <ReportRow channel="branch" edge={KIOSK_EDGE} />
       </SoundKiosk>
     )
   }
@@ -102,7 +102,7 @@ export function DecideSound({ at }: { at: Date }) {
           </button>
         )}
       </div>
-      <ReportRow edge={KIOSK_EDGE} />
+      <ReportRow channel="branch" edge={KIOSK_EDGE} />
     </SoundKiosk>
   )
 }
