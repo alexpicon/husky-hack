@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ArrowRight, SkipForward } from 'lucide-react'
 import { ClipCard } from './ClipCard'
 import { letter, prompt } from './copy'
@@ -36,6 +36,14 @@ export function DrillRound({ game, change, onNext, sound }: Props) {
   const last = round.position >= game.rounds
   const title = titleText({ sound })
   const muted = mutedText({ sound })
+  // The button she pressed is gone each time: a new pair remounts this round, and an answer
+  // replaces the guess buttons. Focus follows to the pair's name, then to the answer.
+  const heading = useRef<HTMLHeadingElement>(null)
+  const status = useRef<HTMLParagraphElement>(null)
+  useEffect(() => heading.current?.focus(), [])
+  useEffect(() => {
+    if (done) status.current?.focus()
+  }, [done])
 
   const toggle = (side: Side) => {
     const el = audio.current[side]
@@ -60,10 +68,20 @@ export function DrillRound({ game, change, onNext, sound }: Props) {
           <img src={round.pair.portrait} alt="" className="size-11 shrink-0 rounded-full object-cover" />
         )}
         <div className="min-w-0">
-          <div className={`text-[13px] font-semibold tracking-wide uppercase ${muted.className}`} style={muted.style}>
+          <div
+            className={`text-[13px] font-semibold tracking-wide uppercase ${muted.className}`}
+            style={muted.style}
+            aria-hidden
+          >
             Pair {round.position} of {game.rounds}
           </div>
-          <h2 className={`text-[19px] leading-tight font-bold ${title.className}`} style={title.style}>
+          <h2
+            ref={heading}
+            tabIndex={-1}
+            className={`text-[19px] leading-tight font-bold ${title.className}`}
+            style={title.style}
+          >
+            <span className="sr-only">Pair {round.position} of {game.rounds}: </span>
             {round.pair.label}
           </h2>
           {round.pair.about && (
@@ -96,7 +114,7 @@ export function DrillRound({ game, change, onNext, sound }: Props) {
         />
       ))}
 
-      <p className="text-[15px] leading-snug font-medium" role="status">
+      <p ref={status} tabIndex={-1} className="text-[15px] leading-snug font-medium" role="status">
         {prompt(round)}
       </p>
 

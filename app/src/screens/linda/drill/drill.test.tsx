@@ -3,10 +3,11 @@ import type { ReactElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { DrillPair } from './clips'
-import { CAUTION, DRILL_SUBTITLE, DRILL_TITLE, LESSONS, NOT_ADDED, OPT_IN, scoreText } from './copy'
+import { CAUTION, DECLINED, DRILL_SUBTITLE, DRILL_TITLE, LESSONS, NOT_ADDED, OPT_IN, scoreText } from './copy'
 import { drillActions, initialDrill, updateDrill, writeDrill } from './drillState'
 import { DrillEnding } from './DrillEnding'
 import { DrillRound } from './DrillRound'
+import { DrillStart } from './DrillStart'
 import { TrustedEnroll } from './TrustedEnroll'
 import { VoiceDrill } from './VoiceDrill'
 import { clipOn, guess, markHeard, markMissing, newGame, nextRound, type Game, type Side } from './voiceGame'
@@ -191,5 +192,38 @@ describe('on its own page', () => {
     for (const tag of html.match(/<button[^>]*>/g)!) expect(tag).toMatch(/\bh-12\b|\bmin-h-12\b/)
     const playing = markupOf(heardBoth(start()))
     for (const tag of playing.match(/<button[^>]*>/g)!) expect(tag).toMatch(/\bh-12\b|\bmin-h-12\b/)
+  })
+})
+
+// Each press below removes the button she pressed; these are where focus lands instead.
+describe('where focus goes', () => {
+  const target = (html: string, tag: string) => html.match(new RegExp(`<${tag} tabindex="-1"[^>]*>(.*?)</${tag}>`))?.[1]
+
+  it('to the new pair, said with its place, when a round opens', () => {
+    const second = nextRound(guess(heardBoth(start()), 'a'))
+    expect(target(markupOf(second), 'h2')).toBe(`<span class="sr-only">Pair 2 of 3: </span>${second.round!.pair.label}`)
+  })
+
+  it('to the answer once she guesses', () => {
+    expect(target(markupOf(guess(heardBoth(start()), 'a')), 'p')).toMatch(/^Recording [AB] is the AI voice\./)
+  })
+
+  it('to the score when the drill ends', () => {
+    const html = renderToStaticMarkup(
+      <DrillEnding sound={false} score={{ correct: 2, total: 3 }} standalone={false} onBack={noop} />,
+    )
+    expect(target(html, 'p')).toBe(scoreText({ correct: 2, total: 3 }).replace(/'/g, '&#x27;'))
+  })
+
+  it('to the line that confirms a trusted contact', () => {
+    updateDrill(drillActions.addTrusted)
+    expect(target(renderToStaticMarkup(<TrustedEnroll sound={false} />), 'p')).toMatch(/Trusted contact added$/)
+  })
+
+  it('to the line that answers "Not now"', () => {
+    const declined = renderToStaticMarkup(
+      <DrillStart sound={false} pairs={PAIRS} declined onStart={noop} onNotNow={noop} />,
+    )
+    expect(target(declined, 'p')).toBe(DECLINED)
   })
 })

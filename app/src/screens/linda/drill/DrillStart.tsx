@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { Headphones } from 'lucide-react'
 import { SOUND } from '../../../ui/soundApp'
 import type { DrillPair } from './clips'
@@ -18,6 +19,11 @@ export function DrillStart({ sound, pairs, declined, onStart, onNotNow }: Props)
   const title = titleText({ sound })
   const muted = mutedText({ sound })
   const failed = pairs === 'failed'
+  // "Not now" goes away when she presses it, so focus moves to the line that answers it.
+  const declinedLine = useRef<HTMLParagraphElement>(null)
+  useEffect(() => {
+    if (declined) declinedLine.current?.focus()
+  }, [declined])
   return (
     <>
       <Panel sound={sound}>
@@ -54,7 +60,7 @@ export function DrillStart({ sound, pairs, declined, onStart, onNotNow }: Props)
       ) : (
         <>
           {declined && (
-            <p className="text-[15px] leading-snug" role="status">
+            <p ref={declinedLine} tabIndex={-1} className="text-[15px] leading-snug" role="status">
               {DECLINED}
             </p>
           )}

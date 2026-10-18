@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { scoreText } from './copy'
 import { Action, CreditsLink, Lessons, Panel } from './parts'
@@ -15,10 +16,13 @@ type Props = Skin & {
 /** The score with its caution, then the two habits that work whoever is on the line. */
 export function DrillEnding({ sound, score, standalone, onBack }: Props) {
   const muted = mutedText({ sound })
+  // It replaces the last round's button, so focus moves to the score.
+  const result = useRef<HTMLParagraphElement>(null)
+  useEffect(() => result.current?.focus(), [])
   return (
     <>
       <Panel sound={sound}>
-        <p className="text-[17px] leading-snug font-semibold" role="status">
+        <p ref={result} tabIndex={-1} className="text-[17px] leading-snug font-semibold" role="status">
           {scoreText(score)}
         </p>
         <p
