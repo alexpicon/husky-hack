@@ -31,7 +31,7 @@ export function WallRow({ entry }: { entry: PanelEntry }) {
       className="grid grid-cols-[9rem_minmax(0,1fr)] items-baseline gap-x-5 gap-y-1 rounded-2xl bg-white px-5 py-3.5 ring-1 ring-line xl:grid-cols-[9rem_minmax(0,1fr)_minmax(0,1.1fr)]"
     >
       <span className="text-lg font-semibold text-ink-3">{judgeName(entry)}</span>
-      <span className="truncate text-xl font-medium">“{entry.quote}”</span>
+      <span className="text-xl font-medium break-words">“{entry.quote}”</span>
       <span
         className={`col-start-2 flex items-center gap-2 text-lg font-semibold xl:col-start-3 ${named ? 'text-warn' : 'text-ink-2'}`}
       >

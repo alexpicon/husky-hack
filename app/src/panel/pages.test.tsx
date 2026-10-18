@@ -5,7 +5,7 @@ import { isPanelView, type View } from '../shell/view'
 import { judgeName, postLine, PRIVACY, SOURCE_LINE } from './copy'
 import { PanelPhone } from './PanelPhone'
 import { PanelWall, WallRow } from './PanelWall'
-import { GROUP_RESULTS, NO_PATTERN, QUOTE_MAX } from './results'
+import { clipQuote, GROUP_RESULTS, NO_PATTERN, QUOTE_MAX } from './results'
 
 vi.hoisted(() => {
   Object.assign(globalThis, {
@@ -88,6 +88,14 @@ describe('the wall', () => {
     const own = textOf(renderToStaticMarkup(<WallRow entry={{ n: 4, quote: 'hi', result: NO_PATTERN, judge: 'Presenter' }} />))
     expect(own).toContain('Presenter')
     expect(own).not.toContain('Judge 4')
+  })
+
+  it('wraps the 40-character quote instead of cutting it again', () => {
+    const quote = clipQuote("lawyer says don't tell mom, my grandson needs bail")
+    const html = renderToStaticMarkup(<WallRow entry={{ n: 1, quote, result: GROUP_RESULTS.grandparent }} />)
+    const cell = html.match(/<span[^>]*>“[^<]*”<\/span>/)?.[0] ?? ''
+    expect(textOf(cell)).toContain(`“${quote}”`)
+    expect(cell).not.toMatch(/\b(?:truncate|text-ellipsis|whitespace-nowrap|line-clamp-1)\b/)
   })
 })
 
