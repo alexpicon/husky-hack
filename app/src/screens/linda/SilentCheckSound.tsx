@@ -1,5 +1,6 @@
 import { motion } from 'motion/react'
 import { ArrowRight, Check, Info } from 'lucide-react'
+import { LindaSkipper } from '../../skipper/boxes'
 import { useStory } from '../../story/engine'
 import { Source } from '../../ui/primitives'
 import { SOUND, SoundButton, SoundCard } from '../../ui/soundApp'
@@ -80,6 +81,7 @@ export function SilentCheckSound() {
           <Option key={o.id} option={o} />
         ))}
       </div>
+      <LindaSkipper look="sound" />
 
       <div className="grid grid-cols-[1fr_1.45fr_150px] gap-2">
         <Option option={none} short />

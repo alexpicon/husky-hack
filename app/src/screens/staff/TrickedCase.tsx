@@ -2,6 +2,7 @@ import { Quote } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useReportedCase } from '../../report/report'
 import { ReportBanner } from '../../report/ReportBanner'
+import { LindaSkipperNote } from '../../skipper/SkipperNote'
 import { StaffWindow } from '../../ui/devices'
 import { day } from '../../ui/format'
 import { Source } from '../../ui/primitives'
@@ -94,6 +95,7 @@ export function TrickedCase({
             <HoldPanel f={f} now={now} />
           </div>
           <div className="space-y-4">
+            <LindaSkipperNote />
             <SilentCheckPanel f={f} stage={stage} now={now} />
             <ScriptPanel f={f} stage={stage} />
             <TrustedPanel f={f} />

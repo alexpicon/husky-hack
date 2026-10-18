@@ -2,6 +2,7 @@ import { Quote } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useReportedCase } from '../../report/report'
 import { ReportBanner } from '../../report/ReportBanner'
+import { MichaelSkipperNote } from '../../skipper/SkipperNote'
 import { StaffWindow } from '../../ui/devices'
 import { day } from '../../ui/format'
 import { Source } from '../../ui/primitives'
@@ -83,6 +84,7 @@ export function PatternCase({ stage, now }: { stage: PatternStage; now: Date }) 
           </div>
           <div className="space-y-4">
             {stage === 'wire' && <RomanceScriptPanel f={f} />}
+            <MichaelSkipperNote />
             <PatternAnswersPanel />
           </div>
         </div>

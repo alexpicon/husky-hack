@@ -1,5 +1,6 @@
 import { ArrowRight } from 'lucide-react'
 import { motion } from 'motion/react'
+import { MichaelCardSkipper } from '../../skipper/boxes'
 import { useStory } from '../../story/engine'
 import { money } from '../../ui/format'
 import { useLook, type Look } from '../../ui/look'
@@ -45,6 +46,7 @@ function Body({ look }: { look: Look }) {
         </p>
       </div>
       <Options look={look} />
+      <MichaelCardSkipper look={look} />
       <ShareToggle look={look} />
       <CheckResult look={look} />
       <WithdrawalCheck look={look} />

@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, type ReactNode } from 'react'
 import { Check, HeartHandshake, TriangleAlert } from 'lucide-react'
 import { motion } from 'motion/react'
+import { ReportSkipper } from '../skipper/ReportSkipper'
 import { clock } from '../ui/format'
 import { CALLBACK_MINUTES, p2pRecalls } from './kitFacts'
 import { callbackBy, pausedLine, reportRef, timeOfStoryClock, useReport, type ReportStage } from './report'
@@ -93,6 +94,7 @@ export function ReportSheet({ onClose }: { onClose: () => void }) {
             <TriangleAlert size={18} className="mt-px shrink-0 text-warn" aria-hidden />
             Anyone who asks for a fee to get your money back is a scammer.
           </p>
+          <ReportSkipper member={report.member} />
         </div>
 
         {/* Pinned under the scrolling text, so a short tablet screen still shows the way out. */}

@@ -5,6 +5,7 @@ import './index.css'
 import App from './App.tsx'
 import { LindaCaseProvider } from './screens/linda/LindaCaseProvider'
 import { RunProvider } from './shell/run'
+import { SkipperShare } from './skipper/SkipperShare'
 import { LookProvider } from './ui/look'
 
 createRoot(document.getElementById('root')!).render(
@@ -14,6 +15,7 @@ createRoot(document.getElementById('root')!).render(
         <RunProvider>
           <LindaCaseProvider>
             <App />
+            <SkipperShare />
           </LindaCaseProvider>
         </RunProvider>
       </LookProvider>

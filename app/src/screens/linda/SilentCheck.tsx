@@ -1,6 +1,7 @@
 import { motion } from 'motion/react'
 import { ArrowRight, Check, Info } from 'lucide-react'
 import { useStory } from '../../story/engine'
+import { LindaSkipper } from '../../skipper/boxes'
 import { Tablet } from '../../ui/devices'
 import { useLook } from '../../ui/look'
 import { Button, Source } from '../../ui/primitives'
@@ -82,6 +83,7 @@ function SilentCheckConcept() {
             <Toggle key={o.id} option={o} />
           ))}
         </div>
+        <LindaSkipper look="concept" />
 
         <div className="grid grid-cols-[1fr_1.45fr_auto] gap-2">
           <Toggle option={none} short />
