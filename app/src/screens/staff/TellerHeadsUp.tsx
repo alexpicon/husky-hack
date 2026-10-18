@@ -1,17 +1,16 @@
-import { useState } from 'react'
 import { motion } from 'motion/react'
 import { ArrowUpRight, Banknote, BellRing, MessageCircleQuestion, TabletSmartphone, type LucideIcon } from 'lucide-react'
 import { HEADS_UP_WINDOW_HOURS } from '../../data/jamesRules'
 import { clock, day } from '../../ui/format'
 import { Source } from '../../ui/primitives'
+import { answerActions, ENDS, type TellerAction } from '../james/answers'
+import { useJamesAnswers } from '../james/answersState'
 import { QUESTION } from '../james/copy'
 import { daysAgo, JAMES_NAME, jamesFacts } from '../james/facts'
 import { dollars } from '../linda/facts'
 import { when } from './helpers'
 import { ActionButton, FactRow, Panel, StatusPill, type ActionLook } from './parts'
 import { TellerDesk } from './TellerDesk'
-
-type TellerAction = 'ask' | 'tablet' | 'escalate' | 'continue'
 
 const ACTIONS: { id: TellerAction; label: string; hint: string; done: string; icon: LucideIcon }[] = [
   { id: 'ask', label: 'Ask the question', hint: 'Read it as written', done: 'Question asked', icon: MessageCircleQuestion },
@@ -27,8 +26,6 @@ const ACTIONS: { id: TellerAction; label: string; hint: string; done: string; ic
 ]
 
 /** Escalating and continuing each end the heads-up, so only one of them can be chosen. */
-const ENDS: TellerAction[] = ['escalate', 'continue']
-
 function lookOf(id: TellerAction, done: TellerAction[]): ActionLook {
   if (done.includes(id)) return 'done'
   if (ENDS.includes(id) && done.some((d) => ENDS.includes(d))) return 'off'
@@ -51,7 +48,8 @@ const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 export function TellerHeadsUp() {
   const f = jamesFacts()
   const { call, cash } = f
-  const [done, setDone] = useState<TellerAction[]>([])
+  const { state, update } = useJamesAnswers()
+  const done = state.teller
   return (
     <TellerDesk title="Teller line · heads-up" kind={`Cash withdrawal · ${day(cash.at)}`} pill={<Pill done={done} />}>
       <motion.div
@@ -104,7 +102,7 @@ export function TellerHeadsUp() {
             label={a.label}
             hint={a.hint}
             doneLabel={a.done}
-            onClick={() => setDone((d) => (d.includes(a.id) ? d : [...d, a.id]))}
+            onClick={() => update((d) => answerActions.teller(d, a.id))}
           />
         ))}
       </div>

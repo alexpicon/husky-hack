@@ -13,8 +13,9 @@ import { JamesCheck } from './JamesCheck'
 
 const look = vi.hoisted(() => ({ current: 'concept' as 'concept' | 'sound' }))
 
-// The real look switch syncs across windows, which needs a browser; these tests pick the look.
+// The look switch and the answers sync across windows, which needs a browser; these tests pick the look.
 vi.mock('../../ui/look', () => ({ useLook: () => look.current }))
+vi.mock('../../shell/sync', () => ({ useWindowSync: () => {} }))
 
 const entities: Record<string, string> = { '&#x27;': "'", '&quot;': '"', '&amp;': '&', '&lt;': '<', '&gt;': '>' }
 const textOf = (html: string) =>

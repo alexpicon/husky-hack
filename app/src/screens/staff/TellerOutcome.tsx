@@ -1,6 +1,8 @@
 import { History, Scale } from 'lucide-react'
 import { clock, day } from '../../ui/format'
 import { Timeline, type TimelineItem } from '../../ui/timeline'
+import { handedOver, type TellerAction } from '../james/answers'
+import { useJamesAnswers } from '../james/answersState'
 import { QUESTION } from '../james/copy'
 import { JAMES_NAME, jamesFacts } from '../james/facts'
 import { answer } from '../james/outcome'
@@ -9,17 +11,23 @@ import { plural } from './helpers'
 import { Panel, StatusPill } from './parts'
 import { TellerDesk } from './TellerDesk'
 
-function items(): TimelineItem[] {
+function started(): TimelineItem {
+  const f = jamesFacts()
+  return {
+    time: clock(f.cash.at),
+    label: `Cash withdrawal started: ${dollars(f.cash.amount)}`,
+    detail: 'Heads-up on the teller screen',
+    tone: 'warn',
+    source: f.cash.id,
+  }
+}
+
+/** The kit's afternoon: he asks for help and cancels. */
+function cancelledItems(): TimelineItem[] {
   const f = jamesFacts()
   const amount = dollars(f.cash.amount)
   return [
-    {
-      time: clock(f.cash.at),
-      label: `Cash withdrawal started: ${amount}`,
-      detail: 'Heads-up on the teller screen',
-      tone: 'warn',
-      source: f.cash.id,
-    },
+    started(),
     {
       time: clock(f.confirm.at),
       label: 'Teller asks the question',
@@ -47,20 +55,40 @@ function items(): TimelineItem[] {
   ]
 }
 
-/** Step three: how the kit's afternoon ended, and what the heads-up changes for every other teller. */
+/** The teller went on with it, so the kit has no rows past the withdrawal and none are cited. */
+function handedOverItems(done: TellerAction[]): TimelineItem[] {
+  const f = jamesFacts()
+  const steps: TimelineItem[] = [started()]
+  if (done.includes('ask')) steps.push({ time: '', label: 'Teller asks the question', detail: `"${QUESTION}"`, tone: 'brand' })
+  if (done.includes('tablet')) steps.push({ time: '', label: 'Private tablet check offered', tone: 'brand' })
+  steps.push(
+    {
+      time: '',
+      label: `Withdrawal continued at ${JAMES_NAME}'s decision`,
+      detail: `${dollars(f.cash.amount)} handed over in cash. Cash can't be recalled.`,
+      tone: 'danger',
+    },
+    { time: '', label: 'Case opened', detail: `${f.caseId} · ${JAMES_NAME} can report it any time` },
+  )
+  return steps
+}
+
+/** Step three: how the afternoon ended, as the teller chose at step two, and what the heads-up changes for every other teller. */
 export function TellerOutcome() {
   const f = jamesFacts()
   const out = f.elsewhere
+  const { state } = useJamesAnswers()
+  const over = handedOver(state)
   return (
     <TellerDesk
       title={`Teller line · ${f.caseId}`}
       kind={`Cash withdrawal · ${day(f.cash.at)}`}
       caseId={f.caseId}
-      pill={<StatusPill tone="safe">Withdrawal cancelled</StatusPill>}
+      pill={over ? <StatusPill tone="danger">Cash handed over</StatusPill> : <StatusPill tone="safe">Withdrawal cancelled</StatusPill>}
     >
       <div className="grid items-start gap-4 @2xl:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
         <Panel title="This afternoon" icon={<History size={14} />}>
-          <Timeline items={items()} compact />
+          <Timeline items={over ? handedOverItems(state.teller) : cancelledItems()} compact />
         </Panel>
         <Panel title="The kit, side by side" icon={<Scale size={14} />} delay={0.05}>
           <p className="text-[15px] leading-relaxed text-ink-2">

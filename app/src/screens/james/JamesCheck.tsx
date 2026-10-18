@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { motion } from 'motion/react'
 import { ArrowRight, Banknote, Check, Info, Phone } from 'lucide-react'
 import { useStory } from '../../story/engine'
@@ -6,6 +6,8 @@ import { useLook } from '../../ui/look'
 import { Button, Source } from '../../ui/primitives'
 import { SOUND, SoundButton, SoundCard } from '../../ui/soundApp'
 import { NavyIcon } from '../linda/kiosk'
+import { answerActions } from './answers'
+import { useJamesAnswers } from './answersState'
 import {
   AUTONOMY,
   CALL_AGENCY,
@@ -13,9 +15,7 @@ import {
   NONE,
   PRIVATE,
   SIGNALS,
-  toggleJamesTap,
   type JamesTap,
-  type JamesTapId,
 } from './copy'
 import { daysAgo, jamesFacts } from './facts'
 import { JamesTablet } from './kiosk'
@@ -82,7 +82,8 @@ export function JamesCheck() {
   const sound = useLook() === 'sound'
   const f = jamesFacts()
   const { next } = useStory()
-  const [taps, setTaps] = useState<JamesTapId[]>([])
+  const { state, update } = useJamesAnswers()
+  const { taps } = state
   const reply = checkReply(taps)
   const tile = (t: JamesTap, short?: boolean) => (
     <Tile
@@ -91,7 +92,7 @@ export function JamesCheck() {
       on={taps.includes(t.id)}
       sound={sound}
       short={short}
-      onTap={() => setTaps((now) => toggleJamesTap(now, t.id))}
+      onTap={() => update((a) => answerActions.tap(a, t.id))}
     />
   )
 

@@ -1,3 +1,6 @@
+import { handedOver } from '../screens/james/answers'
+import { readAnswers } from '../screens/james/answersState'
+import { JamesSync, ResetJames } from '../screens/james/answersStore'
 import { CallCard } from '../screens/james/CallCard'
 import { JAMES_NAME, jamesFacts } from '../screens/james/facts'
 import { JamesCheck } from '../screens/james/JamesCheck'
@@ -28,10 +31,18 @@ export const james: Scenario = {
       clock: at(f.call.at),
       member: (
         <Stage>
+          <ResetJames />
+          <JamesSync />
           <CallCard />
         </Stage>
       ),
-      staff: <TellerCall />,
+      staff: (
+        <>
+          <ResetJames />
+          <JamesSync />
+          <TellerCall />
+        </>
+      ),
     },
     {
       id: 'teller',
@@ -40,22 +51,43 @@ export const james: Scenario = {
       clock: at(f.cash.at),
       member: (
         <Stage note="The call-back advice shows to everyone, whatever they tap.">
+          <JamesSync />
           <JamesCheck />
         </Stage>
       ),
-      staff: <TellerHeadsUp />,
+      staff: (
+        <>
+          <JamesSync />
+          <TellerHeadsUp />
+        </>
+      ),
     },
     {
       id: 'outcome',
-      title: 'He asks for help, and the cash stays',
-      caption: `${JAMES_NAME} asks for help. A specialist joins, he chooses to add a trusted contact, and he cancels the ${amount} withdrawal. The heads-up puts this question in front of every teller, every time.`,
+      // Getters, so the narration is read when the step renders and follows the teller's choice at step two.
+      get title() {
+        return handedOver(readAnswers())
+          ? 'He goes ahead, and the cash is handed over'
+          : 'He asks for help, and the cash stays'
+      },
+      get caption() {
+        return handedOver(readAnswers())
+          ? `${JAMES_NAME} goes ahead and the teller hands over the ${amount}. Cash can't be recalled; Sound opens a case and he can report it any time. The heads-up puts this question in front of every teller, every time.`
+          : `${JAMES_NAME} asks for help. A specialist joins, he chooses to add a trusted contact, and he cancels the ${amount} withdrawal. The heads-up puts this question in front of every teller, every time.`
+      },
       clock: at(f.opened.at),
       member: (
         <Stage>
+          <JamesSync />
           <JamesOutcome />
         </Stage>
       ),
-      staff: <TellerOutcome />,
+      staff: (
+        <>
+          <JamesSync />
+          <TellerOutcome />
+        </>
+      ),
     },
   ],
   zones: {
