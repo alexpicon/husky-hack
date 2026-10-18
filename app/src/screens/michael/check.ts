@@ -80,7 +80,8 @@ export const checkActions = {
   /** Each choice is final once given: a second window's late tap never changes it. */
   card: (c: MichaelCheck, card: CardChoice): MichaelCheck => (c.card ? c : { ...c, card }),
   wire: (c: MichaelCheck, wire: WireChoice): MichaelCheck => (c.wire ? c : { ...c, wire }),
-  test: (c: MichaelCheck, test: TestAnswer): MichaelCheck => (c.test ? c : { ...c, test }),
+  /** A cancelled wire locks the test: it only ever mattered for the call about that wire. */
+  test: (c: MichaelCheck, test: TestAnswer): MichaelCheck => (c.test || c.wire === 'cancel' ? c : { ...c, test }),
   reset: (c: MichaelCheck): MichaelCheck => ({ ...initialCheck, run: c.run, v: c.v }),
   /** A new demo run starts him over; a window still on an older run never clears a newer one. */
   forRun: (c: MichaelCheck, run: number): MichaelCheck => (run > c.run ? { ...initialCheck, run, v: c.v } : c),

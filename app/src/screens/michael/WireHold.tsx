@@ -1,4 +1,4 @@
-import { Hourglass, PhoneIncoming, Users } from 'lucide-react'
+import { Ban, Hourglass, PhoneIncoming, Users } from 'lucide-react'
 import { motion } from 'motion/react'
 import { clock, money } from '../../ui/format'
 import { useLook } from '../../ui/look'
@@ -8,7 +8,7 @@ import { AUTONOMY } from '../linda/copy'
 import { Browser } from './Browser'
 import { checkActions, type WireChoice } from './check'
 import { useMichaelCheck } from './checkState'
-import { callLine, michaelFacts, TRUSTED_LINE, wireFact } from './facts'
+import { callLine, MICHAEL_NAME, michaelFacts, TRUSTED_LINE, wireFact } from './facts'
 import { FactLine } from './parts'
 import { WithdrawalTest } from './WithdrawalTest'
 
@@ -19,7 +19,8 @@ const CHOSEN: Record<WireChoice, string> = {
 
 /**
  * His first wire, held for a call from Sound, with the withdrawal test asked before the call. He
- * decides after the call; his answers reach staff (the test only if he shares) and step 3.
+ * decides after the call; his answers reach staff (the test only if he shares) and step 3. Once he
+ * cancels, nothing on the screen says the wire is held or that a call is coming.
  */
 export function WireHold() {
   const look = useLook()
@@ -27,6 +28,7 @@ export function WireHold() {
   const f = michaelFacts()
   const { state, update } = useMichaelCheck()
   const choice = state.wire
+  const cancelled = choice === 'cancel'
   const choose = (wire: WireChoice) => update((c) => checkActions.wire(c, wire))
   const until = clock(f.holdEnds)
   const card = sound ? 'bg-white shadow-[0_2px_10px_rgb(15_23_42/0.07)]' : 'bg-slate-50 ring-1 ring-line'
@@ -39,16 +41,22 @@ export function WireHold() {
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 className="text-[22px] leading-tight font-bold" style={sound ? { color: SOUND.navy } : undefined}>
-              Your wire is on hold
+              {cancelled ? 'Your wire is cancelled' : 'Your wire is on hold'}
             </h2>
             <p className={`text-[14px] ${sound ? '' : 'text-ink-3'}`} style={sound ? { color: SOUND.muted } : undefined}>
               <span className="num font-semibold">{money(f.wire.amount)}</span> to a new account{' '}
               <Source ids={f.wire.id} />
             </p>
           </div>
-          <span className="flex shrink-0 items-center gap-1.5 rounded-full bg-warn-soft px-3 py-1 text-[13px] font-semibold text-amber-900 ring-1 ring-amber-200">
-            <Hourglass size={14} aria-hidden /> Held until {until}
-          </span>
+          {cancelled ? (
+            <span className="flex shrink-0 items-center gap-1.5 rounded-full bg-safe-soft px-3 py-1 text-[13px] font-semibold text-safe ring-1 ring-teal-200">
+              <Ban size={14} aria-hidden /> Cancelled by {MICHAEL_NAME} · not sent
+            </span>
+          ) : (
+            <span className="flex shrink-0 items-center gap-1.5 rounded-full bg-warn-soft px-3 py-1 text-[13px] font-semibold text-amber-900 ring-1 ring-amber-200">
+              <Hourglass size={14} aria-hidden /> Held until {until}
+            </span>
+          )}
         </div>
         <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
           <FactLine look={look} ids={[f.wirePayeeAdded.id, f.cardPayeeAdded.id]}>
@@ -56,11 +64,13 @@ export function WireHold() {
           </FactLine>
         </motion.div>
         <WithdrawalTest look={look} />
-        <div className="grid grid-cols-2 gap-3">
-          <p className={`flex items-start gap-2.5 rounded-2xl px-3.5 py-3 text-[14px] leading-snug ${card}`}>
-            <PhoneIncoming size={18} className="mt-0.5 shrink-0" aria-hidden />
-            <span>{callLine(f)}</span>
-          </p>
+        <div className={`grid gap-3 ${cancelled ? 'grid-cols-1' : 'grid-cols-2'}`}>
+          {!cancelled && (
+            <p className={`flex items-start gap-2.5 rounded-2xl px-3.5 py-3 text-[14px] leading-snug ${card}`}>
+              <PhoneIncoming size={18} className="mt-0.5 shrink-0" aria-hidden />
+              <span>{callLine(f)}</span>
+            </p>
+          )}
           <p className={`flex items-start gap-2.5 rounded-2xl px-3.5 py-3 text-[14px] leading-snug font-semibold ${card}`}>
             <Users size={18} className="mt-0.5 shrink-0" aria-hidden />
             <span>

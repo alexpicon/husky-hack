@@ -5,7 +5,7 @@ import { events } from '../../data/kit'
 import { CALLS_END_HOUR } from '../../data/michaelRules'
 import { michael } from '../../story/michael'
 import { clock } from '../../ui/format'
-import { checkActions, initialCheck, mergeChecks, type WireChoice } from './check'
+import { checkActions, initialCheck, mergeChecks, TEST_OPTIONS, type WireChoice } from './check'
 import { writeCheck } from './checkState'
 import { callLine, holdEndsFor, michaelFacts } from './facts'
 
@@ -75,6 +75,26 @@ describe.each(['concept', 'sound'] as const)('his choice on the held wire (%s lo
     expect(member).toContain('In the kit, without Second Look $8,487.77')
     expect(text(reportStep.staff)).toContain('1st wire · held for a call · $1,500.00 He cancelled it, so it was not sent.')
   })
+
+  it.each([[null], ['worked'], ['failed'], ['untried']] as const)(
+    'shows only the cancel on his screen, with the withdrawal test locked, after test answer %s',
+    (test) => {
+      writeCheck({ ...initialCheck, v: 1, wire: 'cancel', test })
+      const markup = renderToStaticMarkup(<>{wireStep.member}</>)
+      const page = textOf(markup)
+      expect(page).toContain('Your wire is cancelled')
+      expect(page).toContain('Cancelled by Michael · not sent')
+      expect(page).toContain('Cancelled. Nothing was sent, and the money stays in your account.')
+      for (const stale of ['on hold', 'Held until', 'will call you', 'before 8 PM', 'Before Sound calls you', 'Wait for']) {
+        expect(page).not.toContain(stale)
+      }
+      const open = [...markup.matchAll(/<button(?![^>]*\bdisabled)[^>]*>(.*?)<\/button>/g)].map((m) => textOf(m[1]))
+      for (const o of TEST_OPTIONS) expect(open).not.toContain(o.label)
+      if (test) expect(page).toContain(`You answered: ${TEST_OPTIONS.find((o) => o.id === test)!.label}`)
+      else for (const o of TEST_OPTIONS) expect(page).toContain(o.label)
+      expect(checkActions.test({ ...initialCheck, wire: 'cancel' }, 'worked').test).toBeNull()
+    },
+  )
 
   it.each([['wait'], [null]] as const)('shows the wire as sent after "%s", as in the kit', (wire) => {
     choose(wire)
