@@ -23,7 +23,7 @@ function MichaelMiss() {
       <h3 className="mt-2 font-display text-2xl">Michael (M1002), a romance scam</h3>
       <p className="mt-2 text-sm text-ink-2">
         Small P2P payments grew for weeks, then turned into wires. No single payment looks like
-        either trigger, and P2P money can’t be recalled.
+        either trigger, so no rule fires.
       </p>
       <div className="mt-4 flex items-end gap-1.5" aria-label="Michael's scam payments over time">
         {scam.map((e) => (
@@ -42,7 +42,7 @@ function MichaelMiss() {
         <span className="num font-semibold text-danger">{money(key.netLoss)}</span>
       </div>
       <p className="mt-3 rounded-2xl bg-slate-50 p-4 text-sm text-ink-2">
-        <b className="text-ink">What still helps:</b> an “I think I was scammed” path starts recovery
+        <b className="text-ink">What still helps:</b> an “I think I’ve been scammed” path starts recovery
         sooner, and the pilot measures this gap. <Source ids={scam.map((e) => e.id).slice(0, 2)} />
       </p>
     </Card>

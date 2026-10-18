@@ -24,12 +24,12 @@ One product, two modes.
 
 | Person | Who they are | What happened in the kit's data |
 |---|---|---|
-| **Sarah (M1003)** | A member who got a fake "Sound" text | She typed her password and code into a fake site. In 34 minutes the scammer reset her password, changed her email and phone, added a recipient and sent **$3,006** in two P2P payments. Nobody noticed until 2 days later. Nothing was recovered. |
+| **Sarah (M1003)** | A member who got a fake "Sound" text | She typed her password and code into a fake site. In 35 minutes the scammer reset her password, changed her email and phone, added a recipient and sent **$3,006** in two P2P payments. Nobody noticed until 2 days later. Nothing was recovered. |
 | **Linda (M1001)** | A retired teacher | A fake grandson and a fake lawyer told her to keep it secret. She went to a branch to wire **$8,500**, her first wire in **6.6 years**, to an account added 7 minutes earlier. Sound held it, offered a trusted contact and called her. She insisted, and it was released. **She lost $8,500.** |
 | **M1039** (honest look-alike for Sarah) | A real member who moved | Forgot their password, reset it, updated their address after the move, then paid the first month's rent and deposit to a new landlord. **Every takeover signal fires, but it's really them.** Second Look lets them through in one tap. |
-| **M1057** (honest look-alike for Linda) | A real member buying a home | A **$51,587** down-payment wire to a new recipient. Today Sound holds it for 3-4 hours until a callback. Second Look releases it the same day after a quick silent check. |
+| **M1057** (honest look-alike for Linda) | A real member buying a home | A **$51,586.52** home-closing wire to a recipient added 2 days earlier. Second Look adds no hold to it; Sound's existing wire review is unchanged. |
 
-Sarah (M1003) and Linda (M1001) come from the kit's four anchor personas (M1001–M1004). M1039 and M1057 come from its 20 legitimate look-alikes. The challenge asks for one of each.
+Sarah (M1003) and Linda (M1001) come from the kit's four anchor personas (M1001-M1004). M1039 and M1057 come from its 20 legitimate look-alikes. The challenge asks for one of each.
 
 Linda's story is the important one: **Sound's current tools already tried, and the secrecy beat them.** Second Look is built to work even when the member has been told not to talk.
 
@@ -44,7 +44,7 @@ All three on the same account, within the "recent" window in the data:
 - a payment to a **new recipient** (`recipient_status = New`)
 
 ### What happens
-1. Sarah's "payment" (really the scammer's) is **stopped before it's sent**. P2P can't be recalled once sent, so the stop has to come first.
+1. Sarah's "payment" (really the scammer's) is **stopped before it's sent**. P2P recalls usually fail (6 of 8 in the kit), so the stop has to come first.
 2. Sound sends **"Was this you?"** only to contact details that **did not just change**, or asks her to call the number on her card or visit a branch. Never to the new email or phone: the scammer controls those.
 3. Staff get a case with the timeline.
 
@@ -63,7 +63,7 @@ A case card: the same timeline, the paused amount ($1,574.18, the first of the t
 
 ### The honest look-alike: it bothers some real members
 **M1039** (and M1041, M1051, M1114) really forgot their password, reset it, updated their address after a move, then paid the first month's rent to a new landlord. The trigger catches them too.
-- **Their fast path:** their **phone didn't change**, so "Was this you?" goes straight to it. One tap, and the rent goes the same day.
+- **Their fast path:** their **phone didn't change**, so "Was this you?" goes straight to it, and the rent is released when they tap.
 - If everything changed, they confirm by calling the number on the card or at a branch.
 
 ---
@@ -71,8 +71,10 @@ A case card: the same timeline, the paused amount ($1,574.18, the first of the t
 ## Mode 2: Tricked member (Linda). Screens today, working Sunday.
 
 ### The trigger
-- a **wire or cash** payment that is **much bigger than usual** (`amount_to_baseline_ratio` ≥ 3)
-- to a **new recipient**, or the **first payment on that rail in a long time** (`days_since_last_same_rail` ≥ 180)
+- a **wire** at least **3x the member's 12-month 90th-percentile outgoing payment** (`amount_to_baseline_ratio` ≥ 3)
+- to a recipient **added less than 1 day earlier** (`recipient_age_days` < 1)
+
+An alternative in `app/src/data/policy.ts` adds up that day's wires to the same recipient and holds at 2.5x.
 
 ### What happens
 1. Sound uses its **hold** (it can pause a wire for up to 4 hours).
@@ -94,14 +96,14 @@ A case card: the same timeline, the paused amount ($1,574.18, the first of the t
 What she tapped (only if she chooses to share it), the facts, a short script for that scam type, and buttons: **Release** / **Keep holding (up to 4h)** / **Escalate** / **Open a case**.
 
 ### The honest look-alike
-**M1057**: a real **$51,587 home-closing wire**. It's big, it goes to a new recipient, and it's caught. Their silent check shows "buying a home", nothing matches a scam, and one call or tap releases it the same day.
+**M1057**: a real **$51,586.52 home-closing wire**. Second Look adds no hold to it, because the recipient was added 2 days earlier. Sound's existing wire review is unchanged.
 
 ---
 
 ## The scam we miss (we show it on purpose)
 
-**Michael (M1002), a romance scam.** His P2P payments grew slowly for weeks, then turned into wires. Neither trigger flags him. Across the kit's 12 romance cases, the tricked trigger catches only 1, and late. P2P money can't be recalled.
-- **What still helps:** the "I think I was scammed" report path starts recovery faster, and the pilot measures this gap.
+**Michael (M1002), a romance scam.** His P2P payments grew slowly for weeks, then turned into wires. Neither trigger flags him: **$8,487.77 lost**. Across the kit's 12 romance cases, the triggers catch none ($77,864 lost, none recovered).
+- **What still helps:** the "I think I've been scammed" report path starts recovery faster, and the pilot measures this gap.
 
 ---
 
@@ -110,7 +112,7 @@ What she tapped (only if she chooses to share it), the facts, a short script for
 | Trigger | Scams it flags | Honest look-alikes it flags |
 |---|---|---|
 | Takeover (reset + contact change + new recipient) | Takeover: **12 of 12** · other scams: 0 · normal members: 0 | 4 of 20 (people who moved) |
-| Tricked (big first wire/cash to someone new) | Family emergency: **10 of 12** · gov't impersonation: 4 of 12 · romance: 1 of 12 · normal members: 0 | 4 of 20 (home-closing wires) |
+| Tricked (a wire at 3x or more to a recipient added less than 1 day earlier) | Family emergency: **10 of 12** · gov't impersonation: 4 of 12 · romance: 0 of 12 · normal members: 0 | 0 of 20 |
 
 The kit is about 41% scam victims by design, and real life is far lower. So these numbers show how the design behaves. **They are not accuracy claims.**
 
