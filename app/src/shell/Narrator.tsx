@@ -42,12 +42,13 @@ export function Narrator({ steps, index, onPrev, onNext, onGo, extra }: Props) {
       </div>
       <div className="flex shrink-0 flex-col items-end gap-3">
         {extra}
-        <div className="flex gap-1.5" role="tablist" aria-label="Steps">
+        <div className="flex gap-1.5" role="group" aria-label="Steps">
           {steps.map((s, i) => (
             <button
               key={s.id}
               type="button"
               aria-label={`Step ${i + 1}: ${s.title}`}
+              aria-current={i === index ? 'step' : undefined}
               onClick={() => onGo(i)}
               className={`h-1.5 rounded-full transition-all ${i === index ? 'w-8 bg-ink' : i < index ? 'w-4 bg-slate-400' : 'w-4 bg-slate-200'}`}
             />

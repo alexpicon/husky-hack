@@ -33,6 +33,7 @@ export function RemoteView({ tabs, active, scenario, index, onSelect, onPrev, on
             key={t.id}
             type="button"
             onClick={() => onSelect(t.id)}
+            aria-current={t.id === active ? 'page' : undefined}
             className={`flex items-center gap-2 rounded-2xl px-3 py-3 text-left ring-1 transition ${t.id === active ? 'bg-ink text-white ring-ink' : 'bg-white ring-line'}`}
           >
             <span className={`size-2.5 shrink-0 rounded-full ${toneDot[t.tone]}`} />
@@ -55,12 +56,13 @@ export function RemoteView({ tabs, active, scenario, index, onSelect, onPrev, on
           </div>
           <h1 className="mt-3 font-display text-[30px] leading-tight">{step.title}</h1>
           <p className="mt-3 text-[17px] leading-relaxed text-ink-2">{step.caption}</p>
-          <div className="mt-auto flex justify-center gap-2 pt-5">
+          <div className="mt-auto flex justify-center gap-2 pt-5" role="group" aria-label="Steps">
             {scenario.steps.map((s, i) => (
               <button
                 key={s.id}
                 type="button"
                 aria-label={`Step ${i + 1}: ${s.title}`}
+                aria-current={i === index ? 'step' : undefined}
                 onClick={() => onGo(i)}
                 className={`h-2.5 rounded-full transition-all ${i === index ? 'w-9 bg-ink' : 'w-5 bg-slate-200'}`}
               />
