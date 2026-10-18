@@ -81,7 +81,7 @@ export function SoundAppScreen({ title, tab, back = false, right, report, childr
             <button
               type="button"
               onClick={sheet.open}
-              className="flex h-5 items-center gap-1.5 rounded-full bg-white/15 px-3 text-[13px] font-semibold text-white transition hover:bg-white/25 focus-visible:outline-white"
+              className="flex h-5 items-center gap-1.5 rounded-full bg-white/15 px-3 text-[13px] font-semibold text-white transition hover:bg-white/25 focus-visible:outline-white!"
             >
               <ShieldAlert size={14} aria-hidden />
               I think I've been scammed
