@@ -9,7 +9,11 @@ import { GROUP_RESULTS, NO_PATTERN, QUOTE_MAX } from './results'
 
 vi.hoisted(() => {
   Object.assign(globalThis, {
-    window: { location: { origin: 'https://demo.test', pathname: '/', search: '' } },
+    window: {
+      location: { origin: 'https://demo.test', pathname: '/', search: '' },
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    },
   })
 })
 vi.stubGlobal(
