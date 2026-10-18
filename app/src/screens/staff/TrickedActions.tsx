@@ -125,7 +125,7 @@ export function TrickedActions({ f, now }: { f: TrickedFacts; now: Date }) {
             icon={<Hourglass size={18} />}
             label={`Keep holding (up to ${HOLD_HOURS}h)`}
             doneLabel={done ? 'Held' : `Holding until ${holdUntil}`}
-            hint={`Up to ${plural(HOLD_HOURS, 'hour')} in total, until ${holdUntil}`}
+            hint={`${plural(HOLD_HOURS, 'hour')} in total: until ${holdUntil}`}
             onClick={() => act('holding')}
           />
           <ActionButton

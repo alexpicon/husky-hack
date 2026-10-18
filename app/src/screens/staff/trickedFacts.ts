@@ -2,10 +2,16 @@ import eventsCsv from '@kit/HuskyHack_Synthetic_Events_v2.csv?raw'
 import { parseCsv, type Row } from '../../data/csv'
 import { eventsFor, type KitEvent } from '../../data/kit'
 import { firstHit, isTricked } from '../../data/triggers'
-import { trickedRatio } from '../../data/trickedRules'
+import {
+  TRICKED_RECIPIENT_MAX_AGE_DAYS,
+  TRICKED_RULES,
+  trickedRatio,
+  type LindaRule,
+} from '../../data/trickedRules'
+import { POLICY } from '../../data/policy'
 import { minutesBetween } from '../../ui/format'
 import { HOLD_HOURS, LINDA, LINDA_NAME } from '../linda/facts'
-import { need } from './helpers'
+import { need, plural } from './helpers'
 
 export { HOLD_HOURS }
 
@@ -60,4 +66,14 @@ export function trickedFacts(member: string): TrickedFacts {
       (e) => e.type === 'Confirmation Requested' && e.paymentId === hit.paymentId,
     ),
   }
+}
+
+/** The wire desk's one-line statement of Linda's rule, in either variant. */
+export function wireRuleText(rule: LindaRule = POLICY.lindaRule) {
+  const { ratio, sameDay } = TRICKED_RULES[rule]
+  const recent = `a recipient added less than ${plural(TRICKED_RECIPIENT_MAX_AGE_DAYS, 'day')} ago`
+  const baseline = "the member's 12-month 90th-percentile payment"
+  return sameDay
+    ? `a day's wires to ${recent}, together at least ${ratio}x ${baseline}.`
+    : `a wire at least ${ratio}x ${baseline}, to ${recent}.`
 }

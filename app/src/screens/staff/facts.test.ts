@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { takeoverFacts } from './takeoverFacts'
-import { trickedFacts } from './trickedFacts'
+import { trickedFacts, wireRuleText } from './trickedFacts'
 
 const ids = (list: { id: string }[]) => list.map((e) => e.id)
 
@@ -39,5 +39,16 @@ describe('tricked case facts', () => {
     expect(f.holdEnds.getMinutes()).toBe(11)
     expect(f.trustedOnFile).toBe(false)
     expect(f.spokenCheck?.id).toBe('E00048')
+  })
+})
+
+describe("the wire desk's rule line", () => {
+  it('states each variant in 90th-percentile terms, never "usual"', () => {
+    expect(wireRuleText('per-wire-3x')).toBe(
+      "a wire at least 3x the member's 12-month 90th-percentile payment, to a recipient added less than 1 day ago.",
+    )
+    expect(wireRuleText('same-day-2.5x')).toBe(
+      "a day's wires to a recipient added less than 1 day ago, together at least 2.5x the member's 12-month 90th-percentile payment.",
+    )
   })
 })

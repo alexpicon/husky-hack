@@ -1,21 +1,11 @@
 import { Banknote, Clock, Hourglass } from 'lucide-react'
-import {
-  TRICKED_RATIO,
-  TRICKED_RECIPIENT_MAX_AGE_DAYS,
-  TRICKED_SAME_DAY,
-} from '../../data/trickedRules'
+import { TRICKED_SAME_DAY } from '../../data/trickedRules'
 import { clock, money } from '../../ui/format'
 import { Source } from '../../ui/primitives'
 import { caseActions, useLindaCase } from '../linda/lindaCase'
 import { plural } from './helpers'
 import { FactRow, Panel, StatusPill } from './parts'
-import { HOLD_HOURS, type TrickedFacts } from './trickedFacts'
-
-const recent = `a recipient added less than ${plural(TRICKED_RECIPIENT_MAX_AGE_DAYS, 'day')} ago`
-const baseline = "the member's 12-month 90th-percentile payment"
-const RULE = TRICKED_SAME_DAY
-  ? `a day's wires to ${recent}, together at least ${TRICKED_RATIO}x ${baseline}.`
-  : `a wire at least ${TRICKED_RATIO}x ${baseline}, to ${recent}.`
+import { HOLD_HOURS, wireRuleText, type TrickedFacts } from './trickedFacts'
 
 export function WireFacts({ f }: { f: TrickedFacts }) {
   const { hit, recipientAdded } = f
@@ -48,7 +38,7 @@ export function WireFacts({ f }: { f: TrickedFacts }) {
         </FactRow>
       </div>
       <p className="mt-3 text-xs leading-relaxed text-ink-3">
-        <span className="font-semibold text-ink-2">Rule:</span> {RULE}
+        <span className="font-semibold text-ink-2">Rule:</span> {wireRuleText()}
       </p>
     </Panel>
   )
