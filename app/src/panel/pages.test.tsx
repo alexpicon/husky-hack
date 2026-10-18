@@ -2,7 +2,7 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it, vi } from 'vitest'
 import { isPanelView, type View } from '../shell/view'
-import { judgeName, postLine, PRIVACY, SOURCE_LINE } from './copy'
+import { judgeName, postLine, PRIVACY, PRIVATE_PAGE, SOURCE_LINE } from './copy'
 import { PanelPhone } from './PanelPhone'
 import { PanelWall, WallRow } from './PanelWall'
 import { clipQuote, GROUP_RESULTS, NO_PATTERN, QUOTE_MAX } from './results'
@@ -43,6 +43,15 @@ describe("a judge's phone", () => {
     expect(text).toContain(PRIVACY.keywords)
     expect(PRIVACY.keywords).toContain(`first ${QUOTE_MAX} characters`)
     expect(PRIVACY.ai).toContain('AI provider')
+  })
+
+  it('says once, and only one way, what reaches the wall', () => {
+    for (const mode of ['keywords', 'ai'] as const) {
+      const footer = `${PRIVACY[mode]} ${PRIVATE_PAGE}`
+      expect(footer.match(/reach(?:es)? the wall/g)).toHaveLength(1)
+      expect(footer).not.toMatch(/only your result/i)
+    }
+    expect(text).toContain(PRIVATE_PAGE)
   })
 
   it('has no presenter controls or story tabs', () => {

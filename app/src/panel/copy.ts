@@ -26,7 +26,7 @@ export const SOURCE_LINE: Record<Source, string> = {
   keywords: 'Matched your words to our list.',
 }
 
-export const PRIVATE_PAGE = 'This page is yours alone. Only your result reaches the wall.'
+export const PRIVATE_PAGE = 'This page is yours alone.'
 
 export const judgeName = (entry: PanelEntry) => entry.judge ?? `Judge ${entry.n}`
 
