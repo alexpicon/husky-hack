@@ -5,6 +5,7 @@ import { ChangeTimeline } from './ChangeTimeline'
 import { ContactsPanel } from './ContactsPanel'
 import { MoneyPanel } from './MoneyPanel'
 import { OutcomeBanner } from './OutcomeBanner'
+import { useReportedCase } from '../../report/report'
 import { CaseHeader, StatusPill } from './parts'
 import { ResponsePanel } from './ResponsePanel'
 import { SignalsPanel } from './SignalsPanel'
@@ -30,14 +31,16 @@ export function TakeoverCase({ member, stage }: { member: 'M1003' | 'M1039'; sta
   const pill = stagePill[stage]
   const open = isOpen(stage)
   const watching = stage === 'watching'
+  const reportedCase = useReportedCase(member)
+  const caseId = open ? f.caseId : reportedCase
   return (
-    <StaffWindow title={open ? `Case ${f.caseId}` : 'Account monitor'}>
+    <StaffWindow title={caseId ? `Case ${caseId}` : 'Account monitor'}>
       <div className="@container space-y-5">
         <CaseHeader
           name={f.name}
           member={member}
           kind={`${open ? `Account takeover · ${tierName(f).toLowerCase()}` : 'Account takeover watch'} · ${day(f.hit.at)}`}
-          caseId={open ? f.caseId : undefined}
+          caseId={caseId}
           pill={
             <StatusPill tone={pill.tone} live={pill.live}>
               {pill.label}

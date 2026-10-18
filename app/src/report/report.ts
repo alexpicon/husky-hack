@@ -110,3 +110,9 @@ export const ReportContext = createContext<Api>({
 })
 
 export const useReport = () => useContext(ReportContext)
+
+/** The case reference a member's own report opened, so staff headers never say "No case yet" beside it. */
+export function useReportedCase(member: string): string | undefined {
+  const report = useReport().state.report
+  return report && report.member === member ? reportRef(report) : undefined
+}

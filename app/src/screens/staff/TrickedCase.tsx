@@ -1,5 +1,6 @@
 import { Quote } from 'lucide-react'
 import { motion } from 'motion/react'
+import { useReportedCase } from '../../report/report'
 import { ReportBanner } from '../../report/ReportBanner'
 import { StaffWindow } from '../../ui/devices'
 import { day } from '../../ui/format'
@@ -50,7 +51,8 @@ export function TrickedCase({
 }) {
   const f = trickedFacts(member)
   const { state } = useLindaCase()
-  const caseId = state.staffActions.includes('case-opened') ? f.caseId : undefined
+  const reportedCase = useReportedCase(member)
+  const caseId = state.staffActions.includes('case-opened') ? f.caseId : reportedCase
   return (
     <StaffWindow title={`Wire desk · ${caseId ?? `Hold on ${f.hit.paymentId}`}`}>
       <div className="@container space-y-5">
