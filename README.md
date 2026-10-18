@@ -235,6 +235,13 @@ Each decision has both behaviors built and tested, with matching words on every 
 | Employee effort (staff time per resolved case) | 15 min | 8 min or less |
 | After-hours holds waiting for review (held past 4 hours) | Some wait for the next morning | None: an unreviewed payment is not sent |
 
+## Everyone plays: the panel wall
+
+- **The wall** (`?view=wall`, or **Panel wall** beside **New run** or in the session panel) shows "PANEL RESULTS · live", a QR code and a short code. With a session, the wall reuses its code.
+- **Each judge's phone** (`?view=panel&wall=CODE`, from the QR) gets a private Skipper: "Scan it. You're Linda. Tell Skipper what the 'grandson' said." Skipper suggests taps quoting her words; she confirms ("Yes, that's right" / "Not quite"), and the 2-tap rule names the result, such as "fits grandparent scam · wire held". Then **Try the drill** opens `?view=drill`.
+- **Only the result and the first 40 characters** of what she typed reach the wall. Posts are append-only, kept under their own keys apart from the demo session (they can't change Linda's case), capped at the last 40 lines and 120 posts per code, rate limited per address, and gone after 6 hours.
+- **If nobody scans,** "Add one yourself" on the wall posts through the same Skipper, labeled "Presenter".
+
 ---
 
 ## Prototype
