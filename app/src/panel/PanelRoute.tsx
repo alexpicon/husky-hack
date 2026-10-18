@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
+import { VoiceDrill } from '../screens/linda/drill/VoiceDrill'
 import type { PanelView } from '../shell/view'
-import { DrillPage } from './DrillPage'
 import { PanelPhone } from './PanelPhone'
 import { PanelWall } from './PanelWall'
 import { newWallCode, readWallCode } from './wallClient'
@@ -20,6 +20,12 @@ function WallPage() {
 /** The pages that stand apart from the demo: a judge's phone, the wall, and the drill. */
 export function PanelRoute({ view }: { view: PanelView }) {
   if (view === 'wall') return <WallPage />
-  if (view === 'drill') return <DrillPage />
+  if (view === 'drill') {
+    return (
+      <main className="min-h-dvh">
+        <VoiceDrill standalone />
+      </main>
+    )
+  }
   return <PanelPhone code={readWallCode(window.location.search)} />
 }
