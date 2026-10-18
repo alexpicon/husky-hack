@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react'
 import { SoundLogo } from '../../ui/brand'
 import { motion } from 'motion/react'
-import { Info, Lightbulb } from 'lucide-react'
+import { Info, Lightbulb, PauseCircle } from 'lucide-react'
+import { checkBackBy } from './copy'
+import { dollars, lindaFacts } from './facts'
 
 /**
  * Wraps each of Linda's member screens, with an optional label that says what is
@@ -44,7 +46,23 @@ export function TabletHeader({ right }: { right: ReactNode }) {
   return (
     <div className="flex items-center justify-between">
       <SoundLogo height={16} />
-      <span className="flex items-center gap-2 text-sm font-medium text-ink-2">{right}</span>
+      <span className="flex items-center gap-2 text-sm font-medium whitespace-nowrap text-ink-2">
+        {right}
+      </span>
     </div>
+  )
+}
+
+/** The concept tablet's status while the wire is paused, with the time of the next update. */
+export function PausedStatus() {
+  const f = lindaFacts()
+  return (
+    <>
+      <PauseCircle size={16} className="text-warn" aria-hidden />
+      Your wire is paused · <span className="num font-mono">{dollars(f.wire.amount)}</span>
+      <span className="ml-1 rounded-full bg-warn-soft px-2.5 py-0.5 text-xs font-semibold text-warn">
+        {checkBackBy()}
+      </span>
+    </>
   )
 }

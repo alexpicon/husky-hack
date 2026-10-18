@@ -1,7 +1,7 @@
 import { motion } from 'motion/react'
-import { CircleX, LifeBuoy, MessageCircle } from 'lucide-react'
+import { CircleX, Clock, LifeBuoy, MessageCircle } from 'lucide-react'
 import { SOUND, SoundButton, SoundCard } from '../../ui/soundApp'
-import { AUTONOMY, callBack, readTaps, replies } from './copy'
+import { AUTONOMY, callBack, checkBackBy, HOLD_PROMISE, readTaps, replies } from './copy'
 import { NavyIcon, SoundKiosk } from './kiosk'
 import { caseActions, useLindaCase } from './lindaCase'
 import { ENDING_ICON, outcomeCopy, SEQUEL } from './outcomes'
@@ -72,6 +72,12 @@ export function DecideSound({ at }: { at: Date }) {
           <LifeBuoy size={18} aria-hidden /> Help me check this
         </SoundButton>
       </div>
+      <SoundCard className="flex items-start gap-3 py-3">
+        <NavyIcon icon={Clock} size={24} />
+        <p className="text-[16px] leading-snug">
+          <strong>{checkBackBy()}.</strong> {HOLD_PROMISE}
+        </p>
+      </SoundCard>
       <div className="mt-auto flex items-center justify-between gap-3">
         <p
           className="text-[16px] font-semibold"

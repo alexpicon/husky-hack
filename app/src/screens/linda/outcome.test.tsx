@@ -6,6 +6,8 @@ import { TrickedCase } from '../staff/TrickedCase'
 import { linda } from '../../story/linda'
 import { clock } from '../../ui/format'
 import { Decide } from './Decide'
+import { MatchResult } from './MatchResult'
+import { SilentCheck } from './SilentCheck'
 import { lindaFacts, storyTimes } from './facts'
 import {
   caseActions,
@@ -59,6 +61,15 @@ describe.each(['concept', 'sound'] as const)("Linda's last screen (%s look)", (v
     const html = render(initialCase, <Decide at={t.decide} />)
     for (const choice of ['Cancel this wire', 'Help me check this', 'talk to staff']) {
       expect(html).toContain(choice)
+    }
+  })
+
+  it('tells her when we will check back while the wire is paused, never as a countdown', () => {
+    const update = `We'll check back by ${clock(lindaFacts().holdEnds)}`
+    for (const screen of [<SilentCheck />, <MatchResult />, <Decide at={t.decide} />]) {
+      const html = render(initialCase, screen)
+      expect(html).toContain(update)
+      expect(html).not.toMatch(/\d+\s*(h|hours?|min|minutes?)\s+(left|remaining)/i)
     }
   })
 

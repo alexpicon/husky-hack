@@ -1,34 +1,37 @@
 import { motion } from 'motion/react'
-import { CircleX, LifeBuoy, MessageCircle, PauseCircle } from 'lucide-react'
+import { CircleX, Clock, LifeBuoy, MessageCircle } from 'lucide-react'
 import { Tablet } from '../../ui/devices'
 import { useLook } from '../../ui/look'
-import { AUTONOMY, callBack, readTaps, replies } from './copy'
+import { AUTONOMY, callBack, checkBackBy, HOLD_PROMISE, readTaps, replies } from './copy'
 import { DecideSound } from './DecideSound'
 import { dollars, lindaFacts } from './facts'
 import { caseActions, useLindaCase } from './lindaCase'
 import { ENDING_ICON, outcomeCopy, SEQUEL } from './outcomes'
-import { TabletHeader } from './parts'
+import { PausedStatus, TabletHeader } from './parts'
 
 function DecideConcept({ at }: { at: Date }) {
   const f = lindaFacts()
   const { state, update } = useLindaCase()
   const ending = state.outcome && outcomeCopy(state.outcome)
   const call = callBack(readTaps(state.taps))
-  const Icon = state.outcome ? ENDING_ICON[state.outcome.kind] : PauseCircle
+  const Icon = state.outcome && ENDING_ICON[state.outcome.kind]
 
   return (
     <Tablet caption={ending ? 'Branch tablet - how her wire ended' : 'Branch tablet - Linda decides'}>
       <div className="flex min-h-full flex-col gap-4 px-6 py-5">
         <TabletHeader
           right={
-            <>
-              <Icon size={16} className={ending ? 'text-brand' : 'text-warn'} aria-hidden />
-              {ending ? ending.status : 'Your wire is paused'} ·{' '}
-              <span className="num font-mono">{dollars(f.wire.amount)}</span>
-            </>
+            ending && Icon ? (
+              <>
+                <Icon size={16} className="text-brand" aria-hidden />
+                {ending.status} · <span className="num font-mono">{dollars(f.wire.amount)}</span>
+              </>
+            ) : (
+              <PausedStatus />
+            )
           }
         />
-        {ending ? (
+        {ending && Icon ? (
           <>
             <motion.div
               initial={{ opacity: 0, y: 6 }}
@@ -79,6 +82,12 @@ function DecideConcept({ at }: { at: Date }) {
                 <LifeBuoy size={18} className="text-brand" aria-hidden /> Help me check this
               </button>
             </div>
+            <p className="flex items-start gap-3 rounded-2xl bg-warn-soft px-4 py-3 text-[16px] leading-snug text-ink ring-1 ring-amber-200 ring-inset">
+              <Clock size={18} className="mt-0.5 shrink-0 text-warn" aria-hidden />
+              <span>
+                <strong>{checkBackBy()}.</strong> {HOLD_PROMISE}
+              </span>
+            </p>
             <div className="mt-auto flex items-center justify-between gap-3">
               <p
                 className={`text-base font-semibold ${state.wantsToSend ? 'text-safe' : 'text-ink'}`}

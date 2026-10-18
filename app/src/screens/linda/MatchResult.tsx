@@ -1,19 +1,17 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { HeartHandshake, MessageCircle, PauseCircle, Phone, PhoneCall } from 'lucide-react'
+import { HeartHandshake, MessageCircle, Phone, PhoneCall } from 'lucide-react'
 import { useStory } from '../../story/engine'
 import { Tablet } from '../../ui/devices'
 import { useLook } from '../../ui/look'
 import { AUTONOMY, callBack, readTaps, replies, verdict } from './copy'
-import { dollars, lindaFacts } from './facts'
 import { caseActions, useLindaCase } from './lindaCase'
 import { outcomeCopy } from './outcomes'
 import { MatchResultSound } from './MatchResultSound'
-import { TabletHeader } from './parts'
+import { PausedStatus, TabletHeader } from './parts'
 import { ShareSwitch } from './ShareSwitch'
 
 function MatchResultConcept() {
-  const f = lindaFacts()
   const { next } = useStory()
   const { state, update } = useLindaCase()
   const [calling, setCalling] = useState(false)
@@ -26,14 +24,7 @@ function MatchResultConcept() {
   return (
     <Tablet caption="Branch tablet - her answers stay private unless she shares them">
       <div className="flex min-h-full flex-col gap-3 px-6 py-5">
-        <TabletHeader
-          right={
-            <>
-              <PauseCircle size={16} className="text-warn" aria-hidden />
-              Your wire is paused · <span className="num font-mono">{dollars(f.wire.amount)}</span>
-            </>
-          }
-        />
+        <TabletHeader right={<PausedStatus />} />
 
         <ul className="flex flex-wrap items-center gap-1.5" aria-label="What you tapped">
           <li className="mr-1 text-sm font-medium text-ink-3">

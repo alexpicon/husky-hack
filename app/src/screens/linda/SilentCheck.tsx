@@ -1,12 +1,12 @@
 import { motion } from 'motion/react'
-import { ArrowRight, Check, Info, PauseCircle } from 'lucide-react'
+import { ArrowRight, Check, Info } from 'lucide-react'
 import { useStory } from '../../story/engine'
 import { Tablet } from '../../ui/devices'
 import { useLook } from '../../ui/look'
 import { Button, Source } from '../../ui/primitives'
-import { dollars, lindaFacts } from './facts'
+import { lindaFacts } from './facts'
 import { caseActions, useLindaCase } from './lindaCase'
-import { TabletHeader } from './parts'
+import { PausedStatus, TabletHeader } from './parts'
 import { SilentCheckSound } from './SilentCheckSound'
 import { CHECK_LAYOUT, type TapOption } from './taps'
 
@@ -51,14 +51,7 @@ function SilentCheckConcept() {
   return (
     <Tablet caption="Branch tablet - Linda taps privately">
       <div className="flex min-h-full flex-col gap-3 px-6 py-5">
-        <TabletHeader
-          right={
-            <>
-              <PauseCircle size={16} className="text-warn" aria-hidden />
-              Your wire is paused · <span className="num font-mono">{dollars(f.wire.amount)}</span>
-            </>
-          }
-        />
+        <TabletHeader right={<PausedStatus />} />
 
         <motion.div
           initial={{ opacity: 0, y: 6 }}

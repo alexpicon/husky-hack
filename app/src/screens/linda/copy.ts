@@ -1,3 +1,5 @@
+import { clock } from '../../ui/format'
+import { lindaFacts } from './facts'
 import { nameScam } from './scams'
 import { TAP_OPTIONS, type TapId } from './taps'
 
@@ -9,6 +11,12 @@ export const replies: Record<Exclude<Reply, null>, string> = {
 }
 
 export const AUTONOMY = "It's your money and your decision."
+
+/** When the hold ends, said as the time of the next update: never a countdown. */
+export const checkBackBy = () => `We'll check back by ${clock(lindaFacts().holdEnds)}`
+
+export const HOLD_PROMISE =
+  "Your wire stays paused while you decide. If we can't reach you by then, it isn't sent and the money stays in your account."
 
 /** What her own taps say. Nothing here reads the kit's answer key or fills in for her. */
 export function readTaps(taps: readonly TapId[]) {
