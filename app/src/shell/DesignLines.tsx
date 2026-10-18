@@ -15,6 +15,9 @@ import {
   type TakeoverClock,
 } from './designCheck'
 
+/** One chart row: a label column, then the minute track. */
+const ROW = 'grid grid-cols-[104px_1fr] gap-3 sm:grid-cols-[150px_1fr]'
+
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`
 
 type StripProps = { label: string; clocks: TakeoverClock[]; max: number; dot: string; note: string }
@@ -27,7 +30,7 @@ function Strip({ label, clocks, max, dot, note }: StripProps) {
   const seen = new Map<number, number>()
   const count = (m: number) => minutes.filter((x) => x === m).length
   return (
-    <div className="grid grid-cols-[150px_1fr] items-center gap-3">
+    <div className={`${ROW} items-center`}>
       <div className="text-xs leading-tight font-semibold text-ink-2">
         {label}
         <span className="block font-normal text-ink-3">{note}</span>
@@ -78,7 +81,7 @@ export function MinuteZero() {
         <b className="text-ink">Second Look moves that step to the moment the payment starts.</b>
       </p>
       <div className="mt-5 space-y-1" role="img" aria-label={summary}>
-        <div className="grid grid-cols-[150px_1fr] items-center gap-3">
+        <div className={`${ROW} items-center`}>
           <div className="text-xs leading-tight font-semibold text-brand">
             Second Look
             <span className="block font-normal text-ink-3">hold and text at once</span>
@@ -102,7 +105,7 @@ export function MinuteZero() {
           dot="bg-rose-500"
           note={`${missed.count} takeovers · ${dollars(missed.lost)} lost`}
         />
-        <div className="grid grid-cols-[150px_1fr] gap-3 pt-1">
+        <div className={`${ROW} pt-1`}>
           <span />
           <div>
             <div className="relative h-4 font-mono text-[10px] text-ink-3">

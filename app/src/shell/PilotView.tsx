@@ -128,7 +128,7 @@ function Measures() {
 
 function Pilot() {
   return (
-    <Card className="grid gap-x-10 p-7 xl:grid-cols-[1fr_1.35fr]">
+    <Card className="grid grid-cols-1 gap-x-10 p-7 xl:grid-cols-[1fr_1.35fr]">
       <div>
         <Eyebrow>90-day pilot</Eyebrow>
         <h3 className="mt-2 font-display text-2xl">Shadow first, then a small group</h3>
@@ -158,13 +158,13 @@ export function PilotView() {
       <h1 className="mt-2 font-display text-[44px] leading-[1.05] tracking-tight">
         Tested on the organizers’ data. Honest about the miss.
       </h1>
-      <div className="mt-8 grid gap-6">
+      <div className="mt-8 grid grid-cols-1 gap-6">
         <ResultsMatrix />
-        <div className="grid gap-6 xl:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           <MinuteZero />
           <FamilySplit />
         </div>
-        <div className="grid gap-6 xl:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           <MichaelMiss />
           <LeftAlone />
         </div>
