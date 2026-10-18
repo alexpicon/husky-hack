@@ -9,7 +9,8 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "test": "vitest run",
-    "demo": "vite --host"
+    "demo": "vite --host",
+    "skipper:eval": "node --experimental-strip-types --no-warnings=ExperimentalWarning --env-file-if-exists=.env.local scripts/skipper-eval.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
