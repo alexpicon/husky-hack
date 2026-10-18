@@ -3,7 +3,6 @@ import { motion } from 'motion/react'
 import { Phone } from '../../ui/devices'
 import { clock, money } from '../../ui/format'
 import { useLook } from '../../ui/look'
-import { Badge } from '../../ui/primitives'
 import { sarah } from './facts'
 import { SoundBar } from './SoundChrome'
 import { SoundPaused } from './SoundPaused'
@@ -13,7 +12,6 @@ export function Paused() {
   const look = useLook()
   return (
     <div className="flex flex-col items-center gap-3">
-      <Badge tone="danger">Still the scammer's screen</Badge>
       {look === 'sound' ? <SoundPaused /> : <ConceptPaused />}
     </div>
   )

@@ -4,7 +4,7 @@ import { useStory } from '../../story/engine'
 import { Phone } from '../../ui/devices'
 import { clock, money } from '../../ui/format'
 import { useLook } from '../../ui/look'
-import { Badge, Source } from '../../ui/primitives'
+import { Source } from '../../ui/primitives'
 import { sarah } from './facts'
 import { ScreenTitle, SoundBar } from './SoundChrome'
 import { SoundSendMoney } from './SoundSendMoney'
@@ -23,7 +23,6 @@ export function SendMoney() {
   const look = useLook()
   return (
     <div className="flex flex-col items-center gap-3">
-      <Badge tone="danger">Signed in as Sarah, but it isn't her</Badge>
       {look === 'sound' ? <SoundSendMoney /> : <ConceptSendMoney />}
     </div>
   )

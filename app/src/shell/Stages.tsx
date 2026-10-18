@@ -1,8 +1,9 @@
 import { motion } from 'motion/react'
 import type { ReactNode } from 'react'
-import type { Step } from '../story/engine'
+import type { Step, Zone, Zones } from '../story/engine'
 import { Eyebrow } from '../ui/primitives'
 import { Fit } from './Fit'
+import { ZoneFrame } from './Zone'
 
 /** Natural width of the staff console before it is scaled to the screen. */
 const STAFF_WIDTH = 1080
@@ -21,32 +22,43 @@ function Enter({ id, children, className = '' }: { id: string; children: ReactNo
   )
 }
 
-const memberLabel = (step: Step) => step.memberLabel ?? 'What the member sees'
+/** A step that relabels the member pane (say, a card from the kit) keeps the zone's color. */
+const memberZone = (step: Step, zones: Zones): Zone =>
+  step.memberLabel ? { tone: 'member', label: step.memberLabel } : zones.member
 
-export function BothStage({ id, step }: { id: string; step: Step }) {
+/** The attacker's device, when the step has one and the story labels it. */
+function attackerZone(step: Step, zones: Zones) {
+  return step.attacker !== undefined && zones.attacker ? zones.attacker : null
+}
+
+type StageProps = { id: string; step: Step; zones: Zones }
+
+export function BothStage({ id, step, zones }: StageProps) {
+  const attacker = attackerZone(step, zones)
+  const columns = attacker
+    ? 'xl:grid-cols-[auto_auto_minmax(0,1fr)]'
+    : 'xl:grid-cols-[auto_minmax(0,1fr)]'
   return (
-    <Enter id={id} className="stage-fit mt-6 grid items-start gap-10 xl:grid-cols-[auto_1fr]">
-      <div className="flex flex-col items-center gap-3">
-        <Eyebrow>{memberLabel(step)}</Eyebrow>
-        {step.member}
-      </div>
-      <div className="flex min-w-0 flex-col gap-3">
-        <Eyebrow>What Sound staff see</Eyebrow>
-        {step.staff}
-      </div>
+    <Enter id={id} className={`stage-fit mt-6 grid items-start gap-7 ${columns}`}>
+      {attacker && <ZoneFrame zone={attacker}>{step.attacker}</ZoneFrame>}
+      <ZoneFrame zone={memberZone(step, zones)}>{step.member}</ZoneFrame>
+      <ZoneFrame zone={zones.staff}>{step.staff}</ZoneFrame>
     </Enter>
   )
 }
 
-/** Member screen alone: narration on the left, the device as large as the laptop allows. */
-export function MemberStage({ id, step, narrator }: { id: string; step: Step; narrator: ReactNode }) {
+/** Member screens alone: narration on the left, the devices as large as the laptop allows. */
+export function MemberStage({ id, step, zones, narrator }: StageProps & { narrator: ReactNode }) {
+  const attacker = attackerZone(step, zones)
   return (
     <div className="grid items-start gap-10 lg:grid-cols-[minmax(300px,380px)_1fr]">
       <div className="lg:sticky lg:top-28">{narrator}</div>
-      <Enter id={id} className="flex flex-col items-center gap-3">
-        <Eyebrow>{memberLabel(step)}</Eyebrow>
+      <Enter id={id}>
         <Fit maxScale={1.5} bottom={24}>
-          {step.member}
+          <div className="flex items-start gap-6">
+            {attacker && <ZoneFrame zone={attacker}>{step.attacker}</ZoneFrame>}
+            <ZoneFrame zone={memberZone(step, zones)}>{step.member}</ZoneFrame>
+          </div>
         </Fit>
       </Enter>
     </div>

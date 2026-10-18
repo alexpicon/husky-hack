@@ -2,7 +2,6 @@ import { useEffect, useRef, type ReactNode } from 'react'
 import { Lock } from 'lucide-react'
 import { Phone } from '../../ui/devices'
 import { clock, money } from '../../ui/format'
-import { Badge } from '../../ui/primitives'
 import { sarah } from './facts'
 import { Bubble, ThreadHeader } from './SoundChrome'
 
@@ -18,7 +17,6 @@ export function SarahsPhone({
 }) {
   return (
     <div className="flex flex-col items-center gap-3">
-      <Badge tone="safe">The real Sarah</Badge>
       <Phone
         time={clock(at)}
         caption={

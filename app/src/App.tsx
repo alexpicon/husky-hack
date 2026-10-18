@@ -7,12 +7,31 @@ import { SessionControl } from './shell/SessionControl'
 import { BothStage, MemberStage, StaffStage } from './shell/Stages'
 import { useWindowSync } from './shell/sync'
 import { initialView, ViewToggle, writeViewToUrl, type View } from './shell/view'
-import { StoryContext, type Scenario } from './story/engine'
+import { StoryContext, type Scenario, type Zones } from './story/engine'
 import { linda } from './story/linda'
 import { m1039 } from './story/m1039'
 import { sarah } from './story/sarah'
 
 const scenarios: Scenario[] = [sarah, m1039, linda]
+
+const SOUND_STAFF = { tone: 'staff', label: 'Sound staff', who: 'Sound Member Protection' } as const
+
+/** Zone labels for the stories that don't declare their own. */
+const DEFAULT_ZONES: Record<string, Zones> = {
+  [m1039.id]: {
+    member: { tone: 'member', label: "M1039's phone", who: 'The member, on their own phone' },
+    staff: SOUND_STAFF,
+  },
+  [linda.id]: {
+    member: { tone: 'member', label: 'Linda: branch tablet', who: 'Linda, at the branch' },
+    staff: { ...SOUND_STAFF, label: 'Sound staff: wire desk' },
+  },
+}
+const FALLBACK_ZONES: Zones = { member: { tone: 'member', label: 'What the member sees' }, staff: SOUND_STAFF }
+const zonesById: Record<string, Zones> = Object.fromEntries(
+  scenarios.map((s) => [s.id, s.zones ?? DEFAULT_ZONES[s.id] ?? FALLBACK_ZONES]),
+)
+
 const PILOT: Tab = { id: 'pilot', label: 'Design check', sublabel: 'Kit data + pilot', tone: 'brand' }
 const tabs: Tab[] = [...scenarios, PILOT]
 
@@ -73,6 +92,9 @@ export default function App() {
 
   const step = scenario?.steps[index]
   const id = `${active}-${step?.id}`
+  const zones = zonesById[active]
+  // Three zones side by side need the wider page, or the staff console drops to one column.
+  const width = view === 'both' && !step?.attacker ? 'max-w-[1440px]' : 'max-w-[1680px]'
   const narrator = scenario && (
     <Narrator
       steps={scenario.steps}
@@ -108,18 +130,18 @@ export default function App() {
   return (
     <StoryContext.Provider value={api}>
       <Header tabs={tabs} active={active} onSelect={setActive} />
-      <main
-        className={`mx-auto px-6 pt-8 pb-16 lg:px-8 ${view === 'both' ? 'max-w-[1440px]' : 'max-w-[1680px]'}`}
-      >
+      <main className={`mx-auto px-6 pt-8 pb-16 lg:px-8 ${width}`}>
         {!scenario && <PilotView />}
         {scenario && !step && <p className="text-ink-3">This story is being built.</p>}
-        {step && view === 'both' && (
+        {step && zones && view === 'both' && (
           <>
             {narrator}
-            <BothStage id={id} step={step} />
+            <BothStage id={id} step={step} zones={zones} />
           </>
         )}
-        {step && view === 'member' && <MemberStage id={id} step={step} narrator={narrator} />}
+        {step && zones && view === 'member' && (
+          <MemberStage id={id} step={step} zones={zones} narrator={narrator} />
+        )}
         {step && view === 'staff' && (
           <>
             {narrator}

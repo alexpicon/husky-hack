@@ -3,7 +3,6 @@ import { Building2, Check, Phone as PhoneIcon, ShieldCheck } from 'lucide-react'
 import { motion } from 'motion/react'
 import { money } from '../../ui/format'
 import { Source } from '../../ui/primitives'
-import { Compare } from './Compare'
 import { afterPause, sarah } from './facts'
 import { SarahsPhone } from './Thread'
 
@@ -18,7 +17,7 @@ function Done({ children }: { children: ReactNode }) {
   )
 }
 
-/** Sarah's phone after the account is locked, with the outcome compared to today. */
+/** Sarah's phone after the account is locked. */
 export function Secured() {
   const { paused } = sarah
   return (
@@ -63,14 +62,6 @@ export function Secured() {
           </motion.div>
         </div>
       </SarahsPhone>
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.4 }}
-        className="relative z-10 -mt-20"
-      >
-        <Compare />
-      </motion.div>
     </div>
   )
 }

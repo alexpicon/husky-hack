@@ -13,7 +13,21 @@ export type Step = {
   staff: ReactNode
   /** Overrides the label above the member pane. */
   memberLabel?: string
+  /** A third device: what the attacker, signed in as the member, sees on their own screen. */
+  attacker?: ReactNode
 }
+
+export type ZoneTone = 'attacker' | 'member' | 'staff'
+
+/** A labeled area of the stage that says whose screen it is. */
+export type Zone = {
+  label: string
+  /** Completes "Who sees this: ...". Left out when a step relabels the pane. */
+  who?: string
+  tone: ZoneTone
+}
+
+export type Zones = { attacker?: Zone; member: Zone; staff: Zone }
 
 export type Scenario = {
   id: string
@@ -21,6 +35,7 @@ export type Scenario = {
   sublabel: string
   tone: Tone
   steps: Step[]
+  zones?: Zones
 }
 
 type StoryApi = {
