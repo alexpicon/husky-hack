@@ -74,7 +74,7 @@ function ConceptSendMoney() {
           </Row>
         </div>
         <p className="px-5 pt-3 text-[13px] text-ink-3">
-          {paused.rail} payments can't be pulled back once they're sent.
+          {paused.rail} payments usually can't be pulled back once they're sent.
         </p>
 
         <div className="mt-auto px-5 pt-5 pb-6">

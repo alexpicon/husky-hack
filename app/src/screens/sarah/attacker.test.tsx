@@ -69,6 +69,10 @@ describe.each(['concept', 'sound'] as const)("the captions under the scammer's p
     expect(send).not.toContain("Sarah's account, but it's the scammer holding the phone")
     expect(paused).toContain('There is no button to get around the pause')
   })
+
+  it('says P2P payments usually cannot be pulled back, as the kit shows (6 of 8 recalls failed)', () => {
+    expect(send).toContain("P2P payments usually can't be pulled back once they're sent.")
+  })
 })
 
 describe.each(['concept', 'sound'] as const)("M1039's in-app check (%s look)", (variant) => {

@@ -60,7 +60,7 @@ export function SoundSendMoney() {
           </SoundCard>
 
           <p className="px-1 text-[14px] leading-snug" style={muted}>
-            {paused.rail} payments can't be pulled back once they're sent.
+            {paused.rail} payments usually can't be pulled back once they're sent.
           </p>
 
           <div className="mt-auto pt-2">
