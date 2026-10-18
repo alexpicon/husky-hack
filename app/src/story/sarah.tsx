@@ -77,7 +77,7 @@ export const sarah: Scenario = {
     {
       id: 'secured',
       title: `Stopped ${minutesResetToPause} minutes after the reset. $0 lost.`,
-      caption: `Today both payments went through and Sarah lost ${money(key.netLoss)}. With Second Look the first is stopped and the ${money(second.amount)} payment never happens.`,
+      caption: `In the kit, without Second Look, both payments went through and Sarah lost ${money(key.netLoss)}. With Second Look the first is stopped and the ${money(second.amount)} payment never happens.`,
       clock: storyClock(afterPause(2)),
       attacker: (
         <IdleDevice
