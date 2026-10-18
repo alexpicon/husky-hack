@@ -21,9 +21,9 @@ function SkipperNote({ story, name, pronoun, shared, round }: Props) {
   if (!shared || !ours || !state.words) return null
   return (
     <Panel title={state.note ? NOTE_TITLE : wordsTitle(name)} icon={<MessageSquareText size={14} aria-hidden />}>
-      {state.note && <p className="text-[16px] leading-snug font-medium text-ink">“{state.note}”</p>}
+      {state.note && <p className="text-[16px] leading-snug font-medium text-ink">{`“${state.note}”`}</p>}
       <p className={`text-[14px] leading-snug text-ink-2 ${state.note ? 'mt-2' : ''}`}>
-        <span className="font-semibold text-ink">{pronoun} words:</span> “{state.words}”
+        <span className="font-semibold text-ink">{`${pronoun} words:`}</span> {`“${state.words}”`}
       </p>
     </Panel>
   )

@@ -78,7 +78,7 @@ export function SuggestedTap({ look, label, quote }: { look: Look; label: string
       <Square size={16} className="mt-0.5 shrink-0 opacity-60" aria-hidden />
       <span className="min-w-0">
         <span className="block text-[14px] leading-tight font-semibold">{label}</span>
-        <span className="block text-[13px] leading-snug italic opacity-75">“{quote}”</span>
+        <span className="block text-[13px] leading-snug italic opacity-75">{`“${quote}”`}</span>
       </span>
     </li>
   )
