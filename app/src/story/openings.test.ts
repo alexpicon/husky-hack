@@ -14,7 +14,7 @@ describe('the opening lines', () => {
   it.each(Object.entries(OPENINGS))('%s: no digits, no age, no em or en dash', (_, line) => {
     expect(line).not.toMatch(/\d/)
     expect(line).not.toMatch(/\b(age|aged|years? old)\b/i)
-    expect(line).not.toMatch(/[–—]/)
+    expect(line).not.toMatch(/[\u2013\u2014]/)
     expect(line.length).toBeLessThan(140)
   })
 })
