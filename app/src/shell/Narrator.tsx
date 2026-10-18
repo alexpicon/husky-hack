@@ -40,7 +40,7 @@ export function Narrator({ steps, index, onPrev, onNext, onGo, extra }: Props) {
           <p className="mt-2 max-w-3xl text-[17px] text-ink-2">{step.caption}</p>
         </motion.div>
       </div>
-      <div className="flex shrink-0 flex-col items-end gap-3">
+      <div className="flex max-w-full min-w-0 flex-col items-end gap-3">
         {extra}
         <div className="flex gap-1.5" role="group" aria-label="Steps">
           {steps.map((s, i) => (
