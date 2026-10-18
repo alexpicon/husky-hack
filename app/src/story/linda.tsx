@@ -33,7 +33,7 @@ export const linda: Scenario = {
     {
       id: 'drill',
       memberLabel: "Linda's phone: the Sound app",
-      title: 'Three weeks earlier, on a calm day',
+      title: 'Five weeks earlier, on a calm day',
       caption:
         'A concept, not a kit event: on an ordinary day, Linda tries a 2-minute drill in the Sound app. Real or AI? She learns a voice is no proof, even when she guesses right, and two habits that work instead. The lesson comes back when her wire is held.',
       clock: at(drillDay()),

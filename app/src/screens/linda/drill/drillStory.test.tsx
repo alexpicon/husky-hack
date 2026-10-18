@@ -6,6 +6,7 @@ import { linda } from '../../../story/linda'
 import { TrickedCase } from '../../staff/TrickedCase'
 import { storyTimes } from '../facts'
 import { SilentCheck } from '../SilentCheck'
+import { TRUSTED_RECENT_DAYS } from '../TrustedRules'
 import { DRILL_TITLE, OPT_IN, REMINDER } from './copy'
 import { DrillMemberCard, GUESSES_PRIVATE } from './DrillStaff'
 import { drillActions, initialDrill, updateDrill, writeDrill } from './drillState'
@@ -33,11 +34,16 @@ beforeEach(() => {
 afterEach(() => writeDrill(initialDrill))
 
 describe("Linda's first step", () => {
-  it('is the drill, on a calm day three weeks before her wire, ahead of the held wire', () => {
+  it('is the drill, on a calm day five weeks before her wire, ahead of the held wire', () => {
     expect(linda.steps.map((s) => s.id).slice(0, 2)).toEqual(['drill', 'today'])
-    expect(drillStep.title).toBe('Three weeks earlier, on a calm day')
-    expect(storyTimes().caught.getTime() - drillDay().getTime()).toBe(21 * DAY_MS)
+    expect(drillStep.title).toBe('Five weeks earlier, on a calm day')
+    expect(storyTimes().caught.getTime() - drillDay().getTime()).toBe(35 * DAY_MS)
     expect(drillStep.caption).toMatch(/^A concept, not a kit event/)
+  })
+
+  it('comes early enough that a contact she adds there is past the rule that skips recent ones', () => {
+    expect(storyTimes().trusted.getTime() - drillDay().getTime()).toBeGreaterThan(TRUSTED_RECENT_DAYS * DAY_MS)
+    expect(textOf(linda.steps.find((s) => s.id === 'trusted')!.member)).toContain(`added in the last ${TRUSTED_RECENT_DAYS} days`)
   })
 
   it.each(['concept', 'sound'] as const)("shows the opt-in on Linda's phone, labeled a concept (%s look)", (variant) => {

@@ -6,6 +6,9 @@ import { LINDA_NAME, lindaFacts } from './facts'
 
 type Rule = { icon: LucideIcon; title: string; body: string }
 
+/** A trusted person added this recently gets no message: they could be part of the scam. */
+export const TRUSTED_RECENT_DAYS = 30
+
 export function TrustedRules() {
   const f = lindaFacts()
   const name = LINDA_NAME
@@ -30,8 +33,8 @@ export function TrustedRules() {
       icon: Ban,
       title: 'Skipped if they look involved',
       body:
-        'No message if they were added in the last 30 days, or match the new recipient where ' +
-        'we can tell. Illustrative: the kit has no contact identities.',
+        `No message if they were added in the last ${TRUSTED_RECENT_DAYS} days, or match the new ` +
+        'recipient where we can tell. Illustrative: the kit has no contact identities.',
     },
   ]
 
