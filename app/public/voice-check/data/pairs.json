@@ -1,10 +1,5 @@
 [
   {
-    "speaker": "Orson Welles",
-    "real": "ITW_18132",
-    "fake": "ITW_26134"
-  },
-  {
     "speaker": "FDR",
     "real": "ITW_16540",
     "fake": "ITW_26381"
@@ -18,11 +13,6 @@
     "speaker": "The Notorious B.I.G.",
     "real": "ITW_4852",
     "fake": "ITW_27588"
-  },
-  {
-    "speaker": "Orson Welles",
-    "real": "ITW_27388",
-    "fake": "ITW_30039"
   },
   {
     "speaker": "Mitch Hedberg",
@@ -53,11 +43,6 @@
     "speaker": "Alan Watts",
     "real": "ITW_9362",
     "fake": "ITW_17816"
-  },
-  {
-    "speaker": "Orson Welles",
-    "real": "ITW_8504",
-    "fake": "ITW_28918"
   },
   {
     "speaker": "Donald Trump",
@@ -108,11 +93,6 @@
     "speaker": "The Notorious B.I.G.",
     "real": "ITW_9670",
     "fake": "ITW_10043"
-  },
-  {
-    "speaker": "Orson Welles",
-    "real": "ITW_9805",
-    "fake": "ITW_14633"
   },
   {
     "speaker": "Nelson Mandela",
@@ -233,10 +213,5 @@
     "speaker": "Frank Sinatra",
     "real": "ITW_13856",
     "fake": "ITW_1575"
-  },
-  {
-    "speaker": "Orson Welles",
-    "real": "ITW_25876",
-    "fake": "ITW_9249"
   }
 ]

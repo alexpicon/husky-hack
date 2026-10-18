@@ -140,16 +140,6 @@
     "sha256": "7f6c482eeabdbc5830d65cb1421359a450ee63b8c7fd409d2372691e322dda31"
   },
   {
-    "id": "ITW_14633",
-    "title": "Orson Welles",
-    "label": "synthetic",
-    "duration": 4.08,
-    "collection": "Public figures",
-    "source": "https://huggingface.co/datasets/SpeechAntiSpoofingBenchmarks/InTheWild",
-    "file": "clips/ITW_14633.mp3",
-    "sha256": "cd451b6c4cf9ea63e2a1e6ed7a5ee49ab22880a4f27539b055a647083bfa2d1c"
-  },
-  {
     "id": "ITW_15004",
     "title": "Alan Watts",
     "label": "real",
@@ -248,16 +238,6 @@
     "source": "https://huggingface.co/datasets/SpeechAntiSpoofingBenchmarks/InTheWild",
     "file": "clips/ITW_17816.mp3",
     "sha256": "68ce088432ad9111266d7292225ace54e59e14504b132535e5e510a3daebe1ce"
-  },
-  {
-    "id": "ITW_18132",
-    "title": "Orson Welles",
-    "label": "real",
-    "duration": 6.83,
-    "collection": "Public figures",
-    "source": "https://huggingface.co/datasets/SpeechAntiSpoofingBenchmarks/InTheWild",
-    "file": "clips/ITW_18132.mp3",
-    "sha256": "64646c139f93f81ccb39244f825df7f3a5fb2040f2ab59874673ec9259f116b4"
   },
   {
     "id": "ITW_18168",
@@ -450,26 +430,6 @@
     "sha256": "a3d302bd52d59977b58802b86e45c8c5647bdd2090cbc0740ffb1cbd2dea6eca"
   },
   {
-    "id": "ITW_25876",
-    "title": "Orson Welles",
-    "label": "real",
-    "duration": 5.68,
-    "collection": "Public figures",
-    "source": "https://huggingface.co/datasets/SpeechAntiSpoofingBenchmarks/InTheWild",
-    "file": "clips/ITW_25876.mp3",
-    "sha256": "b85e8871aab61dfeae747e9fcc79d46b5867c6324259cc956f582824b431898f"
-  },
-  {
-    "id": "ITW_26134",
-    "title": "Orson Welles",
-    "label": "synthetic",
-    "duration": 3.12,
-    "collection": "Public figures",
-    "source": "https://huggingface.co/datasets/SpeechAntiSpoofingBenchmarks/InTheWild",
-    "file": "clips/ITW_26134.mp3",
-    "sha256": "47b73433660e4ff7cf19f7481d640705d09cbaf8a079d856e0e0e3bfcad16356"
-  },
-  {
     "id": "ITW_26161",
     "title": "The Notorious B.I.G.",
     "label": "real",
@@ -498,16 +458,6 @@
     "source": "https://huggingface.co/datasets/SpeechAntiSpoofingBenchmarks/InTheWild",
     "file": "clips/ITW_27271.mp3",
     "sha256": "4977ede59926f7b834819abf20e53336c72b9939cae60a15dbb2b5cda7440036"
-  },
-  {
-    "id": "ITW_27388",
-    "title": "Orson Welles",
-    "label": "real",
-    "duration": 2.69,
-    "collection": "Public figures",
-    "source": "https://huggingface.co/datasets/SpeechAntiSpoofingBenchmarks/InTheWild",
-    "file": "clips/ITW_27388.mp3",
-    "sha256": "525fa99b786a1a844f08858c283e5aa01a6ce2d1651e4ce3274fb2312bf0008a"
   },
   {
     "id": "ITW_27588",
@@ -580,16 +530,6 @@
     "sha256": "58336ee041ebc68e1aad717dd34b6a9004727860470f56d848a4ebb6baac29be"
   },
   {
-    "id": "ITW_28918",
-    "title": "Orson Welles",
-    "label": "synthetic",
-    "duration": 3.17,
-    "collection": "Public figures",
-    "source": "https://huggingface.co/datasets/SpeechAntiSpoofingBenchmarks/InTheWild",
-    "file": "clips/ITW_28918.mp3",
-    "sha256": "b9af3277522a8db0a410305caefffc2a6d39ed81e6397480c86f5dfe7c5fa612"
-  },
-  {
     "id": "ITW_29143",
     "title": "William F. Buckley",
     "label": "synthetic",
@@ -628,16 +568,6 @@
     "source": "https://huggingface.co/datasets/SpeechAntiSpoofingBenchmarks/InTheWild",
     "file": "clips/ITW_2982.mp3",
     "sha256": "3d47192557412cd671335174c3b43d586be07e8d76b2466aed061c379adae5e1"
-  },
-  {
-    "id": "ITW_30039",
-    "title": "Orson Welles",
-    "label": "synthetic",
-    "duration": 2.67,
-    "collection": "Public figures",
-    "source": "https://huggingface.co/datasets/SpeechAntiSpoofingBenchmarks/InTheWild",
-    "file": "clips/ITW_30039.mp3",
-    "sha256": "cb49cf30360e02dd5b4d6c7f2d5fa46caeb091d05baf38138dc6621e5ed337f4"
   },
   {
     "id": "ITW_30225",
@@ -850,16 +780,6 @@
     "sha256": "49ebcb8ef82e90f3ad8c52ee672874ca891316cde9328607305b6ebd0dcae1ed"
   },
   {
-    "id": "ITW_8504",
-    "title": "Orson Welles",
-    "label": "real",
-    "duration": 4.74,
-    "collection": "Public figures",
-    "source": "https://huggingface.co/datasets/SpeechAntiSpoofingBenchmarks/InTheWild",
-    "file": "clips/ITW_8504.mp3",
-    "sha256": "4439daeb8c17605d4d1506c54d5f8b9045ec579e8e76ba4f959e89fbfc426adf"
-  },
-  {
     "id": "ITW_8618",
     "title": "Mitch Hedberg",
     "label": "real",
@@ -900,16 +820,6 @@
     "sha256": "a47c766fc391439ee66890ab012e4f60963e764a61d20ec72816b1b8f9d39bca"
   },
   {
-    "id": "ITW_9249",
-    "title": "Orson Welles",
-    "label": "synthetic",
-    "duration": 2.69,
-    "collection": "Public figures",
-    "source": "https://huggingface.co/datasets/SpeechAntiSpoofingBenchmarks/InTheWild",
-    "file": "clips/ITW_9249.mp3",
-    "sha256": "116ffeeb5451283fcc74630537f740cc018098ee7c61c840645742d360781157"
-  },
-  {
     "id": "ITW_9362",
     "title": "Alan Watts",
     "label": "real",
@@ -948,15 +858,5 @@
     "source": "https://huggingface.co/datasets/SpeechAntiSpoofingBenchmarks/InTheWild",
     "file": "clips/ITW_9670.mp3",
     "sha256": "622ab805443e6ac794c317c524493a148063761fea40936914fa84860133bf16"
-  },
-  {
-    "id": "ITW_9805",
-    "title": "Orson Welles",
-    "label": "real",
-    "duration": 5.08,
-    "collection": "Public figures",
-    "source": "https://huggingface.co/datasets/SpeechAntiSpoofingBenchmarks/InTheWild",
-    "file": "clips/ITW_9805.mp3",
-    "sha256": "d5f2528c7e572b2592edbc266ff4b51a3380d4faf14e0cf6f6343b9135e14718"
   }
 ]

@@ -4,7 +4,7 @@ The game's recordings and photos come from public sources. Their licenses requir
 
 ## Recordings
 
-All 96 clips (48 genuine/synthetic pairs, 14 speakers) are from the **In-the-Wild audio deepfake dataset**: N. Müller, P. Czempin, F. Dieckmann, A. Froghyar, K. Böttinger, *Does Audio Deepfake Detection Generalize?*, Interspeech 2022.
+All 86 clips (43 genuine/synthetic pairs, 13 speakers) are from the **In-the-Wild audio deepfake dataset**: N. Müller, P. Czempin, F. Dieckmann, A. Froghyar, K. Böttinger, *Does Audio Deepfake Detection Generalize?*, Interspeech 2022.
 Distributed via: https://huggingface.co/datasets/SpeechAntiSpoofingBenchmarks/InTheWild
 Dataset packaging license: Apache-2.0. The underlying recordings remain attributed to their original speakers and rights holders. Synthetic clips imitate the named speaker and must never be presented as authentic.
 Labels (genuine / synthetic) are the dataset's own labels.
@@ -23,7 +23,6 @@ Small reference photos that identify each speaker. They do not imply endorsement
 - **Louis C.K.**: YMH Studios. CC BY 3.0 (https://creativecommons.org/licenses/by/3.0). Source: https://commons.wikimedia.org/wiki/File:Louis_C.K._on_Your_Moms_House_Podcast_2022.png
 - **Fred Rogers**: Family Communications, Inc. Public domain. Source: https://commons.wikimedia.org/wiki/File:Fred-Rogers_1988_(full)_(cropped).jpg
 - **Nelson Mandela**: Kingkongphoto & www.celebrity-photos.com from Laurel. CC BY-SA 2.0 (https://creativecommons.org/licenses/by-sa/2.0). Source: https://commons.wikimedia.org/wiki/File:Nelson_Mandela_1994.jpg
-- **Orson Welles**: Carl Van Vechten. Public domain. Source: https://commons.wikimedia.org/wiki/File:Orson_Welles_1937_cr3-4.jpg
 - **William F. Buckley Jr.**: Unknown photographer. Public domain. Source: https://commons.wikimedia.org/wiki/File:William_F._Buckley,_Jr._Public_Domain_(cropped).jpg
 
 Two speakers (Mitch Hedberg, The Notorious B.I.G.) have no photo here: their only available images are copyrighted fair-use files, not openly licensed. The game simply shows no portrait for them.
