@@ -36,7 +36,7 @@ describe("Michael's facts, from his events", () => {
       'This would be your first wire ever, to an account added 17 minutes ago, after 4 growing payments to someone else you added on Sep 8.',
     )
     expect(f.wires.map((e) => e.amount)).toEqual([1500, 2400, 3840])
-    expect(clock(f.holdEnds)).toBe('11:25 PM')
+    expect(clock(f.holdEnds)).toBe('8:00 PM')
   })
 
   it('splits what he lost at the card: $441 already gone, $8,046.77 after it', () => {
@@ -75,8 +75,8 @@ describe('the silent check', () => {
   })
 
   it('settles two windows on the same check', () => {
-    const a = { v: 2, taps: toggleTap([], 'secret'), shared: false }
-    const b = { v: 3, taps: [], shared: true }
+    const a = { ...initialCheck, v: 2, taps: toggleTap([], 'secret') }
+    const b = { ...initialCheck, v: 3, shared: true }
     expect(mergeChecks(a, b)).toBe(b)
     expect(mergeChecks(b, a)).toBe(b)
   })
@@ -118,7 +118,7 @@ describe.each(['concept', 'sound'] as const)('every step (%s look)', (variant) =
     const member = textOf(renderToStaticMarkup(<>{michael.steps[1].member}</>))
     const staff = textOf(renderToStaticMarkup(<>{michael.steps[1].staff}</>))
     expect(member).toContain(wireFact())
-    expect(member).toContain('Held until 11:25 PM')
+    expect(member).toContain('Held until 8:00 PM')
     expect(staff).toContain('Call script · Romance scam')
   })
 
@@ -141,17 +141,17 @@ describe.each(['concept', 'sound'] as const)('his taps on the card (%s look)', (
   })
 
   it('names the scam on two fitting taps, and staff see them only once he shares', () => {
-    writeCheck({ v: 1, taps: ['never-met', 'investment'], shared: false })
+    writeCheck({ ...initialCheck, v: 1, taps: ['never-met', 'investment'] })
     expect(text(member)).toContain(ROMANCE_LINE)
     expect(text(staff)).toContain('Answers private')
     expect(text(staff)).not.toContain("We've never met in person")
-    writeCheck({ v: 2, taps: ['never-met', 'investment'], shared: true })
+    writeCheck({ ...initialCheck, v: 2, taps: ['never-met', 'investment'], shared: true })
     expect(text(staff)).toContain('Taps fit a romance scam')
     expect(text(staff)).toContain("We've never met in person")
   })
 
   it('stops asking about a payee he marks as his own account, and tells staff why', () => {
-    writeCheck({ v: 1, taps: ['own'], shared: false })
+    writeCheck({ ...initialCheck, v: 1, taps: ['own'] })
     expect(text(member)).toContain("We won't ask about this payee again.")
     expect(text(member)).not.toContain(ROMANCE_LINE)
     expect(text(staff)).toContain('He marked this payee as his own account.')

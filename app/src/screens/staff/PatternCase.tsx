@@ -7,6 +7,8 @@ import { StaffWindow } from '../../ui/devices'
 import { clock, day, money } from '../../ui/format'
 import { Source } from '../../ui/primitives'
 import { Timeline, type TimelineItem } from '../../ui/timeline'
+import type { WireChoice } from '../michael/check'
+import { useMichaelCheck } from '../michael/checkState'
 import { MichaelCheckSync } from '../michael/checkStore'
 import { MICHAEL, MICHAEL_NAME, michaelFacts, patternFact, wireFact, type MichaelFacts } from '../michael/facts'
 import { shortDate } from './helpers'
@@ -17,12 +19,16 @@ import { PatternAnswersPanel, PatternPaymentsPanel, RomanceScriptPanel, WireHold
 export type PatternStage = 'pattern' | 'wire' | 'report'
 
 /** What happened in the kit up to `now`, with the two moments Second Look adds marked as such. */
-function kitTimeline(f: MichaelFacts, now: Date): TimelineItem[] {
+function kitTimeline(f: MichaelFacts, now: Date, wire: WireChoice | null): TimelineItem[] {
+  const held =
+    wire === 'cancel'
+      ? `Until ${clock(f.holdEnds)}. He cancelled it, so nothing was sent; in the kit it was.`
+      : `Until ${clock(f.holdEnds)}. He decides.`
   const warned = (paymentId: string) =>
     f.warnings.some((w) => w.paymentId === paymentId && w.memberResponse === 'Confirmed Intended')
   const marks = new Map<KitEvent, TimelineItem>([
     [f.card, { time: shortDate(f.card.at), label: 'With Second Look: the pattern card', detail: 'Before this payment sends. No hold.', tone: 'brand' }],
-    [f.wire, { time: shortDate(f.wire.at), label: 'With Second Look: the wire held for a call', detail: `Until ${clock(f.holdEnds)}. He decides.`, tone: 'warn' }],
+    [f.wire, { time: shortDate(f.wire.at), label: 'With Second Look: the wire held for a call', detail: held, tone: 'warn' }],
   ])
   const items = [...f.run, ...f.wires]
     .filter((e) => e.at <= now)
@@ -48,8 +54,9 @@ function kitTimeline(f: MichaelFacts, now: Date): TimelineItem[] {
   return items
 }
 
-function Pill({ stage, reported }: { stage: PatternStage; reported: boolean }) {
+function Pill({ stage, reported, wire }: { stage: PatternStage; reported: boolean; wire: WireChoice | null }) {
   if (reported) return <StatusPill tone="danger">Scam reported</StatusPill>
+  if (stage === 'wire' && wire === 'cancel') return <StatusPill tone="safe">{MICHAEL_NAME} cancelled the wire</StatusPill>
   if (stage === 'wire') {
     return (
       <StatusPill tone="warn" live>
@@ -65,6 +72,7 @@ function Pill({ stage, reported }: { stage: PatternStage; reported: boolean }) {
 export function PatternCase({ stage, now }: { stage: PatternStage; now: Date }) {
   const f = michaelFacts()
   const reportedCase = useReportedCase(MICHAEL)
+  const { wire } = useMichaelCheck().state
   const hit = stage === 'pattern' ? f.card : f.wire
   const kind = stage === 'report' ? `Romance pattern · ${day(now)}` : `${stage === 'wire' ? 'Wire hold' : 'Pattern card'} · ${day(hit.at)}`
   return (
@@ -76,7 +84,7 @@ export function PatternCase({ stage, now }: { stage: PatternStage; now: Date }) 
           member={MICHAEL}
           kind={kind}
           caseId={reportedCase}
-          pill={<Pill stage={stage} reported={reportedCase !== undefined} />}
+          pill={<Pill stage={stage} reported={reportedCase !== undefined} wire={wire} />}
         />
         <ReportBanner member={MICHAEL} />
         {stage !== 'report' && (
@@ -103,7 +111,7 @@ export function PatternCase({ stage, now }: { stage: PatternStage; now: Date }) 
             {stage === 'wire' && <WireHoldPanel f={f} />}
             {stage === 'report' ? (
               <Panel title="His payments, from the kit" icon={<History size={14} />}>
-                <Timeline compact items={kitTimeline(f, now)} />
+                <Timeline compact items={kitTimeline(f, now, wire)} />
               </Panel>
             ) : (
               <PatternPaymentsPanel f={f} />

@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Hourglass, PhoneIncoming, Users } from 'lucide-react'
 import { motion } from 'motion/react'
 import { clock, money } from '../../ui/format'
@@ -7,22 +6,24 @@ import { Source } from '../../ui/primitives'
 import { SOUND } from '../../ui/soundApp'
 import { AUTONOMY } from '../linda/copy'
 import { Browser } from './Browser'
-import { michaelFacts, TRUSTED_LINE, wireFact } from './facts'
+import { checkActions, type WireChoice } from './check'
+import { useMichaelCheck } from './checkState'
+import { callLine, michaelFacts, TRUSTED_LINE, wireFact } from './facts'
 import { FactLine } from './parts'
 
-type Choice = 'wait' | 'cancel' | null
-
-const CHOSEN: Record<Exclude<Choice, null>, string> = {
+const CHOSEN: Record<WireChoice, string> = {
   wait: "We'll call you before the hold ends. After the call, you decide.",
   cancel: 'Cancelled. Nothing was sent, and the money stays in your account.',
 }
 
-/** His first wire, held up to 4 hours for a call from Sound. He decides after the call. */
+/** His first wire, held for a call from Sound. He decides after the call; his choice reaches staff and step 3. */
 export function WireHold() {
   const look = useLook()
   const sound = look === 'sound'
   const f = michaelFacts()
-  const [choice, setChoice] = useState<Choice>(null)
+  const { state, update } = useMichaelCheck()
+  const choice = state.wire
+  const choose = (wire: WireChoice) => update((c) => checkActions.wire(c, wire))
   const until = clock(f.holdEnds)
   const card = sound ? 'bg-white shadow-[0_2px_10px_rgb(15_23_42/0.07)]' : 'bg-slate-50 ring-1 ring-line'
   const button = 'h-11 flex-1 rounded-xl text-[15px] font-semibold transition active:scale-[0.98]'
@@ -37,7 +38,7 @@ export function WireHold() {
               Your wire is on hold
             </h2>
             <p className={`text-[14px] ${sound ? '' : 'text-ink-3'}`} style={sound ? { color: SOUND.muted } : undefined}>
-              <span className="num font-semibold">{money(f.wire.amount)}</span> to {f.wire.recipientId}{' '}
+              <span className="num font-semibold">{money(f.wire.amount)}</span> to a new account{' '}
               <Source ids={f.wire.id} />
             </p>
           </div>
@@ -53,10 +54,7 @@ export function WireHold() {
         <div className="grid grid-cols-2 gap-3">
           <p className={`flex items-start gap-2.5 rounded-2xl px-3.5 py-3 text-[14px] leading-snug ${card}`}>
             <PhoneIncoming size={18} className="mt-0.5 shrink-0" aria-hidden />
-            <span>
-              Someone from Sound will call you on the number you've had with us for a while. If we can't reach
-              you by {until}, it isn't sent and the money stays in your account.
-            </span>
+            <span>{callLine(f)}</span>
           </p>
           <p className={`flex items-start gap-2.5 rounded-2xl px-3.5 py-3 text-[14px] leading-snug font-semibold ${card}`}>
             <Users size={18} className="mt-0.5 shrink-0" aria-hidden />
@@ -73,7 +71,7 @@ export function WireHold() {
           <div className="flex gap-3">
             <button
               type="button"
-              onClick={() => setChoice('wait')}
+              onClick={() => choose('wait')}
               className={`${button} ${primary}`}
               style={sound ? { background: `linear-gradient(180deg, #5b92c2, ${SOUND.action})` } : undefined}
             >
@@ -81,7 +79,7 @@ export function WireHold() {
             </button>
             <button
               type="button"
-              onClick={() => setChoice('cancel')}
+              onClick={() => choose('cancel')}
               className={`${button} ${outline}`}
               style={sound ? { borderColor: SOUND.action, color: SOUND.action } : undefined}
             >

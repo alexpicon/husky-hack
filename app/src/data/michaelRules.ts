@@ -10,6 +10,11 @@ export const FOLLOW_UP_RAILS = ['Wire', 'External Transfer']
 export const FOLLOW_UP_PAYEE_MAX_AGE_DAYS = 30
 /** ...within 30 days after a pattern card. */
 export const FOLLOW_UP_WINDOW_DAYS = 30
+/**
+ * The hour Sound's calls stop: the kit's data dictionary puts Contact Center events between 7am
+ * and 8pm. A wire held for a call is never held past it, since no one could call.
+ */
+export const CALLS_END_HOUR = 20
 
 const DAY_MS = 86_400_000
 

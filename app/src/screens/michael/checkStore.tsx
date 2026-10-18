@@ -1,13 +1,17 @@
 import { useEffect, useState, useSyncExternalStore } from 'react'
+import { useRun } from '../../shell/run'
 import { useWindowSync } from '../../shell/sync'
-import { checkActions, mergeChecks } from './check'
-import { claimSync, leadsSync, readCheck, subscribeCheck, subscribeClaims, useMichaelCheck, writeCheck } from './checkState'
+import { checkActions, initialCheck, mergeChecks, type MichaelCheck } from './check'
+import { claimSync, leadsSync, readCheck, subscribeClaims, useMichaelCheck, writeCheck } from './checkState'
 
 function Sync() {
-  const state = useSyncExternalStore(subscribeCheck, readCheck, readCheck)
-  useWindowSync('michael', state, (incoming) => {
+  const { state, update } = useMichaelCheck()
+  const { run } = useRun()
+  useEffect(() => update((c) => checkActions.forRun(c, run)), [run, update])
+  useWindowSync('michael', state, (sent: Partial<MichaelCheck>) => {
     const local = readCheck()
-    const merged = mergeChecks(local, incoming)
+    // A copy saved before a field existed still merges, with that field at its start value.
+    const merged = mergeChecks(local, { ...initialCheck, ...sent })
     // A fresh object re-sends this window's newer check to the one that sent a stale copy.
     writeCheck(merged === local ? { ...local } : merged)
   })

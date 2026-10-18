@@ -9,7 +9,7 @@ import { clock, money } from '../../ui/format'
 import { Source } from '../../ui/primitives'
 import { romanceFit, ROMANCE_OPTIONS, staffView } from '../michael/check'
 import { useMichaelCheck } from '../michael/checkState'
-import { MICHAEL_NAME, romanceScript, type MichaelFacts } from '../michael/facts'
+import { callLine, hour, MICHAEL_NAME, romanceScript, type MichaelFacts } from '../michael/facts'
 import { shortDate } from './helpers'
 import { FactRow, Panel, StatusPill } from './parts'
 import { HOLD_HOURS } from './trickedFacts'
@@ -100,8 +100,16 @@ export function PatternAnswersPanel() {
 
 export function WireHoldPanel({ f }: Props) {
   const { wire, wirePayeeAdded } = f
+  const cancelled = useMichaelCheck().state.wire === 'cancel'
+  const pill = cancelled ? (
+    <StatusPill tone="safe">Cancelled by {MICHAEL_NAME} · not sent</StatusPill>
+  ) : (
+    <StatusPill tone="warn" live>
+      On hold
+    </StatusPill>
+  )
   return (
-    <Panel title="The wire" icon={<Banknote size={14} />} aside={<StatusPill tone="warn" live>On hold</StatusPill>}>
+    <Panel title="The wire" icon={<Banknote size={14} />} aside={pill}>
       <div className="num font-display text-[40px] leading-none tracking-tight text-ink">{money(wire.amount)}</div>
       <div className="mt-2 flex items-center gap-2 text-xs text-ink-3">
         <span className="font-mono">{wire.paymentId}</span>
@@ -127,8 +135,8 @@ export function WireHoldPanel({ f }: Props) {
       <p className="mt-3 text-xs leading-relaxed text-ink-3">
         <span className="font-semibold text-ink-2">Rule:</span> a wire or external transfer to a different payee
         added less than {FOLLOW_UP_PAYEE_MAX_AGE_DAYS} days earlier, within {FOLLOW_UP_WINDOW_DAYS} days of a
-        pattern card. Held up to {HOLD_HOURS} hours for a call. If no one reaches him by {clock(f.holdEnds)}, it
-        isn't sent.
+        pattern card. Held up to {HOLD_HOURS} hours for a call, and never past {hour(f.callsEnd)}, when calls
+        end. What he reads: "{callLine(f)}"
       </p>
     </Panel>
   )

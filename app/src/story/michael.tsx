@@ -46,7 +46,12 @@ export const michael: Scenario = {
       title: 'His first wire ever, held for a call',
       caption: `${f.cardToWireDays} days later he wires ${money(f.wire.amount)} to a second new payee. After a pattern card, that is held up to ${HOLD_HOURS} hours for a call from Sound, with a script for romance scams. After the call, he decides.`,
       clock: at(f.wire.at),
-      member: <WireHold />,
+      member: (
+        <>
+          <MichaelCheckSync />
+          <WireHold />
+        </>
+      ),
       staff: <PatternCase stage="wire" now={f.wire.at} />,
     },
     {
@@ -56,6 +61,7 @@ export const michael: Scenario = {
       clock: at(f.reported.at),
       member: (
         <div className="flex flex-col items-center gap-5">
+          <MichaelCheckSync />
           <MemberPhone time={clock(f.reported.at)} caption="Sound app: the day he reports">
             <ReportHome />
           </MemberPhone>

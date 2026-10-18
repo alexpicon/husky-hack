@@ -1,5 +1,5 @@
 import { eventsFor, type KitEvent } from '../../data/kit'
-import { growingRun, isFollowUpTransfer, isGrowingPattern } from '../../data/michaelRules'
+import { CALLS_END_HOUR, growingRun, isFollowUpTransfer, isGrowingPattern } from '../../data/michaelRules'
 import { evaluate, firstHit } from '../../data/triggers'
 import { clock, minutesBetween, money } from '../../ui/format'
 import { HOLD_HOURS, plusMinutes, shortDate } from '../linda/facts'
@@ -20,6 +20,14 @@ const cents = (n: number) => Math.round(n * 100) / 100
 const total = (list: KitEvent[]) => cents(list.reduce((sum, e) => sum + e.amount, 0))
 const midnight = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()
 const calendarDays = (a: Date, b: Date) => Math.round((midnight(b) - midnight(a)) / DAY_MS)
+const atHour = (d: Date, hour: number) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), hour)
+
+/** Up to HOLD_HOURS, and never past the hour calls end that day. */
+export function holdEndsFor(at: Date): Date {
+  const cap = plusMinutes(at, HOLD_HOURS * 60)
+  const callsEnd = atHour(at, CALLS_END_HOUR)
+  return callsEnd > at && callsEnd < cap ? callsEnd : cap
+}
 
 function build() {
   const all = eventsFor(MICHAEL)
@@ -52,7 +60,8 @@ function build() {
     /** Blank days since the last wire: the kit has no earlier wire on record for him. */
     firstWireEver: wire.daysSinceLastSameRail === null,
     growingBeforeWire: run.filter((p) => completedAt(p) < wire.at).length,
-    holdEnds: plusMinutes(wire.at, HOLD_HOURS * 60),
+    holdEnds: holdEndsFor(wire.at),
+    callsEnd: atHour(wire.at, CALLS_END_HOUR),
     warnings: onPayments('Warning Displayed'),
     reported: find('Scam Reported', all, (e) => e.type === 'Scam Reported'),
     /** Sent to the two payees, less anything the kit says came back. */
@@ -86,6 +95,21 @@ export function patternFact(f: MichaelFacts = michaelFacts()) {
 export function wireFact(f: MichaelFacts = michaelFacts()) {
   const first = f.firstWireEver ? 'your first wire ever' : 'a wire'
   return `This would be ${first}, to an account added ${f.minutesSinceWirePayeeAdded} minutes ago, after ${f.growingBeforeWire} growing payments to someone else you added on ${shortDate(f.cardPayeeAdded.at)}.`
+}
+
+/** "8 PM" */
+export const hour = (d: Date) => d.toLocaleTimeString('en-US', { hour: 'numeric' })
+
+/** What his held wire promises him, word for word what staff see is promised. */
+export function callLine(f: MichaelFacts = michaelFacts()) {
+  return `A specialist will call you before ${hour(f.callsEnd)} tonight, on the number you've had with us for a while. If we can't reach you before the hold ends, the wire isn't sent and the money stays in your account; you can send it again tomorrow.`
+}
+
+/** How his own screens name a payee: the kit has only IDs, and a member never sees those. */
+export function payeeLabel(recipientId: string, f: MichaelFacts = michaelFacts()) {
+  if (recipientId === f.wire.recipientId) return `the account you added ${shortDate(f.wirePayeeAdded.at)}`
+  if (recipientId === f.card.recipientId) return `someone you added ${shortDate(f.cardPayeeAdded.at)}`
+  return 'a payee'
 }
 
 export const TRUSTED_LINE = 'Talk to someone you trust before you send more.'

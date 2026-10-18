@@ -34,19 +34,29 @@ export function romanceFit(taps: readonly MichaelTap[]): MichaelTap[] | null {
   return fitting.length >= MIN_FITTING_TAPS ? fitting : null
 }
 
-/** Michael's answers on the pattern card, shared by every window. `v` counts edits; the newer copy wins. */
-export type MichaelCheck = { v: number; taps: MichaelTap[]; shared: boolean }
+/** His choice on the held wire: wait for Sound's call, or cancel it. */
+export type WireChoice = 'wait' | 'cancel'
 
-export const initialCheck: MichaelCheck = { v: 0, taps: [], shared: false }
+/**
+ * Michael's answers on the pattern card and the held wire, shared by every window. `run` is the
+ * demo run they belong to and `v` counts edits; a newer run wins, then the newer copy.
+ */
+export type MichaelCheck = { run: number; v: number; taps: MichaelTap[]; shared: boolean; wire: WireChoice | null }
+
+export const initialCheck: MichaelCheck = { run: 0, v: 0, taps: [], shared: false, wire: null }
 
 export const checkActions = {
   tap: (c: MichaelCheck, id: MichaelTap): MichaelCheck => ({ ...c, taps: toggleTap(c.taps, id) }),
   share: (c: MichaelCheck, shared: boolean): MichaelCheck => ({ ...c, shared }),
-  reset: (c: MichaelCheck): MichaelCheck => ({ ...initialCheck, v: c.v }),
+  wire: (c: MichaelCheck, wire: WireChoice): MichaelCheck => ({ ...c, wire }),
+  reset: (c: MichaelCheck): MichaelCheck => ({ ...initialCheck, run: c.run, v: c.v }),
+  /** A new demo run starts him over; a window still on an older run never clears a newer one. */
+  forRun: (c: MichaelCheck, run: number): MichaelCheck => (run > c.run ? { ...initialCheck, run, v: c.v } : c),
 }
 
-/** The same winner whichever window runs it: more edits first, then a fixed tie-break. */
+/** The same winner whichever window runs it: the newer run, then more edits, then a fixed tie-break. */
 export function mergeChecks(local: MichaelCheck, incoming: MichaelCheck): MichaelCheck {
+  if (local.run !== incoming.run) return local.run > incoming.run ? local : incoming
   if (local.v !== incoming.v) return local.v > incoming.v ? local : incoming
   return JSON.stringify(local) >= JSON.stringify(incoming) ? local : incoming
 }
