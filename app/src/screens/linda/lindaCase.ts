@@ -7,10 +7,12 @@ export type Outcome = { kind: OutcomeKind; at: number; reason?: string }
 export type StaffAction = 'holding' | 'escalated' | 'case-opened'
 
 /**
- * One wire hold, shared by every window showing Linda's story. `round` grows on each reset so
- * a fresh case beats an old one; `v` counts edits so the newer copy of a field wins.
+ * One wire hold, shared by every window showing Linda's story. `run` is the demo run it belongs
+ * to and `round` grows on each reset, so a fresh case beats an old one; `v` counts edits so the
+ * newer copy of a field wins.
  */
 export type LindaCase = {
+  run: number
   round: number
   v: number
   taps: TapId[]
@@ -22,6 +24,7 @@ export type LindaCase = {
 }
 
 export const initialCase: LindaCase = {
+  run: 0,
   round: 0,
   v: 0,
   taps: [],
@@ -37,6 +40,7 @@ const SAFEST_FIRST: OutcomeKind[] = ['cancelled', 'help', 'no-response', 'sent']
 const STAFF_ORDER: StaffAction[] = ['holding', 'escalated', 'case-opened']
 
 const final = (c: LindaCase) => c.outcome !== null
+const fresh = (c: LindaCase, run: number): LindaCase => ({ ...initialCase, run, round: c.round + 1 })
 
 export const caseActions = {
   tap: (c: LindaCase, id: TapId): LindaCase => ({
@@ -54,7 +58,9 @@ export const caseActions = {
     const staffActions = STAFF_ORDER.filter((a) => a === action || c.staffActions.includes(a))
     return { ...c, staffActions }
   },
-  reset: (c: LindaCase): LindaCase => ({ ...initialCase, round: c.round + 1 }),
+  reset: (c: LindaCase): LindaCase => fresh(c, c.run),
+  /** A fresh case for a later demo run; a case already in that run stays. */
+  startRun: (c: LindaCase, run: number): LindaCase => (c.run < run ? fresh(c, run) : c),
 }
 
 /** Picks the same one of two copies whichever is passed first. */
@@ -71,10 +77,11 @@ function pickOutcome(a: Outcome | null, b: Outcome | null): Outcome | null {
 
 /**
  * Combines this window's case with one another window sent. The result is the same whichever
- * side runs it, so every window settles on one case: a later round replaces the case; within a
- * round the more-edited copy wins, an outcome is never undone, and staff actions add up.
+ * side runs it, so every window settles on one case: a later run, then a later round, replaces the
+ * case; within a round the more-edited copy wins, an outcome is never undone, and staff actions add up.
  */
 export function mergeCases(local: LindaCase, incoming: LindaCase): LindaCase {
+  if (local.run !== incoming.run) return local.run > incoming.run ? local : incoming
   if (local.round !== incoming.round) return local.round > incoming.round ? local : incoming
   const base =
     local.v === incoming.v ? larger(local, incoming) : local.v > incoming.v ? local : incoming

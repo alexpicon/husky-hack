@@ -1,7 +1,9 @@
-import { Copy, Radio, X } from 'lucide-react'
+import { Copy, Radio, RotateCcw, X } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { renderSVG } from 'uqr'
+import { useStory } from '../story/engine'
 import { joinSession, leaveSession, sessionLink, startSession, useSession, type SessionStatus } from './remote'
+import { useRun } from './run'
 
 const DOT: Record<SessionStatus, string> = {
   off: 'bg-slate-300',
@@ -41,6 +43,25 @@ function CopyLink({ label, href }: { label: string; href: string }) {
   )
 }
 
+/** Clears every story's answers in every window and laptop of the session, and starts this story over. */
+function NewRun({ className }: { className: string }) {
+  const { newRun } = useRun()
+  const { goTo } = useStory()
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        newRun()
+        goTo(0)
+      }}
+      title="Clear every answer from rehearsal, on every screen, and go back to step 1"
+      className={`flex items-center gap-1.5 rounded-lg font-semibold ${className}`}
+    >
+      <RotateCcw size={12} aria-hidden /> New run
+    </button>
+  )
+}
+
 /** Start or join a shared session; once live, shows the code and a QR for the phone remote. */
 export function SessionControl() {
   const { id, status } = useSession()
@@ -50,6 +71,8 @@ export function SessionControl() {
   if (!id) {
     return (
       <div className="flex items-center gap-1 rounded-xl bg-white p-1 text-xs ring-1 ring-line">
+        <NewRun className="px-2 py-1.5 text-ink-3 hover:bg-slate-100 hover:text-ink-2" />
+        <span className="h-4 w-px bg-line" aria-hidden />
         <button
           type="button"
           onClick={() => {
@@ -112,6 +135,7 @@ export function SessionControl() {
             <CopyLink label="Member screen" href={sessionLink('member')} />
             <CopyLink label="Staff screen" href={sessionLink('staff')} />
           </div>
+          <NewRun className="mt-3 w-full justify-center bg-slate-50 px-2.5 py-1.5 text-xs text-ink-2 ring-1 ring-line hover:bg-slate-100" />
           <div className="mt-3 flex items-center justify-between text-[11px] text-ink-3">
             <span>{WORDS[status]}</span>
             <button type="button" onClick={leaveSession} className="font-semibold text-danger">

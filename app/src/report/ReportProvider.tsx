@@ -1,13 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { useRunReset } from '../shell/run'
 import { useWindowSync } from '../shell/sync'
-import {
-  initialReport,
-  mergeReports,
-  ReportContext,
-  reportActions,
-  type ReportChannel,
-  type ReportState,
-} from './report'
+import { ReportContext, reportActions, type ReportChannel, type ReportState } from './report'
+import { freshReport, inRun, mergeRunReports, startRun } from './reportRun'
 
 type Props = {
   /** The story on screen; a report closes when the demo leaves the story it was filed in. */
@@ -20,23 +15,29 @@ type Props = {
 
 /** Keeps the member's report the same in every window, on every laptop in a shared session. */
 export function ReportProvider({ story, member, clock, children }: Props) {
-  const [state, setState] = useState(initialReport)
+  const [state, setState] = useState(() => freshReport(0))
   useWindowSync('report', state, (incoming) =>
     setState((local) => {
-      const merged = mergeReports(local, incoming)
+      // A report saved before demo runs existed has no run.
+      const merged = mergeRunReports(local, { ...freshReport(0), ...incoming })
       // A fresh object re-sends this window's newer report to the one that sent a stale copy.
       return merged === local ? { ...local } : merged
     }),
   )
+  const toRun = useCallback((run: number) => setState((s) => startRun(s, run)), [])
+  useRunReset(state.run, toRun)
 
   const shown = useRef(story)
   useEffect(() => {
     const left = shown.current
     shown.current = story
-    if (left !== story) setState((s) => reportActions.leave(s, left))
+    if (left !== story) setState((s) => inRun(s, (r) => reportActions.leave(r, left)))
   }, [story])
 
-  const change = useCallback((action: (s: ReportState) => ReportState) => setState(action), [])
+  const change = useCallback(
+    (action: (s: ReportState) => ReportState) => setState((s) => inRun(s, action)),
+    [],
+  )
   const api = useMemo(() => {
     const place = member && clock ? { member, story, clock } : null
     return {

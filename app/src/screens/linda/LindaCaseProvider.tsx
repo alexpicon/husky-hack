@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useRunReset } from '../../shell/run'
 import { useWindowSync } from '../../shell/sync'
 import {
   caseActions,
@@ -14,7 +15,8 @@ export function LindaCaseProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState(initialCase)
   useWindowSync('linda', state, (incoming) =>
     setState((local) => {
-      const merged = mergeCases(local, incoming)
+      // A case saved before demo runs existed has no run.
+      const merged = mergeCases(local, { ...initialCase, ...incoming })
       // A fresh object re-sends this window's newer case to the one that sent a stale copy.
       return merged === local ? { ...local } : merged
     }),
@@ -28,6 +30,8 @@ export function LindaCaseProvider({ children }: { children: ReactNode }) {
       }),
     [],
   )
+  const toRun = useCallback((run: number) => update((c) => caseActions.startRun(c, run)), [update])
+  useRunReset(state.run, toRun)
   const api = useMemo(() => ({ state, update }), [state, update])
   return <LindaCaseContext.Provider value={api}>{children}</LindaCaseContext.Provider>
 }
