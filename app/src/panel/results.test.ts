@@ -30,7 +30,7 @@ describe('the result allowlist', () => {
   it('never reads as an all-clear', () => {
     for (const r of PANEL_RESULTS) {
       expect(r).not.toMatch(/\bsafe\b|verified|no risk/i)
-      expect(r).not.toMatch(/[–—]/)
+      expect(r).not.toMatch(/[\u2013\u2014]/)
     }
   })
 })
