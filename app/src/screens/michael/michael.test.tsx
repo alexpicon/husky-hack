@@ -5,7 +5,8 @@ import { eventsFor } from '../../data/kit'
 import { michael } from '../../story/michael'
 import { clock } from '../../ui/format'
 import { initialCheck, mergeChecks, romanceFit, staffView, toggleTap } from './check'
-import { MICHAEL, michaelFacts, patternFact, wireFact } from './facts'
+import { writeCheck } from './checkState'
+import { MICHAEL, michaelFacts, patternFact, ROMANCE_LINE, wireFact } from './facts'
 
 const look = vi.hoisted(() => ({ current: 'concept' as 'concept' | 'sound' }))
 
@@ -128,5 +129,31 @@ describe.each(['concept', 'sound'] as const)('every step (%s look)', (variant) =
     expect(text.indexOf('$8,487.77')).toBeGreaterThan(label)
     expect(text).toContain('$441.00 was already gone')
     expect(text).toContain('it is not money saved')
+  })
+})
+
+describe.each(['concept', 'sound'] as const)('his taps on the card (%s look)', (variant) => {
+  const [member, staff] = [michael.steps[0].member, michael.steps[0].staff]
+  const text = (node: typeof member) => textOf(renderToStaticMarkup(<>{node}</>))
+  beforeEach(() => {
+    look.current = variant
+    writeCheck(initialCheck)
+  })
+
+  it('names the scam on two fitting taps, and staff see them only once he shares', () => {
+    writeCheck({ v: 1, taps: ['never-met', 'investment'], shared: false })
+    expect(text(member)).toContain(ROMANCE_LINE)
+    expect(text(staff)).toContain('Answers private')
+    expect(text(staff)).not.toContain("We've never met in person")
+    writeCheck({ v: 2, taps: ['never-met', 'investment'], shared: true })
+    expect(text(staff)).toContain('Taps fit a romance scam')
+    expect(text(staff)).toContain("We've never met in person")
+  })
+
+  it('stops asking about a payee he marks as his own account, and tells staff why', () => {
+    writeCheck({ v: 1, taps: ['own'], shared: false })
+    expect(text(member)).toContain("We won't ask about this payee again.")
+    expect(text(member)).not.toContain(ROMANCE_LINE)
+    expect(text(staff)).toContain('He marked this payee as his own account.')
   })
 })
