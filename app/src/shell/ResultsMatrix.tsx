@@ -1,8 +1,9 @@
 import { motion } from 'motion/react'
 import { POLICY } from '../data/policy'
 import { TRICKED_RECIPIENT_MAX_AGE_DAYS, TRICKED_RULES } from '../data/trickedRules'
-import { evaluate, isTakeover, isTricked, type GroupResult } from '../data/triggers'
-import { Card, Eyebrow } from '../ui/primitives'
+import type { GroupResult } from '../data/triggers'
+import { Card, Eyebrow, toneDot, type Tone } from '../ui/primitives'
+import { columns, coverage } from './designCheck'
 
 const ROWS: { group: string; label: string; kind: 'scam' | 'honest' }[] = [
   { group: 'Sound Impersonation + ATO', label: 'Takeover (Sarah)', kind: 'scam' },
@@ -16,9 +17,39 @@ const ROWS: { group: string; label: string; kind: 'scam' | 'honest' }[] = [
 const tricked = TRICKED_RULES[POLICY.lindaRule]
 const trickedSub = `${tricked.sameDay ? 'day’s wires to one payee' : 'wire'} ≥ ${tricked.ratio}x 12-month 90th-percentile, payee added < ${TRICKED_RECIPIENT_MAX_AGE_DAYS} day ago`
 
-const COLUMNS = [
-  { key: 'takeover', label: 'Takeover trigger', sub: 'reset + contact change + new recipient', results: evaluate(isTakeover) },
-  { key: 'tricked', label: 'Tricked trigger', sub: trickedSub, results: evaluate(isTricked) },
+const sessionSub = '; or a payee added today within 2 h of a reset, code or failed sign-in'
+const stopSub = `reset + email or phone change + new recipient${POLICY.sessionRule ? sessionSub : ''}`
+
+/** What a full stop waits for before the payment goes, as POLICY.fullStopRelease (D1) sets it. */
+const stopDoes: Record<typeof POLICY.fullStopRelease, string> = {
+  yes: 'Held; a YES from the number on file before the change releases it',
+  callback: 'Held until a specialist calls the number on file before the change',
+}
+
+type Column = {
+  key: keyof ReturnType<typeof columns>
+  label: string
+  tone: Tone
+  sub: string
+  does: string
+}
+
+const COLUMNS: Column[] = [
+  { key: 'stop', label: 'Full stop', tone: 'danger', sub: stopSub, does: stopDoes[POLICY.fullStopRelease] },
+  {
+    key: 'check',
+    label: 'Light check',
+    tone: 'warn',
+    sub: 'reset + address change only + new recipient',
+    does: 'One tap on the unchanged phone; released when they tap',
+  },
+  {
+    key: 'linda',
+    label: 'Linda’s rule',
+    tone: 'brand',
+    sub: trickedSub,
+    does: 'Wire paused with a true fact; the member decides',
+  },
 ]
 
 function Cell({ r, kind }: { r: GroupResult; kind: 'scam' | 'honest' }) {
@@ -26,7 +57,7 @@ function Cell({ r, kind }: { r: GroupResult; kind: 'scam' | 'honest' }) {
   const color = r.flagged === 0 ? 'bg-slate-200' : kind === 'scam' ? 'bg-teal-500' : 'bg-amber-400'
   return (
     <div className="flex items-center gap-3">
-      <div className="h-2 w-28 overflow-hidden rounded-full bg-slate-100">
+      <div className="h-2 w-20 shrink-0 overflow-hidden rounded-full bg-slate-100 2xl:w-28">
         <motion.div
           className={`h-full rounded-full ${color}`}
           initial={{ width: 0 }}
@@ -34,52 +65,86 @@ function Cell({ r, kind }: { r: GroupResult; kind: 'scam' | 'honest' }) {
           transition={{ duration: 0.6 }}
         />
       </div>
-      <span className="num w-14 font-mono text-sm">
-        <b className="text-ink">{r.flagged}</b>
+      <span className="num font-mono text-sm whitespace-nowrap">
+        <b className={r.flagged ? 'text-ink' : 'text-ink-3'}>{r.flagged}</b>
         <span className="text-ink-3"> / {r.total}</span>
       </span>
     </div>
   )
 }
 
+function Headline() {
+  const c = coverage()
+  return (
+    <>
+      <h2 className="mt-2 font-display text-[32px] leading-tight">
+        With these rules we act on <span className="num text-safe">{c.actedOn} of {c.scam}</span> kit
+        scam journeys and stop <span className="num text-safe">{c.stopped} of {c.honest}</span> honest
+        members.
+      </h2>
+      <p className="mt-2 text-sm text-ink-2">
+        The light check asks the <span className="num">{c.asked}</span> honest members who moved for one
+        tap; <span className="num">{c.honest - c.asked} of {c.honest}</span> see nothing.
+      </p>
+      <p className="mt-1 text-xs font-medium text-warn">
+        Synthetic data, about {c.scamShare}% scam victims by design. This shows how the design behaves,
+        not real accuracy.
+      </p>
+    </>
+  )
+}
+
 export function ResultsMatrix() {
+  const results = columns()
   return (
     <Card className="p-7">
       <Eyebrow>Design check · computed live from HuskyHack_Synthetic_Events_v2.csv</Eyebrow>
-      <h2 className="mt-2 font-display text-3xl">Members each trigger would pause</h2>
-      <table className="mt-6 w-full text-left">
-        <thead>
-          <tr className="text-xs text-ink-3">
-            <th className="pb-3 font-medium">Who they really are (Member Key)</th>
-            {COLUMNS.map((c) => (
-              <th key={c.key} className="pb-3 font-medium">
-                <div className="font-semibold text-ink-2">{c.label}</div>
-                <div>{c.sub}</div>
+      <Headline />
+      <div className="mt-5 overflow-x-auto">
+        <table className="w-full min-w-[720px] text-left">
+          <caption className="sr-only">
+            Members each Second Look rule acts on, by who they really are
+          </caption>
+          <thead>
+            <tr className="align-bottom text-xs text-ink-3">
+              <th scope="col" className="pr-4 pb-3 font-medium">
+                Who they really are (Member Key)
               </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {ROWS.map((row) => (
-            <tr key={row.group} className="border-t border-line">
-              <td className="py-3 pr-4 text-sm font-medium">
-                <span
-                  className={`mr-2 inline-block size-2 rounded-full ${row.kind === 'scam' ? 'bg-rose-400' : 'bg-teal-400'}`}
-                />
-                {row.label}
-              </td>
-              {COLUMNS.map((c) => {
-                const r = c.results.find((x) => x.group === row.group)
-                return <td key={c.key} className="py-3">{r && <Cell r={r} kind={row.kind} />}</td>
-              })}
+              {COLUMNS.map((c) => (
+                <th key={c.key} scope="col" className="w-[26%] pr-4 pb-3 align-top font-medium">
+                  <div className="flex items-center gap-1.5 text-sm font-semibold text-ink">
+                    <span className={`size-2 rounded-full ${toneDot[c.tone]}`} aria-hidden />
+                    {c.label}
+                  </div>
+                  <div className="mt-0.5">{c.sub}</div>
+                  <div className="mt-0.5 text-ink-2">{c.does}</div>
+                </th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <p className="mt-5 text-xs leading-relaxed text-ink-3">
-        The kit is about 41% scam victims by design; real life is far lower. These numbers show how
-        the design behaves on the kit. They are not accuracy claims.
-      </p>
+          </thead>
+          <tbody>
+            {ROWS.map((row) => (
+              <tr key={row.group} className="border-t border-line">
+                <th scope="row" className="py-2.5 pr-4 text-sm font-medium">
+                  <span
+                    className={`mr-2 inline-block size-2 rounded-full ${row.kind === 'scam' ? 'bg-rose-400' : 'bg-teal-400'}`}
+                    aria-hidden
+                  />
+                  {row.label}
+                </th>
+                {COLUMNS.map((c) => {
+                  const r = results[c.key].find((x) => x.group === row.group)
+                  return (
+                    <td key={c.key} className="py-2.5 pr-4">
+                      {r && <Cell r={r} kind={row.kind} />}
+                    </td>
+                  )
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </Card>
   )
 }
