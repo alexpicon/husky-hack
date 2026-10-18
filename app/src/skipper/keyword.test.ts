@@ -60,6 +60,15 @@ describe('Michael’s card', () => {
       'investment',
     ])
   })
+
+  it('hears every form of invest, typos too, but not an investigation', () => {
+    for (const said of ['she invests for us', 'our investments', 'my investor', 'havent met, my investmnet partner']) {
+      expect(ids('michael', said)).toContain('investment')
+    }
+    expect(ids('michael', 'The FBI says I am under investigation')).toEqual([])
+    expect(ids('michael', 'a private investigator found her')).toEqual([])
+    expect(ids('michael', 'they will investigate my account')).toEqual([])
+  })
 })
 
 describe('James’s tablet', () => {
@@ -82,6 +91,10 @@ describe('the panel', () => {
       'government.secret',
       'romance.secret',
     ])
+  })
+
+  it('does not take an investigation for a romance investment', () => {
+    expect(ids('panel', "The IRS says I'm under investigation and not to tell anyone")).not.toContain('romance.investment')
   })
 })
 

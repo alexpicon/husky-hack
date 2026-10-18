@@ -105,7 +105,7 @@ const MICHAEL: SkipperTap[] = [
     about: "The person or their platform talks about an investment, crypto, trading, mining, an investment or trading platform or app, profits or returns, or money that grows or doubles, even when the member does not name the person (for example 'the platform says', 'my profits'). Investing on his own, with no one else bringing it up, is not this tap.",
     kind: 'signal',
     words: [
-      /\b(?:invest\w*|crypto\w*|bitcoin|btc|usdt|tether|ethereum|trading|platform|portfolio|forex|profits?|doubles?|doubled|inversi[oó]n|invertir|cripto\w*|plataforma)\b/i,
+      /\b(?:invest(?!igat)\w*|crypto\w*|bitcoin|btc|usdt|tether|ethereum|trading|platform|portfolio|forex|profits?|doubles?|doubled|inversi[oó]n|invertir|cripto\w*|plataforma)\b/i,
     ],
   },
   {
