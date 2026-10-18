@@ -13,13 +13,16 @@ type Props = {
   onGo: (i: number) => void
   /** Presenter controls shown above the step dots. */
   extra?: ReactNode
+  /** One line on what sets Second Look apart, above the step counter. */
+  pitch?: string
 }
 
-export function Narrator({ steps, index, onPrev, onNext, onGo, extra }: Props) {
+export function Narrator({ steps, index, onPrev, onNext, onGo, extra, pitch }: Props) {
   const step = steps[index]
   return (
     <div className="flex flex-wrap items-end gap-x-8 gap-y-4">
       <div className="min-w-[280px] flex-1">
+        {pitch && <p className="mb-3 max-w-3xl text-sm font-semibold text-brand">{pitch}</p>}
         <div className="flex items-center gap-3 text-xs font-medium text-ink-3">
           <span className="num font-mono">
             {String(index + 1).padStart(2, '0')} / {String(steps.length).padStart(2, '0')}

@@ -28,3 +28,10 @@ describe('the opening line on each story', () => {
     for (const s of [sarah, m1039, michael, james]) expect(s.steps[0].opening).toBeDefined()
   })
 })
+
+describe("Linda's pitch line", () => {
+  it('says what sets Second Look apart, on her story alone', () => {
+    expect(linda.pitch).toBe("Rules on Sound's own records, a silent check, and the staff side sees the same case.")
+    for (const s of [sarah, m1039, michael, james]) expect(s.pitch).toBeUndefined()
+  })
+})

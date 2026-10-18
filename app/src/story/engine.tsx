@@ -38,6 +38,8 @@ export type Scenario = {
   tone: Tone
   steps: Step[]
   zones?: Zones
+  /** One line on what sets Second Look apart, shown on the story's first step. */
+  pitch?: string
 }
 
 type StoryApi = {

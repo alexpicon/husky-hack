@@ -18,7 +18,7 @@ import { m1039 } from './story/m1039'
 import { michael } from './story/michael'
 import { sarah } from './story/sarah'
 
-const scenarios: Scenario[] = [sarah, m1039, linda, michael, james]
+const scenarios: Scenario[] = [linda, sarah, m1039, michael, james]
 
 const SOUND_STAFF = { tone: 'staff', label: 'Sound staff', who: 'Sound Member Protection' } as const
 
@@ -117,6 +117,7 @@ export default function App() {
       onPrev={api.prev}
       onNext={api.next}
       onGo={goTo}
+      pitch={index === 0 ? scenario.pitch : undefined}
       extra={
         <div className="flex flex-wrap justify-end gap-2">
           <SessionControl />

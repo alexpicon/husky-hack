@@ -39,3 +39,18 @@ describe('the opening line', () => {
     expect(render()).not.toContain('<blockquote')
   })
 })
+
+describe('the pitch line', () => {
+  it('shows above the step counter when given, and not otherwise', () => {
+    const line = 'What sets us apart.'
+    const html = renderToStaticMarkup(
+      <Narrator steps={steps} index={0} onPrev={noop} onNext={noop} onGo={noop} pitch={line} />,
+    )
+    expect(html.indexOf(line)).toBeGreaterThan(-1)
+    expect(html.indexOf(line)).toBeLessThan(html.indexOf('01 / 03'))
+    const without = renderToStaticMarkup(
+      <Narrator steps={steps} index={0} onPrev={noop} onNext={noop} onGo={noop} />,
+    )
+    expect(without).not.toContain(line)
+  })
+})

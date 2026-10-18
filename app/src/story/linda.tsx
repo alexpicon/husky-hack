@@ -23,6 +23,7 @@ export const linda: Scenario = {
   label: 'Linda',
   sublabel: 'Tricked member',
   tone: 'warn',
+  pitch: "Rules on Sound's own records, a silent check, and the staff side sees the same case.",
   steps: [
     {
       id: 'today',
