@@ -66,7 +66,11 @@ describe.each(['concept', 'sound'] as const)("Linda's last screen (%s look)", (v
 
   it('tells her when we will check back while the wire is paused, never as a countdown', () => {
     const update = `We'll check back by ${clock(lindaFacts().holdEnds)}`
-    for (const screen of [<SilentCheck />, <MatchResult />, <Decide at={t.decide} />]) {
+    for (const screen of [
+      <SilentCheck key="silent" />,
+      <MatchResult key="match" />,
+      <Decide key="decide" at={t.decide} />,
+    ]) {
       const html = render(initialCase, screen)
       expect(html).toContain(update)
       expect(html).not.toMatch(/\d+\s*(h|hours?|min|minutes?)\s+(left|remaining)/i)
