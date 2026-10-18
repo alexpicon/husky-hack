@@ -94,7 +94,8 @@ describe('the panel', () => {
   })
 
   it('does not take an investigation for a romance investment', () => {
-    expect(ids('panel', "The IRS says I'm under investigation and not to tell anyone")).not.toContain('romance.investment')
+    const irs = "The IRS says I'm under investigation and not to tell anyone"
+    expect(ids('panel', irs)).not.toContain('romance.investment')
   })
 })
 
