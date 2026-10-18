@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode, type Ref } from 'react'
 import { Lock, MessageCircle, Send, Square } from 'lucide-react'
 import type { Look } from '../ui/look'
 import { SOUND } from '../ui/soundApp'
@@ -140,9 +140,11 @@ export function Composer({ look, label, value, max, onChange, onSend }: Composer
   )
 }
 
-export function PrivacyLine({ mode, shares }: { mode: SkipperMode; shares: boolean }) {
+type PrivacyProps = { mode: SkipperMode; shares: boolean; ref?: Ref<HTMLParagraphElement> }
+
+export function PrivacyLine({ mode, shares, ref }: PrivacyProps) {
   return (
-    <p className="flex items-start gap-1.5 text-[12px] leading-snug opacity-75">
+    <p ref={ref} className="flex items-start gap-1.5 text-[12px] leading-snug opacity-75">
       <Lock size={12} className="mt-0.5 shrink-0" aria-hidden />
       {privacyLine(mode, shares)}
     </p>

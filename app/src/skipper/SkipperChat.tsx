@@ -1,7 +1,8 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { Look } from '../ui/look'
 import { suggestTaps } from './client'
 import { HEARD, NO, NO_MATCH, NOT_NOW, NOT_QUITE, TALK, THINKING, YES } from './copy'
+import { showLatest } from './follow'
 import { SKIPPER_LISTS, type SkipperScreen } from './lists'
 import { Bubble, ChatHeader, Choice, Composer, OpenButton, PrivacyLine, SuggestedTap, useSkipperMode } from './SkipperParts'
 import { MAX_TEXT, type Suggestion } from './verify'
@@ -40,8 +41,20 @@ export function SkipperChat({ screen, look, label, greeting, apply, outcome, onT
   const [said, setSaid] = useState('')
   const [found, setFound] = useState<Suggestion[]>([])
   const asked = useRef(0)
+  const end = useRef<HTMLParagraphElement>(null)
+  const moved = useRef(false)
+  const go = (next: Phase) => {
+    moved.current = true
+    setPhase(next)
+  }
+  // Only after a move, so a chat that mounts open never scrolls the page. The privacy line is last.
+  useEffect(() => {
+    if (!moved.current) return
+    moved.current = false
+    if (phase !== 'done') showLatest(end.current)
+  }, [phase])
 
-  if (phase === 'closed') return <OpenButton look={look} label={label} onOpen={() => setPhase('typing')} />
+  if (phase === 'closed') return <OpenButton look={look} label={label} onOpen={() => go('typing')} />
 
   const send = () => {
     const words = draft.trim()
@@ -50,17 +63,17 @@ export function SkipperChat({ screen, look, label, greeting, apply, outcome, onT
     setSaid(words)
     setDraft('')
     setFound([])
-    setPhase('thinking')
+    go('thinking')
     onHeard?.(words)
     void suggestTaps(screen, words, mode).then(({ taps }) => {
       if (ask !== asked.current) return
       setFound(taps)
-      setPhase(taps.length ? 'heard' : 'no-match')
+      go(taps.length ? 'heard' : 'no-match')
     })
   }
   const confirm = () => {
     apply(found.map((s) => s.id))
-    setPhase('applied')
+    go('applied')
   }
   const labelOf = (id: string) => SKIPPER_LISTS[screen].find((t) => t.id === id)?.label ?? id
   const shown = found.length > 0 && ['heard', 'applied', 'done'].includes(phase)
@@ -91,7 +104,7 @@ export function SkipperChat({ screen, look, label, greeting, apply, outcome, onT
         {phase === 'not-quite' && <Bubble look={look} from="skipper">{NOT_QUITE}</Bubble>}
         {settled && outcome && <Bubble look={look} from="skipper">{outcome.line}</Bubble>}
       </div>
-      {phase === 'heard' && <Choice look={look} yes={YES} no={NO} onYes={confirm} onNo={() => setPhase('not-quite')} />}
+      {phase === 'heard' && <Choice look={look} yes={YES} no={NO} onYes={confirm} onNo={() => go('not-quite')} />}
       {phase === 'applied' && outcome?.talk && onTalk && (
         <Choice
           look={look}
@@ -99,13 +112,13 @@ export function SkipperChat({ screen, look, label, greeting, apply, outcome, onT
           no={NOT_NOW}
           onYes={() => {
             onTalk()
-            setPhase('done')
+            go('done')
           }}
-          onNo={() => setPhase('done')}
+          onNo={() => go('done')}
         />
       )}
       {typing && <Composer look={look} label={label} value={draft} max={MAX_TEXT} onChange={setDraft} onSend={send} />}
-      <PrivacyLine mode={mode} shares={shares} />
+      <PrivacyLine ref={end} mode={mode} shares={shares} />
     </section>
   )
 }
