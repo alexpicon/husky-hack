@@ -6,12 +6,13 @@ import { useLook } from '../../ui/look'
 import { Button, Source } from '../../ui/primitives'
 import { SOUND, SoundButton, SoundCard } from '../../ui/soundApp'
 import { NavyIcon } from '../linda/kiosk'
-import { answerActions } from './answers'
+import { answerActions, handedOver } from './answers'
 import { useJamesAnswers } from './answersState'
 import {
   AUTONOMY,
   CALL_AGENCY,
   checkReply,
+  GOING_AHEAD,
   NONE,
   PRIVATE,
   SIGNALS,
@@ -77,13 +78,17 @@ function Note({ sound, tone, icon, children }: { sound: boolean; tone: 'warn' | 
   )
 }
 
-/** James's branch tablet: one true fact from Sound's records, then a silent check he taps privately. */
+/**
+ * James's branch tablet: one true fact from Sound's records, then a silent check he taps privately.
+ * Once the teller goes on with the withdrawal, it says so and offers nothing more to tap.
+ */
 export function JamesCheck() {
   const sound = useLook() === 'sound'
   const f = jamesFacts()
   const { next } = useStory()
   const { state, update } = useJamesAnswers()
   const { taps } = state
+  const goingAhead = handedOver(state)
   const reply = checkReply(taps)
   const tile = (t: JamesTap, short?: boolean) => (
     <Tile
@@ -97,37 +102,53 @@ export function JamesCheck() {
   )
 
   return (
-    <JamesTablet caption="Branch tablet - James taps privately" icon={Banknote} status="Cash withdrawal">
+    <JamesTablet
+      caption="Branch tablet - James taps privately"
+      icon={Banknote}
+      status={goingAhead ? 'Withdrawal going ahead' : 'Cash withdrawal'}
+    >
       <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
         <Note sound={sound} tone="warn" icon={Info}>
           You asked us {daysAgo(f.call.at, f.cash.at)} <strong>{f.topic}</strong>. <Source ids={f.call.id} />
         </Note>
       </motion.div>
-      <div>
+      {goingAhead ? (
         <h2
+          role="status"
           className={sound ? 'text-[20px] leading-tight font-bold' : 'font-display text-[24px] leading-tight text-ink'}
           style={sound ? { color: SOUND.navy } : undefined}
         >
-          Is any of this happening today?
+          {GOING_AHEAD}
         </h2>
-        <p className="text-[14px] text-ink-2">Tap any that fit. You don't have to say it out loud.</p>
-      </div>
-      <div className="grid grid-cols-3 gap-2" role="group" aria-label="What is happening today">
-        {SIGNALS.map((t) => tile(t))}
-        {tile(NONE)}
-      </div>
-      <div className="grid grid-cols-[1fr_150px] gap-2">
-        {tile(PRIVATE, true)}
-        {sound ? (
-          <SoundButton onClick={next}>
-            Continue <ArrowRight size={18} aria-hidden />
-          </SoundButton>
-        ) : (
-          <Button size="lg" onClick={next}>
-            Continue <ArrowRight size={18} aria-hidden />
-          </Button>
-        )}
-      </div>
+      ) : (
+        <>
+          <div>
+            <h2
+              className={sound ? 'text-[20px] leading-tight font-bold' : 'font-display text-[24px] leading-tight text-ink'}
+              style={sound ? { color: SOUND.navy } : undefined}
+            >
+              Is any of this happening today?
+            </h2>
+            <p className="text-[14px] text-ink-2">Tap any that fit. You don't have to say it out loud.</p>
+          </div>
+          <div className="grid grid-cols-3 gap-2" role="group" aria-label="What is happening today">
+            {SIGNALS.map((t) => tile(t))}
+            {tile(NONE)}
+          </div>
+          <div className="grid grid-cols-[1fr_150px] gap-2">
+            {tile(PRIVATE, true)}
+            {sound ? (
+              <SoundButton onClick={next}>
+                Continue <ArrowRight size={18} aria-hidden />
+              </SoundButton>
+            ) : (
+              <Button size="lg" onClick={next}>
+                Continue <ArrowRight size={18} aria-hidden />
+              </Button>
+            )}
+          </div>
+        </>
+      )}
       <div aria-live="polite">
         <Note sound={sound} tone="brand" icon={Phone}>
           {reply.said && <strong className="block">{reply.said}</strong>}

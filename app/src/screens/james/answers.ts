@@ -24,7 +24,9 @@ export const initialAnswers: JamesAnswers = { run: 0, v: 0, agent: null, taps: [
 export const answerActions = {
   /** The agent logs one outcome per call, and it stands. */
   agent: (a: JamesAnswers, id: AgentChoice): JamesAnswers => (a.agent ? a : { ...a, agent: id }),
-  tap: (a: JamesAnswers, id: JamesTapId): JamesAnswers => ({ ...a, taps: toggleJamesTap(a.taps, id) }),
+  /** Once the teller goes on with the withdrawal, his taps stand as they were. */
+  tap: (a: JamesAnswers, id: JamesTapId): JamesAnswers =>
+    a.teller.includes('continue') ? a : { ...a, taps: toggleJamesTap(a.taps, id) },
   teller: (a: JamesAnswers, id: TellerAction): JamesAnswers => {
     if (a.teller.includes(id)) return a
     if (ENDS.includes(id) && a.teller.some((t) => ENDS.includes(t))) return a

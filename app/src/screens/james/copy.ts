@@ -53,6 +53,8 @@ export const PRIVATE_REPLY = "Thank you. We'll find you a private place to talk.
 export const CALL_AGENCY =
   'The government never asks you to move money to keep it safe. Call the agency on a number you look up yourself.'
 export const AUTONOMY = "It's your money and your decision."
+/** Step two on his tablet once the teller goes on with the withdrawal: no more taps to offer. */
+export const GOING_AHEAD = 'Your withdrawal is going ahead, as you decided.'
 /** Step three on his tablet when the teller went on with the withdrawal. */
 export const HANDED_OVER = "Cash can't be recalled; Sound opened a case, and you can report it any time."
 

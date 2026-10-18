@@ -7,7 +7,7 @@ import { birth, change, newPeer, receive, type Peer } from '../../shell/handshak
 import { james } from '../../story/james'
 import { answerActions, initialAnswers, type JamesAnswers } from './answers'
 import { changeAnswers, readAnswers, receiveAnswers, startRun, writeAnswers } from './answersState'
-import { CALL_AGENCY, HANDED_OVER, SCAM_NAMED } from './copy'
+import { CALL_AGENCY, GOING_AHEAD, HANDED_OVER, JAMES_TAPS, SCAM_NAMED } from './copy'
 import { jamesFacts } from './facts'
 
 const look = vi.hoisted(() => ({ current: 'concept' as 'concept' | 'sound' }))
@@ -79,6 +79,39 @@ describe('the teller buttons', () => {
     changeAnswers((a) => answerActions.teller(a, 'continue'))
     expect(readAnswers()).toBe(before)
     expect(text(teller.staff)).toContain('With a specialist')
+  })
+})
+
+describe.each(['concept', 'sound'] as const)('his tablet once the teller continues (%s look)', (variant) => {
+  beforeEach(() => {
+    look.current = variant
+    writeAnswers(initialAnswers)
+  })
+
+  const buttons = (node: ReactNode) => [...html(node).matchAll(/<button[^>]*>(.*?)<\/button>/g)].map((m) => text(m[1]))
+  const offers = (node: ReactNode) => {
+    const labels = buttons(node).join(' | ')
+    return { taps: JAMES_TAPS.some((t) => labels.includes(t.label)), next: /\bContinue\b/.test(labels) }
+  }
+
+  it('offers the taps and Continue until then', () => {
+    changeAnswers((a) => answerActions.teller(a, 'ask'))
+    expect(offers(teller.member)).toEqual({ taps: true, next: true })
+    expect(text(teller.member)).not.toContain(GOING_AHEAD)
+  })
+
+  it('stops offering taps and Continue, says it goes ahead at his decision, and keeps his taps as they were', () => {
+    changeAnswers((a) => answerActions.tap(a, 'secret'))
+    changeAnswers((a) => answerActions.teller(a, 'continue'))
+    const page = text(teller.member)
+    expect(offers(teller.member)).toEqual({ taps: false, next: false })
+    expect(page).toContain('Withdrawal going ahead')
+    expect(page).toContain(GOING_AHEAD)
+    expect(page).toContain(CALL_AGENCY)
+    expect(page).not.toContain('Is any of this happening today?')
+    const before = readAnswers()
+    changeAnswers((a) => answerActions.tap(a, 'move'))
+    expect(readAnswers()).toBe(before)
   })
 })
 
