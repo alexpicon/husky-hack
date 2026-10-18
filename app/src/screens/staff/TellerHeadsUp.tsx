@@ -1,5 +1,13 @@
 import { motion } from 'motion/react'
-import { ArrowUpRight, Banknote, BellRing, MessageCircleQuestion, TabletSmartphone, type LucideIcon } from 'lucide-react'
+import {
+  ArrowUpRight,
+  Banknote,
+  BellRing,
+  DoorClosed,
+  MessageCircleQuestion,
+  TabletSmartphone,
+  type LucideIcon,
+} from 'lucide-react'
 import { HEADS_UP_WINDOW_HOURS } from '../../data/jamesRules'
 import { clock, day } from '../../ui/format'
 import { Source } from '../../ui/primitives'
@@ -20,7 +28,7 @@ const ACTIONS: { id: TellerAction; label: string; hint: string; done: string; ic
   {
     id: 'tablet',
     label: 'Offer the private tablet check',
-    hint: 'His taps stay private unless he shares them',
+    hint: 'His taps stay on the tablet; a request to talk privately shows here',
     done: 'Tablet check offered',
     icon: TabletSmartphone,
   },
@@ -89,6 +97,15 @@ export function TellerHeadsUp() {
           <Source ids={[call.id, cash.id]} />
         </div>
       </motion.div>
+      {state.taps.includes('private') && (
+        <p className="flex items-start gap-2.5 rounded-xl bg-warn-soft px-3.5 py-2.5 text-sm text-ink ring-1 ring-amber-200 ring-inset">
+          <DoorClosed size={16} className="mt-0.5 shrink-0 text-warn" aria-hidden />
+          <span>
+            <span className="font-semibold">{JAMES_NAME} asked to talk privately.</span> Find a private desk, away
+            from anyone with him.
+          </span>
+        </p>
+      )}
       <div className="grid items-start gap-4 @2xl:grid-cols-2">
         <Panel title="The withdrawal" icon={<Banknote size={14} />}>
           <div className="divide-y divide-line/70">

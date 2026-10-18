@@ -1,4 +1,7 @@
-/** James's answers: one copy for every window but his taps, a fresh one each run, and step three follows the teller. */
+/**
+ * James's answers: one copy for every window but his taps, bar asking to talk privately, a fresh one
+ * each run, and step three follows the teller.
+ */
 import type { ReactNode } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -174,6 +177,28 @@ describe('two windows, as on two laptops', () => {
     expect(text(staff.steps[2].staff)).toContain('Cash handed over')
   })
 
+  it('tell the teller he asked to talk privately, and take it back when he untaps it', async () => {
+    const member = await openWindow()
+    const staff = await openWindow()
+    const asked = 'James asked to talk privately. Find a private desk, away from anyone with him.'
+    expect(text(staff.steps[1].staff)).not.toContain(asked)
+    member.store.changeAnswers((a) => answerActions.tap(a, 'secret'))
+    member.store.changeAnswers((a) => answerActions.tap(a, 'private'))
+    relay(member, staff)
+    expect(staff.store.readAnswers().taps).toEqual(['private'])
+    expect(text(staff.steps[1].staff)).toContain(asked)
+    expect(text(staff.steps[1].staff)).not.toContain(JAMES_TAPS.find((t) => t.id === 'secret')!.label)
+
+    staff.store.changeAnswers((a) => answerActions.teller(a, 'ask'))
+    relay(staff, member)
+    expect(member.store.readAnswers().taps).toEqual(['secret', 'private'])
+    member.store.changeAnswers((a) => answerActions.tap(a, 'private'))
+    relay(member, staff)
+    expect(staff.store.readAnswers().taps).toEqual([])
+    expect(text(staff.steps[1].staff)).not.toContain(asked)
+    expect(member.store.readAnswers().taps).toEqual(['secret'])
+  })
+
   it('keep the newer copy when a stale one arrives', () => {
     writeAnswers(initialAnswers)
     changeAnswers((a) => answerActions.teller(a, 'continue'))
@@ -182,17 +207,23 @@ describe('two windows, as on two laptops', () => {
     expect(readAnswers()).toEqual(newer)
   })
 
-  it('send no taps, and keep his own when a newer copy arrives until a newer run', () => {
+  it('send only a private-talk request, and keep his other taps when a newer copy arrives until a newer run', () => {
     expect(outbound({ ...initialAnswers, agent: 'transfer', taps: ['secret', 'private'] })).toEqual({
       ...initialAnswers,
       agent: 'transfer',
+      taps: ['private'],
     })
+    expect(outbound({ ...initialAnswers, taps: ['none'] }).taps).toEqual([])
     writeAnswers(initialAnswers)
     changeAnswers((a) => answerActions.tap(a, 'move'))
     receiveAnswers({ ...initialAnswers, v: 5, teller: ['ask'] })
     expect(readAnswers()).toEqual({ ...initialAnswers, v: 5, teller: ['ask'], taps: ['move'] })
-    receiveAnswers({ ...initialAnswers, run: 1, v: 6 })
-    expect(readAnswers()).toEqual({ ...initialAnswers, run: 1, v: 6 })
+    receiveAnswers({ ...initialAnswers, v: 6, teller: ['ask'], taps: ['private'] })
+    expect(readAnswers().taps).toEqual(['move', 'private'])
+    receiveAnswers({ ...initialAnswers, v: 7, teller: ['ask'] })
+    expect(readAnswers().taps).toEqual(['move'])
+    receiveAnswers({ ...initialAnswers, run: 1, v: 8 })
+    expect(readAnswers()).toEqual({ ...initialAnswers, run: 1, v: 8 })
   })
 
   it('start empty on a new run, and an earlier run never comes back', () => {

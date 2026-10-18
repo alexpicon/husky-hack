@@ -1,5 +1,5 @@
 import type { AgentChoice } from './agent'
-import { toggleJamesTap, type JamesTapId } from './copy'
+import { JAMES_TAPS, toggleJamesTap, type JamesTapId } from './copy'
 
 /** The teller's buttons on the heads-up. Escalating and continuing each end it. */
 export type TellerAction = 'ask' | 'tablet' | 'escalate' | 'continue'
@@ -8,8 +8,9 @@ export const ENDS: readonly TellerAction[] = ['escalate', 'continue']
 
 /**
  * The contact center agent's choice at step one, James's taps and the teller's choices at step
- * two. Every window has the same answers except his taps (see `outbound`). `run` is the demo run
- * they belong to; `v` counts edits in that run, and the newer copy wins.
+ * two. Every window has the same answers except his taps, bar asking to talk privately (see
+ * `outbound`). `run` is the demo run they belong to; `v` counts edits in that run, and the newer
+ * copy wins.
  */
 export type JamesAnswers = {
   run: number
@@ -48,16 +49,22 @@ export function mergeAnswers(local: JamesAnswers, incoming: JamesAnswers): James
   return JSON.stringify(local) >= JSON.stringify(incoming) ? local : incoming
 }
 
-/** The only copy that leaves this window: no staff screen shows his taps, so they never go. */
-export const outbound = (a: JamesAnswers): JamesAnswers => ({ ...a, taps: [] })
+/**
+ * The only copy that leaves this window: his taps stay here, except asking to talk privately,
+ * which the teller always sees.
+ */
+export const outbound = (a: JamesAnswers): JamesAnswers => ({ ...a, taps: a.taps.filter((t) => t === 'private') })
 
 /**
- * Takes another window's outbound copy. Every window settles on the same agent and teller choices,
- * and his taps stay in the window where he gave them until a new run.
+ * Takes another window's outbound copy. Every window settles on the same agent and teller choices
+ * and on whether he asked to talk privately; his other taps stay in the window where he gave them
+ * until a new run.
  */
 export function mergeOutbound(local: JamesAnswers, incoming: JamesAnswers): JamesAnswers {
   if (mergeAnswers(outbound(local), incoming) !== incoming) return local
-  return incoming.run === local.run ? { ...incoming, taps: local.taps } : incoming
+  if (incoming.run !== local.run) return incoming
+  const taps = JAMES_TAPS.map((t) => t.id).filter((t) => (t === 'private' ? incoming : local).taps.includes(t))
+  return { ...incoming, taps }
 }
 
 /** The teller went on with the withdrawal, so the cash was handed over. */

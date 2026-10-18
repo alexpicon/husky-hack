@@ -3,7 +3,8 @@ import { initialAnswers, mergeOutbound, type JamesAnswers } from './answers'
 
 /**
  * James's answers live outside React so his tablet and the teller desk share them inside one
- * window; one mounted <JamesSync /> per window sends the others everything but his taps.
+ * window; one mounted <JamesSync /> per window sends the others everything but his taps, bar
+ * asking to talk privately.
  */
 let current: JamesAnswers = initialAnswers
 const listeners = new Set<() => void>()
@@ -30,8 +31,8 @@ export function changeAnswers(change: (a: JamesAnswers) => JamesAnswers) {
 }
 
 /**
- * Another window's copy arrived: keep the winner, and this window's own taps. A copy saved before a
- * field existed gets its start value.
+ * Another window's copy arrived: keep the winner, and this window's own taps but the private-talk
+ * request. A copy saved before a field existed gets its start value.
  */
 export function receiveAnswers(incoming: JamesAnswers) {
   const merged = mergeOutbound(current, { ...initialAnswers, ...incoming })
