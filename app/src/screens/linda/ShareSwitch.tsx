@@ -3,10 +3,13 @@ import type { Look } from '../../ui/look'
 import { SOUND } from '../../ui/soundApp'
 import { caseActions, useLindaCase } from './lindaCase'
 
-/** Her answers stay on the tablet unless she turns this on. Every new case starts with it off. */
+/**
+ * Her answers stay on the tablet unless she turns this on. Every new case starts with it off. It
+ * shows once she has tapped, and stays while it is on, so she can always turn sharing off.
+ */
 export function ShareSwitch({ look }: { look: Look }) {
   const { state, update } = useLindaCase()
-  if (state.taps.length === 0) return null
+  if (state.taps.length === 0 && !state.shared) return null
   const on = state.shared
   const sound = look === 'sound'
   const track = on ? (sound ? SOUND.link : 'var(--color-brand)') : '#c4c8d2'

@@ -168,6 +168,15 @@ describe.each(['concept', 'sound'] as const)('his taps on the card (%s look)', (
     expect(text(staff)).toContain("We've never met in person")
   })
 
+  it('keeps his share switch on screen while he shares, even with every tap cleared', () => {
+    const html = () => renderToStaticMarkup(<>{member}</>)
+    expect(html()).not.toContain('role="switch"')
+    writeCheck({ ...initialCheck, v: 1, taps: ['secret'] })
+    expect(html()).toMatch(/role="switch" aria-checked="false"/)
+    writeCheck({ ...initialCheck, v: 2, shared: true })
+    expect(html()).toMatch(/role="switch" aria-checked="true"/)
+  })
+
   it('stops asking about a payee he marks as his own account, and tells staff why', () => {
     writeCheck({ ...initialCheck, v: 1, taps: ['own'] })
     expect(text(member)).toContain("We won't ask about this payee again.")

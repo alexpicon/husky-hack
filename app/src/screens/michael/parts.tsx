@@ -60,11 +60,12 @@ export function Options({ look }: { look: Look }) {
 
 /**
  * His answers stay on his screen unless he turns this on. Every new check starts with it off. It
- * shows once he has tapped on the card, or once `answered` says he has answered on a later screen.
+ * shows once he has tapped on the card, or once `answered` says he has answered on a later screen,
+ * and stays while it is on, so he can always turn sharing off.
  */
 export function ShareToggle({ look, answered }: { look: Look; answered?: boolean }) {
   const { state, update } = useMichaelCheck()
-  if (!(answered ?? state.taps.length > 0)) return null
+  if (!(answered ?? state.taps.length > 0) && !state.shared) return null
   const on = state.shared
   const Icon = on ? Eye : EyeOff
   const track = on ? (sound(look) ? SOUND.link : 'var(--color-brand)') : '#c4c8d2'

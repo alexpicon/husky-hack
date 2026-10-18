@@ -94,6 +94,18 @@ describe.each(['concept', 'sound'] as const)('the member tablet (%s look)', (var
     const text = withCase(initialCase, <SilentCheck />)
     for (const o of TAP_OPTIONS) expect(text).toContain(o.label)
   })
+
+  it('keeps her share switch on screen while she shares, even with every tap cleared', () => {
+    const html = (state: LindaCase) =>
+      renderToStaticMarkup(
+        <LindaCaseContext.Provider value={{ state, update: () => {} }}>
+          <MatchResult />
+        </LindaCaseContext.Provider>,
+      )
+    expect(html(initialCase)).not.toContain('role="switch"')
+    expect(html(tapped(['family']))).toContain('aria-checked="false"')
+    expect(html(tapped([], { shared: true }))).toMatch(/role="switch" aria-checked="true"/)
+  })
 })
 
 describe('tapping', () => {
