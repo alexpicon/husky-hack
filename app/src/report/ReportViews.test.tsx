@@ -104,8 +104,9 @@ describe('the staff banner', () => {
 
   it('is mounted on the takeover case and the wire desk', () => {
     expect(render(m1039.steps[0].staff)).toContain('Reported at Tue, Oct 6 · 12:55 PM.')
-    const lindaReport = reportActions.file(initialReport, { member: 'M1001', story: 'linda', clock: linda.steps[0].clock })
-    expect(render(linda.steps[0].staff, lindaReport)).toContain(`Reported at ${linda.steps[0].clock}.`)
+    const held = linda.steps.find((s) => s.id === 'today')!
+    const lindaReport = reportActions.file(initialReport, { member: 'M1001', story: 'linda', clock: held.clock })
+    expect(render(held.staff, lindaReport)).toContain(`Reported at ${held.clock}.`)
   })
 })
 

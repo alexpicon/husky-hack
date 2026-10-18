@@ -3,6 +3,7 @@ import { ArrowRight, Check, Info } from 'lucide-react'
 import { useStory } from '../../story/engine'
 import { Source } from '../../ui/primitives'
 import { SOUND, SoundButton, SoundCard } from '../../ui/soundApp'
+import { DrillReminder } from './drill/DrillReminder'
 import { lindaFacts } from './facts'
 import { NavyIcon, SoundKiosk } from './kiosk'
 import { caseActions, useLindaCase } from './lindaCase'
@@ -53,6 +54,7 @@ export function SilentCheckSound() {
 
   return (
     <SoundKiosk caption="Branch tablet - Linda taps privately">
+      <DrillReminder sound />
       <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
         <SoundCard className="flex items-start gap-3 py-2.5">
           <NavyIcon icon={Info} size={24} />

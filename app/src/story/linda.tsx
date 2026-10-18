@@ -1,6 +1,11 @@
 import { TrickedCase } from '../screens/staff/TrickedCase'
 import { dollars, LINDA_NAME, lindaFacts, storyTimes } from '../screens/linda/facts'
 import { Decide } from '../screens/linda/Decide'
+import { DrillPhone } from '../screens/linda/drill/DrillPhone'
+import { DrillMemberCard } from '../screens/linda/drill/DrillStaff'
+import { ResetDrill } from '../screens/linda/drill/drillStore'
+import { VoiceDrill } from '../screens/linda/drill/VoiceDrill'
+import { drillDay } from '../screens/linda/drill/when'
 import { ResetLindaCase } from '../screens/linda/LindaCaseProvider'
 import { MatchResult } from '../screens/linda/MatchResult'
 import { Stage } from '../screens/linda/parts'
@@ -25,6 +30,28 @@ export const linda: Scenario = {
   tone: 'warn',
   pitch: "Rules on Sound's own records, a silent check, and the staff side sees the same case.",
   steps: [
+    {
+      id: 'drill',
+      memberLabel: "Linda's phone: the Sound app",
+      title: 'Three weeks earlier, on a calm day',
+      caption:
+        'A concept, not a kit event: on an ordinary day, Linda tries a 2-minute drill in the Sound app. Real or AI? She learns a voice is no proof, even when she guesses right, and two habits that work instead. The lesson comes back when her wire is held.',
+      clock: at(drillDay()),
+      member: (
+        <Stage label="Concept: the kit has no drill. Sound would offer it in its app, on a calm day. It plays voices and never analyzes anyone's.">
+          <ResetDrill />
+          <DrillPhone>
+            <VoiceDrill />
+          </DrillPhone>
+        </Stage>
+      ),
+      staff: (
+        <>
+          <ResetDrill />
+          <DrillMemberCard now={drillDay()} />
+        </>
+      ),
+    },
     {
       id: 'today',
       memberLabel: 'What happened, from the kit',

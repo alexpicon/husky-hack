@@ -5,6 +5,7 @@ import { ReportBanner } from '../../report/ReportBanner'
 import { StaffWindow } from '../../ui/devices'
 import { day } from '../../ui/format'
 import { Source } from '../../ui/primitives'
+import { DrillStatus } from '../linda/drill/DrillStaff'
 import { useLindaCase, type LindaCase } from '../linda/lindaCase'
 import { outcomeCopy } from '../linda/outcomes'
 import { nameScam } from '../linda/scams'
@@ -67,6 +68,7 @@ export function TrickedCase({
         />
         <WhyPaused why={whyTricked(f)} />
         <ReportBanner member={member} />
+        <DrillStatus />
         <motion.div
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}

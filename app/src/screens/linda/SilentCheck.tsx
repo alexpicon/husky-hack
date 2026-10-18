@@ -4,6 +4,7 @@ import { useStory } from '../../story/engine'
 import { Tablet } from '../../ui/devices'
 import { useLook } from '../../ui/look'
 import { Button, Source } from '../../ui/primitives'
+import { DrillReminder } from './drill/DrillReminder'
 import { lindaFacts } from './facts'
 import { caseActions, useLindaCase } from './lindaCase'
 import { PausedStatus, TabletHeader } from './parts'
@@ -52,6 +53,7 @@ function SilentCheckConcept() {
     <Tablet caption="Branch tablet - Linda taps privately">
       <div className="flex min-h-full flex-col gap-3 px-6 py-5">
         <TabletHeader right={<PausedStatus />} />
+        <DrillReminder sound={false} />
 
         <motion.div
           initial={{ opacity: 0, y: 6 }}

@@ -40,8 +40,9 @@ const ended = (kind: OutcomeKind) =>
   )
 
 describe('the story', () => {
-  it('has a fifth step that shows how the wire ends', () => {
+  it('opens on a calm-day drill, and ends with a step that shows how the wire ends', () => {
     expect(linda.steps.map((s) => s.id)).toEqual([
+      'drill',
       'today',
       'silent-check',
       'match',

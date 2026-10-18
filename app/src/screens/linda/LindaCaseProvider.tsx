@@ -41,7 +41,7 @@ export function LindaCaseProvider({ children }: { children: ReactNode }) {
   return <LindaCaseContext.Provider value={api}>{children}</LindaCaseContext.Provider>
 }
 
-/** Starts a fresh case whenever the story shows Linda's first step. */
+/** Starts a fresh case whenever the story shows the day her wire is held, where the case begins. */
 export function ResetLindaCase() {
   const { update } = useLindaCase()
   useEffect(() => update(caseActions.reset), [update])
