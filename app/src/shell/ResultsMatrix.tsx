@@ -1,9 +1,11 @@
 import { motion } from 'motion/react'
+import { HEADS_UP_WINDOW_HOURS } from '../data/jamesRules'
+import { FOLLOW_UP_WINDOW_DAYS, PATTERN_MIN_RUN, PATTERN_PAYEE_MAX_AGE_DAYS } from '../data/michaelRules'
 import { POLICY } from '../data/policy'
 import { TRICKED_RECIPIENT_MAX_AGE_DAYS, TRICKED_RULES } from '../data/trickedRules'
 import type { GroupResult } from '../data/triggers'
 import { Card, Eyebrow, toneDot, type Tone } from '../ui/primitives'
-import { columns, coverage } from './designCheck'
+import { columns, coverage, type ColumnKey } from './designCheck'
 
 const ROWS: { group: string; label: string; kind: 'scam' | 'honest' }[] = [
   { group: 'Sound Impersonation + ATO', label: 'Takeover (Sarah)', kind: 'scam' },
@@ -27,7 +29,7 @@ const stopDoes: Record<typeof POLICY.fullStopRelease, string> = {
 }
 
 type Column = {
-  key: keyof ReturnType<typeof columns>
+  key: ColumnKey
   label: string
   tone: Tone
   sub: string
@@ -50,6 +52,20 @@ const COLUMNS: Column[] = [
     sub: trickedSub,
     does: 'Wire paused with a true fact; the member decides',
   },
+  {
+    key: 'headsUp',
+    label: 'James’s heads-up',
+    tone: 'safe',
+    sub: `cash or wire within ${HEADS_UP_WINDOW_HOURS} h of a contact center call`,
+    does: 'The teller sees the call and one question; no hold, the teller decides',
+  },
+  {
+    key: 'pattern',
+    label: 'Michael’s pattern card',
+    tone: 'neutral',
+    sub: `${PATTERN_MIN_RUN}th growing payment in a row to a payee added < ${PATTERN_PAYEE_MAX_AGE_DAYS} days ago`,
+    does: `Late: earlier payments are gone. Advice; he decides. A wire to a new payee within ${FOLLOW_UP_WINDOW_DAYS} days is held for a call`,
+  },
 ]
 
 function Cell({ r, kind }: { r: GroupResult; kind: 'scam' | 'honest' }) {
@@ -57,7 +73,7 @@ function Cell({ r, kind }: { r: GroupResult; kind: 'scam' | 'honest' }) {
   const color = r.flagged === 0 ? 'bg-slate-200' : kind === 'scam' ? 'bg-teal-500' : 'bg-amber-400'
   return (
     <div className="flex items-center gap-3">
-      <div className="h-2 w-20 shrink-0 overflow-hidden rounded-full bg-slate-100 2xl:w-28">
+      <div className="h-2 w-12 shrink-0 overflow-hidden rounded-full bg-slate-100 2xl:w-20">
         <motion.div
           className={`h-full rounded-full ${color}`}
           initial={{ width: 0 }}
@@ -80,11 +96,13 @@ function Headline() {
       <h2 className="mt-2 font-display text-[32px] leading-tight">
         With these rules we act on <span className="num text-safe">{c.actedOn} of {c.scam}</span> kit
         scam journeys and stop <span className="num text-safe">{c.stopped} of {c.honest}</span> honest
-        members.
+        members; <span className="num">{c.asked} of {c.honest}</span> get one tap or a card.
       </h2>
       <p className="mt-2 text-sm text-ink-2">
-        The light check asks the <span className="num">{c.asked}</span> honest members who moved for one
-        tap; <span className="num">{c.honest - c.asked} of {c.honest}</span> see nothing.
+        The light check asks the <span className="num">{c.moved}</span> honest members who moved for one
+        tap, and the pattern card shows to <span className="num">{c.carded}</span> honest look-alikes, who
+        can tap “This is my own account” once; <span className="num">{c.honest - c.asked} of {c.honest}</span>{' '}
+        see nothing.
       </p>
       <p className="mt-1 text-xs font-medium text-warn">
         Synthetic data, about {c.scamShare}% scam victims by design. This shows how the design behaves,
@@ -101,7 +119,7 @@ export function ResultsMatrix() {
       <Eyebrow>Design check · computed live from HuskyHack_Synthetic_Events_v2.csv</Eyebrow>
       <Headline />
       <div className="mt-5 overflow-x-auto">
-        <table className="w-full min-w-[720px] text-left">
+        <table className="w-full min-w-[980px] text-left">
           <caption className="sr-only">
             Members each Second Look rule acts on, by who they really are
           </caption>
@@ -111,7 +129,7 @@ export function ResultsMatrix() {
                 Who they really are (Member Key)
               </th>
               {COLUMNS.map((c) => (
-                <th key={c.key} scope="col" className="w-[26%] pr-4 pb-3 align-top font-medium">
+                <th key={c.key} scope="col" className="w-[16%] pr-4 pb-3 align-top font-medium">
                   <div className="flex items-center gap-1.5 text-sm font-semibold text-ink">
                     <span className={`size-2 rounded-full ${toneDot[c.tone]}`} aria-hidden />
                     {c.label}

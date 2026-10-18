@@ -1,7 +1,9 @@
+import { isTellerHeadsUp } from '../data/jamesRules'
 import { eventsFor, keyFor, memberKeys, type KitEvent, type MemberKey } from '../data/kit'
+import { growingRun, isFollowUpTransfer, isGrowingPattern } from '../data/michaelRules'
 import { POLICY } from '../data/policy'
 import { takeoverTier } from '../data/takeoverRules'
-import { trickedRule } from '../data/trickedRules'
+import { TRICKED_RULES, trickedRule } from '../data/trickedRules'
 import { evaluate, firstHit, groupOf, type GroupResult } from '../data/triggers'
 import { minutesBetween } from '../ui/format'
 
@@ -12,6 +14,7 @@ type Trigger = (e: KitEvent) => boolean
 
 const TAKEOVER = 'Sound Impersonation + ATO'
 export const FAMILY = 'Family Emergency'
+const GOVERNMENT = 'Tech Support / Government Impersonation'
 export const HOME_BUYER = 'M1057'
 const MICHAEL = 'M1002'
 
@@ -25,8 +28,11 @@ function rulesFor(policy: RulePolicy = POLICY) {
     stop: (e: KitEvent) => tier(e) === 'stop',
     check: (e: KitEvent) => tier(e) === 'check',
     linda: trickedRule(policy.lindaRule),
+    headsUp: isTellerHeadsUp,
+    pattern: isGrowingPattern,
+    followUp: isFollowUpTransfer,
   }
-  const any: Trigger = (e) => rules.stop(e) || rules.check(e) || rules.linda(e)
+  const any: Trigger = (e) => Object.values(rules).some((rule) => rule(e))
   return { ...rules, any }
 }
 
@@ -42,15 +48,26 @@ function memo<T>(name: string, policy: RulePolicy, build: () => T): T {
   return cache.get(key) as T
 }
 
-/** Matrix columns: the members of each group each rule pauses at least once. */
-export function columns(policy: RulePolicy = POLICY): Record<'stop' | 'check' | 'linda', GroupResult[]> {
+export type ColumnKey = 'stop' | 'check' | 'linda' | 'headsUp' | 'pattern'
+
+/** Matrix columns: the members of each group each rule acts on at least once. */
+export function columns(policy: RulePolicy = POLICY): Record<ColumnKey, GroupResult[]> {
   return memo('columns', policy, () => {
     const r = rulesFor(policy)
-    return { stop: evaluate(r.stop), check: evaluate(r.check), linda: evaluate(r.linda) }
+    return {
+      stop: evaluate(r.stop),
+      check: evaluate(r.check),
+      linda: evaluate(r.linda),
+      headsUp: evaluate(r.headsUp),
+      pattern: evaluate(r.pattern),
+    }
   })
 }
 
-/** The one denominator: scam journeys any rule acts on, honest members held or asked. */
+/**
+ * The one denominator: scam journeys any rule acts on; honest members a rule holds (stopped)
+ * or shows one tap or a card (asked).
+ */
 export function coverage(policy: RulePolicy = POLICY) {
   return memo('coverage', policy, () => {
     const r = rulesFor(policy)
@@ -60,8 +77,10 @@ export function coverage(policy: RulePolicy = POLICY) {
       scam: scam.length,
       actedOn: scam.filter((k) => fires(k, r.any)).length,
       honest: honest.length,
-      stopped: honest.filter((k) => fires(k, r.stop) || fires(k, r.linda)).length,
-      asked: honest.filter((k) => fires(k, r.check)).length,
+      stopped: honest.filter((k) => fires(k, r.stop) || fires(k, r.linda) || fires(k, r.followUp)).length,
+      asked: honest.filter((k) => fires(k, r.check) || fires(k, r.pattern)).length,
+      moved: honest.filter((k) => fires(k, r.check)).length,
+      carded: honest.filter((k) => fires(k, r.pattern)).length,
       scamShare: Math.round((scam.length / memberKeys.length) * 100),
     }
   })
@@ -101,32 +120,60 @@ export function closingWire(policy: RulePolicy = POLICY) {
   return { wire, review, secondLookHolds: all.some(rulesFor(policy).any) }
 }
 
-/** Michael's romance scam: what he lost and whether any rule fires on his events. */
-export function michael(policy: RulePolicy = POLICY) {
+/** Michael's romance scam: what he lost, the pattern card, what was gone before it, and the held wire. */
+export function michael() {
   const key = keyFor(MICHAEL)
-  const all = eventsFor(MICHAEL)
+  const card = firstHit(MICHAEL, isGrowingPattern)
+  const hold = firstHit(MICHAEL, isFollowUpTransfer)
+  if (!card || !hold) throw new Error(`${MICHAEL}: the pattern card or the follow-up hold did not fire`)
+  const payments = eventsFor(MICHAEL).filter((e) => e.type === 'Payment Initiated' && isScamPayment(key)(e))
+  const before = payments.filter((e) => e.at < card.at)
   return {
     lost: key.netLoss,
-    payments: all.filter((e) => e.type === 'Payment Initiated' && isScamPayment(key)(e)),
-    fires: all.some(rulesFor(policy).any),
+    payments,
+    card,
+    run: growingRun(card).length,
+    hold,
+    before,
+    gone: Math.round(sum(before.map((e) => e.amount)) * 100) / 100,
   }
+}
+
+/** Family emergencies Linda's rule leaves alone under the policy, with each one's scam wire. */
+export function familyUnder(policy: RulePolicy = POLICY) {
+  const linda = rulesFor(policy).linda
+  const missed = memberKeys.filter((k) => k.scenario === FAMILY && !fires(k, linda))
+  const wires = missed.map((k) => {
+    const wire = eventsFor(k.member).find(
+      (e) => e.type === 'Payment Initiated' && e.rail === 'Wire' && isScamPayment(k)(e),
+    )
+    if (!wire) throw new Error(`${k.member} has no scam wire`)
+    return wire
+  })
+  return { ratio: TRICKED_RULES[policy.lindaRule].ratio, wires }
 }
 
 /** Every scam cash withdrawal in the kit, split by whether it was cancelled or completed. */
 export function scamCash(policy: RulePolicy = POLICY) {
   const cashOut = (k: MemberKey) => (e: KitEvent) =>
     e.type === 'Payment Initiated' && e.rail === 'Cash' && isScamPayment(k)(e)
+  const r = rulesFor(policy)
   const rows = memberKeys.flatMap((k) => eventsFor(k.member).filter(cashOut(k)))
   const ending = (e: KitEvent, type: string) =>
     eventsFor(e.member).find((x) => x.type === type && x.paymentId === e.paymentId)
   const stopped = rows.filter((e) => ending(e, 'Payment Cancelled'))
   const out = rows.filter((e) => ending(e, 'Payment Completed'))
+  const government = new Set(memberKeys.filter((k) => k.scenario === GOVERNMENT).map((k) => k.member))
+  const governmentRows = rows.filter((e) => government.has(e.member))
   return {
     total: rows.length,
     stopped: { count: stopped.length, amount: sum(stopped.map((e) => e.amount)) },
     stoppedAt: [...new Set(stopped.map((e) => ending(e, 'Payment Cancelled')?.channel))],
     out: { count: out.length, amount: sum(out.map((e) => e.amount)) },
-    ruleFires: rows.some(rulesFor(policy).any),
+    outGovernment: out.every((e) => government.has(e.member)),
+    government: governmentRows.length,
+    headsUp: governmentRows.filter(r.headsUp).length,
+    holds: rows.some((e) => r.stop(e) || r.linda(e) || r.followUp(e)),
   }
 }
 

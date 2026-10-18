@@ -178,14 +178,13 @@ export function FamilySplit() {
 export function LeftAlone() {
   const { wire, review, secondLookHolds } = closingWire()
   const cash = scamCash()
-  const gap = cash.ruleFires
-    ? 'A Second Look rule covers some cash.'
-    : 'No Second Look rule covers cash; a known gap.'
+  const reach =
+    cash.headsUp === cash.government ? `all ${cash.government}` : `${cash.headsUp} of the ${cash.government}`
   const age = wire.recipientAgeDays ?? 0
   return (
     <Card className="p-7">
-      <Eyebrow>Left as it is today</Eyebrow>
-      <h3 className="mt-2 font-display text-2xl">Sound’s wire desk and tellers, unchanged</h3>
+      <Eyebrow>Left to Sound’s people</Eyebrow>
+      <h3 className="mt-2 font-display text-2xl">Sound’s wire desk and tellers still decide</h3>
       <ul className="mt-5 space-y-5 text-sm text-ink-2">
         <li className="flex gap-3">
           <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-safe-soft text-safe">
@@ -205,9 +204,10 @@ export function LeftAlone() {
           </span>
           <p>
             <b className="block text-ink">Cash at the branch</b>
-            Cash stays with the teller. In the kit, {cash.stopped.count} of {cash.total} scam withdrawals
-            were stopped at the branch ({dollars(cash.stopped.amount)}); {dollars(cash.out.amount)} still
-            went out. {gap}
+            Cash stays with the teller. James’s heads-up reaches the teller on {reach} government
+            impersonation cash requests. In the kit, without it, {cash.stopped.count} of {cash.total} scam
+            withdrawals were stopped at the branch ({dollars(cash.stopped.amount)}) and{' '}
+            {dollars(cash.out.amount)} still went out.
           </p>
         </li>
       </ul>

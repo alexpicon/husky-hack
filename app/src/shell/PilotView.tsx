@@ -1,49 +1,8 @@
-import { CalendarRange, EyeOff, Gauge, ShieldAlert } from 'lucide-react'
-import { money } from '../ui/format'
-import { Badge, Card, Eyebrow, Source } from '../ui/primitives'
-import { michael } from './designCheck'
+import { CalendarRange, Gauge, ShieldAlert } from 'lucide-react'
+import { Card, Eyebrow } from '../ui/primitives'
 import { FamilySplit, LeftAlone, MinuteZero } from './DesignLines'
 import { ResultsMatrix } from './ResultsMatrix'
-
-function MichaelMiss() {
-  const { lost, payments, fires } = michael()
-  const tallest = Math.max(...payments.map((e) => e.amount))
-  return (
-    <Card className="p-7">
-      <div className="flex items-center justify-between">
-        <Eyebrow>The scam we miss, on purpose</Eyebrow>
-        <Badge tone="danger">
-          <EyeOff size={12} /> Not flagged
-        </Badge>
-      </div>
-      <h3 className="mt-2 font-display text-2xl">Michael (M1002), a romance scam</h3>
-      <p className="mt-2 text-sm text-ink-2">
-        Small P2P payments grew for weeks, then turned into wires. No single payment looks like any of
-        the rules.
-      </p>
-      <div className="mt-4 flex items-end gap-1.5" aria-label="Michael's scam payments over time">
-        {payments.map((e) => (
-          <div key={e.id} className="flex flex-1 flex-col items-center gap-1">
-            <div
-              className={`w-full rounded-md ${e.rail === 'Wire' ? 'bg-rose-400' : 'bg-rose-200'}`}
-              style={{ height: `${Math.max(6, (e.amount / tallest) * 88)}px` }}
-              title={`${e.rail} ${money(e.amount)} (${e.id})`}
-            />
-            <span className="num font-mono text-[10px] text-ink-3">{e.rail === 'Wire' ? 'wire' : 'P2P'}</span>
-          </div>
-        ))}
-      </div>
-      <p className="mt-4 rounded-2xl bg-slate-50 p-4 text-sm text-ink-2">
-        <b className="text-ink">
-          <span className="num text-danger">{money(lost)}</span> lost;{' '}
-          {fires ? 'a rule fires on some of it' : 'no rule fires'};
-        </b>{' '}
-        the report path is what still helps. “I think I’ve been scammed” starts recovery sooner, and the
-        pilot measures this gap. <Source ids={payments.map((e) => e.id).slice(0, 2)} />
-      </p>
-    </Card>
-  )
-}
+import { StillMissed } from './StillMissed'
 
 const PILOT = [
   {
@@ -156,7 +115,7 @@ export function PilotView() {
     <div>
       <Eyebrow>Design check and pilot</Eyebrow>
       <h1 className="mt-2 font-display text-[44px] leading-[1.05] tracking-tight">
-        Tested on the organizers’ data. Honest about the miss.
+        Tested on the organizers’ data. Honest about the misses.
       </h1>
       <div className="mt-8 grid grid-cols-1 gap-6">
         <ResultsMatrix />
@@ -165,7 +124,7 @@ export function PilotView() {
           <FamilySplit />
         </div>
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-          <MichaelMiss />
+          <StillMissed />
           <LeftAlone />
         </div>
         <Pilot />

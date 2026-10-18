@@ -23,11 +23,11 @@ function measureRows() {
   )
 }
 
-describe('the named miss', () => {
-  it('says no rule fires on Michael and names the report path the member sees', () => {
-    expect(html).toContain('no rule fires')
-    expect(html).toContain('I think I’ve been scammed')
-    expect(html).not.toMatch(/can’t be recalled|I think I was scammed/)
+describe('the named misses', () => {
+  it('says Michael is caught late and leaves the choice to him', () => {
+    expect(html).toContain('caught late')
+    expect(html).toContain('The card is advice; he decides.')
+    expect(html).not.toMatch(/no rule fires|can’t be recalled|I think I was scammed/)
   })
 })
 
