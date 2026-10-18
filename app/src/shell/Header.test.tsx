@@ -14,10 +14,10 @@ const html = renderToStaticMarkup(
 const text = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ')
 
 describe('header', () => {
-  it('carries the hook in two short lines under the name', () => {
-    expect(html).toContain('<span class="block">Facts go to the real member,</span>')
-    expect(html).toContain('<span class="block">never to whoever is logged in.</span>')
-    expect(text.indexOf('Second Look')).toBeLessThan(text.indexOf('Facts go to the real member'))
+  it('carries the tagline under the name', () => {
+    expect(text).toContain('One true fact, to the right person.')
+    expect(text.indexOf('Second Look')).toBeLessThan(text.indexOf('One true fact'))
+    expect(html).not.toContain('\u2014')
   })
 
   it('keeps the data badge, counted from the kit', () => {
