@@ -1,4 +1,3 @@
-import { useSyncExternalStore } from 'react'
 import { Gavel, House, Lock, Scale, Users, type LucideIcon } from 'lucide-react'
 
 export type TapId = 'family' | 'official' | 'secret' | 'bail' | 'other'
@@ -52,19 +51,8 @@ export const TAP_OPTIONS: TapOption[] = [
 /** What Linda taps in the story when the presenter has not tapped anything yet. */
 export const STORY_TAPS: TapId[] = ['family', 'official', 'secret', 'bail']
 
-let selected: TapId[] = []
-const listeners = new Set<() => void>()
-
-function subscribe(listener: () => void) {
-  listeners.add(listener)
-  return () => listeners.delete(listener)
-}
-
-export function toggleTap(id: TapId) {
-  selected = selected.includes(id) ? selected.filter((t) => t !== id) : [...selected, id]
-  listeners.forEach((l) => l())
-}
-
-export function useTaps(): TapId[] {
-  return useSyncExternalStore(subscribe, () => selected)
+/** Taps in the order they are listed, so every window shows them the same way. */
+export function toggleTap(taps: readonly TapId[], id: TapId): TapId[] {
+  const on = taps.includes(id) ? taps.filter((t) => t !== id) : [...taps, id]
+  return TAP_OPTIONS.map((o) => o.id).filter((t) => on.includes(t))
 }

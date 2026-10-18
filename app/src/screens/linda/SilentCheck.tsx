@@ -7,15 +7,17 @@ import { Button, Source } from '../../ui/primitives'
 import { dollars, lindaFacts } from './facts'
 import { TabletHeader } from './parts'
 import { SilentCheckSound } from './SilentCheckSound'
-import { TAP_OPTIONS, toggleTap, useTaps, type TapOption } from './taps'
+import { caseActions, useLindaCase } from './lindaCase'
+import { TAP_OPTIONS, type TapOption } from './taps'
 
 function Toggle({ option, on, wide = false }: { option: TapOption; on: boolean; wide?: boolean }) {
+  const { update } = useLindaCase()
   const Icon = on ? Check : option.icon
   return (
     <button
       type="button"
       aria-pressed={on}
-      onClick={() => toggleTap(option.id)}
+      onClick={() => update((c) => caseActions.tap(c, option.id))}
       className={`flex items-center gap-3 rounded-2xl px-3.5 text-left transition active:scale-[0.99] ${wide ? 'h-12 flex-1' : 'min-h-[66px] py-2.5'} ${on ? 'bg-brand text-white shadow-md ring-2 ring-brand' : 'bg-white text-ink ring-1 ring-slate-300 hover:ring-slate-400'}`}
     >
       <span
@@ -31,7 +33,12 @@ function Toggle({ option, on, wide = false }: { option: TapOption; on: boolean; 
 function SilentCheckConcept() {
   const f = lindaFacts()
   const { next } = useStory()
-  const taps = useTaps()
+  const { state, update } = useLindaCase()
+  const taps = state.taps
+  const finish = () => {
+    update(caseActions.finishCheck)
+    next()
+  }
   const [other] = TAP_OPTIONS.filter((o) => !o.scamSignal)
   const signals = TAP_OPTIONS.filter((o) => o.scamSignal)
 
@@ -77,7 +84,7 @@ function SilentCheckConcept() {
 
         <div className="flex items-center gap-2.5">
           <Toggle option={other} on={taps.includes(other.id)} wide />
-          <Button size="lg" onClick={next}>
+          <Button size="lg" onClick={finish}>
             Continue <ArrowRight size={18} aria-hidden />
           </Button>
         </div>

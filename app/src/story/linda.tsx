@@ -1,5 +1,6 @@
 import { TrickedCase } from '../screens/staff/TrickedCase'
 import { dollars, LINDA_NAME, lindaFacts, storyTimes } from '../screens/linda/facts'
+import { ResetLindaCase } from '../screens/linda/LindaCaseProvider'
 import { MatchResult } from '../screens/linda/MatchResult'
 import { Stage } from '../screens/linda/parts'
 import { SilentCheck } from '../screens/linda/SilentCheck'
@@ -29,10 +30,16 @@ export const linda: Scenario = {
       clock: at(t.caught),
       member: (
         <Stage>
+          <ResetLindaCase />
           <TodayCard />
         </Stage>
       ),
-      staff: <TrickedCase member="M1001" stage="held" now={t.caught} />,
+      staff: (
+        <>
+          <ResetLindaCase />
+          <TrickedCase member="M1001" stage="held" now={t.caught} />
+        </>
+      ),
     },
     {
       id: 'silent-check',

@@ -5,14 +5,16 @@ import { Source } from '../../ui/primitives'
 import { SOUND, SoundButton, SoundCard } from '../../ui/soundApp'
 import { lindaFacts } from './facts'
 import { NavyIcon, SoundKiosk } from './kiosk'
-import { TAP_OPTIONS, toggleTap, useTaps, type TapOption } from './taps'
+import { caseActions, useLindaCase } from './lindaCase'
+import { TAP_OPTIONS, type TapOption } from './taps'
 
 function Option({ option, on, wide = false }: { option: TapOption; on: boolean; wide?: boolean }) {
+  const { update } = useLindaCase()
   return (
     <button
       type="button"
       aria-pressed={on}
-      onClick={() => toggleTap(option.id)}
+      onClick={() => update((c) => caseActions.tap(c, option.id))}
       className={`flex items-center gap-3 rounded-[18px] border-2 px-3.5 text-left shadow-[0_2px_10px_rgb(15_23_42/0.07)] transition active:scale-[0.99] ${wide ? 'h-12 flex-1' : 'min-h-[64px] py-2'}`}
       style={{ borderColor: on ? SOUND.link : 'transparent', background: on ? '#eaf2fc' : '#fff' }}
     >
@@ -34,7 +36,12 @@ function Option({ option, on, wide = false }: { option: TapOption; on: boolean; 
 export function SilentCheckSound() {
   const f = lindaFacts()
   const { next } = useStory()
-  const taps = useTaps()
+  const { state, update } = useLindaCase()
+  const taps = state.taps
+  const finish = () => {
+    update(caseActions.finishCheck)
+    next()
+  }
   const [other] = TAP_OPTIONS.filter((o) => !o.scamSignal)
   const signals = TAP_OPTIONS.filter((o) => o.scamSignal)
 
@@ -69,7 +76,7 @@ export function SilentCheckSound() {
       <div className="flex items-center gap-2.5">
         <Option option={other} on={taps.includes(other.id)} wide />
         <div className="w-[176px] shrink-0">
-          <SoundButton onClick={next}>
+          <SoundButton onClick={finish}>
             Continue <ArrowRight size={18} aria-hidden />
           </SoundButton>
         </div>

@@ -8,18 +8,19 @@ import { AUTONOMY, callBack, replies, shownTaps, verdict, type Reply } from './c
 import { dollars, lindaFacts } from './facts'
 import { MatchResultSound } from './MatchResultSound'
 import { TabletHeader } from './parts'
-import { useTaps } from './taps'
+import { ShareSwitch } from './ShareSwitch'
+import { useLindaCase } from './lindaCase'
 
 function MatchResultConcept() {
   const f = lindaFacts()
   const { next } = useStory()
   const [reply, setReply] = useState<Reply>(null)
-  const { shown, named } = shownTaps(useTaps())
+  const { shown, named } = shownTaps(useLindaCase().state.taps)
   const say = verdict(named)
   const call = callBack(named)
 
   return (
-    <Tablet caption="Branch tablet - Linda chose to share her taps with staff">
+    <Tablet caption="Branch tablet - her answers stay private unless she shares them">
       <div className="flex min-h-full flex-col gap-3 p-6">
         <TabletHeader
           right={
@@ -41,6 +42,9 @@ function MatchResultConcept() {
               {o.short}
             </li>
           ))}
+          <li className="ml-auto">
+            <ShareSwitch look="concept" />
+          </li>
         </ul>
 
         <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>

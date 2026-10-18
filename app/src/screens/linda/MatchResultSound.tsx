@@ -5,19 +5,20 @@ import { useStory } from '../../story/engine'
 import { SOUND, SoundButton, SoundCard } from '../../ui/soundApp'
 import { AUTONOMY, callBack, replies, shownTaps, verdict, type Reply } from './copy'
 import { NavyIcon, SoundKiosk } from './kiosk'
-import { useTaps } from './taps'
+import { ShareSwitch } from './ShareSwitch'
+import { useLindaCase } from './lindaCase'
 
 const SAFE = '#1f7a4d'
 
 export function MatchResultSound() {
   const { next } = useStory()
   const [reply, setReply] = useState<Reply>(null)
-  const { shown, named } = shownTaps(useTaps())
+  const { shown, named } = shownTaps(useLindaCase().state.taps)
   const say = verdict(named)
   const call = callBack(named)
 
   return (
-    <SoundKiosk caption="Branch tablet - Linda chose to share her taps with staff">
+    <SoundKiosk caption="Branch tablet - her answers stay private unless she shares them">
       <ul className="flex flex-wrap items-center gap-1.5" aria-label="What you tapped">
         <li className="mr-1 text-[14px] font-medium" style={{ color: SOUND.muted }}>
           You tapped
@@ -32,6 +33,9 @@ export function MatchResultSound() {
             {o.short}
           </li>
         ))}
+        <li className="ml-auto">
+          <ShareSwitch look="sound" />
+        </li>
       </ul>
 
       <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
