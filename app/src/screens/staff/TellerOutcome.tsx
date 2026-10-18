@@ -3,7 +3,7 @@ import { clock, day } from '../../ui/format'
 import { Timeline, type TimelineItem } from '../../ui/timeline'
 import { handedOver, type TellerAction } from '../james/answers'
 import { useJamesAnswers } from '../james/answersState'
-import { QUESTION } from '../james/copy'
+import { COACHING_QUESTION, QUESTION } from '../james/copy'
 import { JAMES_NAME, jamesFacts } from '../james/facts'
 import { answer } from '../james/outcome'
 import { dollars } from '../linda/facts'
@@ -59,7 +59,7 @@ function cancelledItems(): TimelineItem[] {
 function handedOverItems(done: TellerAction[]): TimelineItem[] {
   const f = jamesFacts()
   const steps: TimelineItem[] = [started()]
-  if (done.includes('ask')) steps.push({ time: '', label: 'Teller asks the question', detail: `"${QUESTION}"`, tone: 'brand' })
+  if (done.includes('ask')) steps.push({ time: '', label: 'Teller asks the question', detail: `"${COACHING_QUESTION}"`, tone: 'brand' })
   if (done.includes('tablet')) steps.push({ time: '', label: 'Private tablet check offered', tone: 'brand' })
   steps.push(
     {

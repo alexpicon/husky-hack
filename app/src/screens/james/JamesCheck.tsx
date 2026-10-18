@@ -48,7 +48,7 @@ function Tile({ tap, on, sound, short = false, onTap }: TileProps) {
         </span>
       )}
       <span className="flex min-w-0 flex-col">
-        <span className="text-[15px] leading-tight font-semibold">{tap.label}</span>
+        <span className="text-[14px] leading-tight font-semibold">{tap.label}</span>
         {tap.hint && (
           <span className={`text-xs leading-tight ${on && !sound ? 'text-white/80' : 'text-ink-3'}`}>{tap.hint}</span>
         )}
@@ -63,7 +63,7 @@ function Note({ sound, tone, icon, children }: { sound: boolean; tone: 'warn' | 
     return (
       <SoundCard className="flex items-start gap-3 py-2.5">
         <NavyIcon icon={icon} size={22} />
-        <div className="text-[15px] leading-snug">{children}</div>
+        <div className="text-[14px] leading-snug">{children}</div>
       </SoundCard>
     )
   }
@@ -72,7 +72,7 @@ function Note({ sound, tone, icon, children }: { sound: boolean; tone: 'warn' | 
   return (
     <div className={`flex gap-3 rounded-2xl px-4 py-2.5 ring-1 ring-inset ${ring}`}>
       <Icon size={18} className={`mt-0.5 shrink-0 ${tone === 'warn' ? 'text-warn' : 'text-brand'}`} aria-hidden />
-      <div className="text-[15px] leading-snug text-ink">{children}</div>
+      <div className="text-[14px] leading-snug text-ink">{children}</div>
     </div>
   )
 }
@@ -112,11 +112,11 @@ export function JamesCheck() {
         </h2>
         <p className="text-[14px] text-ink-2">Tap any that fit. You don't have to say it out loud.</p>
       </div>
-      <div className="grid grid-cols-2 gap-2" role="group" aria-label="What is happening today">
+      <div className="grid grid-cols-3 gap-2" role="group" aria-label="What is happening today">
         {SIGNALS.map((t) => tile(t))}
+        {tile(NONE)}
       </div>
-      <div className="grid grid-cols-[1fr_1.45fr_150px] gap-2">
-        {tile(NONE, true)}
+      <div className="grid grid-cols-[1fr_150px] gap-2">
         {tile(PRIVATE, true)}
         {sound ? (
           <SoundButton onClick={next}>

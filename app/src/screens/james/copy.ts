@@ -1,6 +1,6 @@
-import { Ban, Hourglass, Lock, Shield, UserRoundCheck, UserSearch, type LucideIcon } from 'lucide-react'
+import { Ban, Hourglass, Lock, ScrollText, Shield, UserRoundCheck, UserSearch, type LucideIcon } from 'lucide-react'
 
-export type JamesTapId = 'investigation' | 'move' | 'secret' | 'waiting' | 'none' | 'private'
+export type JamesTapId = 'investigation' | 'move' | 'coached' | 'secret' | 'waiting' | 'none' | 'private'
 
 /** signal: how the scam often works. none: points to no scam. request: asks for a private talk. */
 export type JamesTap = {
@@ -14,6 +14,7 @@ export type JamesTap = {
 export const JAMES_TAPS: JamesTap[] = [
   { id: 'investigation', label: "Someone says I'm under investigation", icon: UserSearch, kind: 'signal' },
   { id: 'move', label: 'I was told to move my money to keep it safe', icon: Shield, kind: 'signal' },
+  { id: 'coached', label: 'Someone told me what to say to the bank', icon: ScrollText, kind: 'signal' },
   { id: 'secret', label: 'I was told to keep this secret or stay on the phone', icon: Lock, kind: 'signal' },
   { id: 'waiting', label: 'Someone is waiting for this cash', icon: Hourglass, kind: 'signal' },
   { id: 'none', label: 'None of these', icon: Ban, kind: 'none' },
@@ -49,7 +50,8 @@ export const SCAM_NAMED = 'Some of what you tapped is how the government imperso
 export const AGENCIES = 'Real government agencies never ask you to withdraw cash or keep it secret.'
 export const PRIVATE_REPLY = "Thank you. We'll find you a private place to talk."
 /** Shown to everyone, whatever they tap: a coached member may tap what he was told to. */
-export const CALL_AGENCY = 'Before you hand anyone cash, call the agency on a number you look up yourself.'
+export const CALL_AGENCY =
+  'The government never asks you to move money to keep it safe. Call the agency on a number you look up yourself.'
 export const AUTONOMY = "It's your money and your decision."
 /** Step three on his tablet when the teller went on with the withdrawal. */
 export const HANDED_OVER = "Cash can't be recalled; Sound opened a case, and you can report it any time."
@@ -65,5 +67,9 @@ export function checkReply(taps: readonly JamesTapId[]) {
   return { said: null, agencies: null }
 }
 
-/** The question the heads-up suggests; the kit's teller asked it word for word. */
+/** The kit's teller asked this word for word. */
 export const QUESTION = 'Has anyone told you to keep this secret or to stay on the phone?'
+
+/** The heads-up asks about the coaching first: a coached member hides the cover story better than the coaching. */
+export const COACHING_QUESTION = 'Has anyone told you what to say to us today?'
+export const FOLLOW_UP = '...or to keep this secret, or to stay on the phone?'

@@ -5,7 +5,7 @@ import { clock, day } from '../../ui/format'
 import { Source } from '../../ui/primitives'
 import { answerActions, ENDS, type TellerAction } from '../james/answers'
 import { useJamesAnswers } from '../james/answersState'
-import { QUESTION } from '../james/copy'
+import { COACHING_QUESTION, FOLLOW_UP } from '../james/copy'
 import { daysAgo, JAMES_NAME, jamesFacts } from '../james/facts'
 import { dollars } from '../linda/facts'
 import { when } from './helpers'
@@ -22,7 +22,13 @@ const ACTIONS: { id: TellerAction; label: string; hint: string; done: string; ic
     icon: TabletSmartphone,
   },
   { id: 'escalate', label: 'Escalate to a specialist', hint: 'Someone joins you', done: 'Specialist on the way', icon: ArrowUpRight },
-  { id: 'continue', label: 'Continue the withdrawal', hint: `${JAMES_NAME}'s decision`, done: 'Withdrawal continued', icon: Banknote },
+  {
+    id: 'continue',
+    label: `Continue: ${JAMES_NAME}'s decision`,
+    hint: 'The withdrawal goes ahead',
+    done: 'Withdrawal continued',
+    icon: Banknote,
+  },
 ]
 
 /** Escalating and continuing each end the heads-up, so only one of them can be chosen. */
@@ -87,8 +93,11 @@ export function TellerHeadsUp() {
             what was said.
           </p>
         </Panel>
-        <Panel title="Suggested question" icon={<MessageCircleQuestion size={14} />} delay={0.05}>
-          <p className="font-display text-[22px] leading-snug text-ink">"{QUESTION}"</p>
+        <Panel title="Ask first" icon={<MessageCircleQuestion size={14} />} delay={0.05}>
+          <p className="font-display text-[22px] leading-snug text-ink">"{COACHING_QUESTION}"</p>
+          <p className="mt-1.5 text-[17px] leading-snug text-ink-2">
+            <span className="font-semibold text-ink">Then:</span> "{FOLLOW_UP}"
+          </p>
           <p className="mt-2 text-xs text-ink-3">Ask it the same way, every time. Then let him answer.</p>
         </Panel>
       </div>

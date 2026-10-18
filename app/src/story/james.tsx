@@ -47,7 +47,7 @@ export const james: Scenario = {
     {
       id: 'teller',
       title: 'A heads-up for the teller, no hold',
-      caption: `${JAMES_NAME} asks for ${amount} in cash. The teller sees yesterday's call and one question to ask. On the tablet, ${JAMES_NAME} can tap what is going on without saying it out loud. They decide together.`,
+      caption: `${JAMES_NAME} asks for ${amount} in cash. The teller sees yesterday's call and asks about the coaching, not the story: has anyone told him what to say? On the tablet, ${JAMES_NAME} can tap what is going on without saying it out loud. They decide together.`,
       clock: at(f.cash.at),
       member: (
         <Stage note="The call-back advice shows to everyone, whatever they tap.">

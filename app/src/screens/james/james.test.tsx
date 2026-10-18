@@ -7,7 +7,17 @@ import { james } from '../../story/james'
 import { clock, day } from '../../ui/format'
 import { TellerHeadsUp } from '../staff/TellerHeadsUp'
 import { TellerOutcome } from '../staff/TellerOutcome'
-import { AGENCIES, CALL_AGENCY, checkReply, PRIVATE_REPLY, QUESTION, SCAM_NAMED, type JamesTapId } from './copy'
+import {
+  AGENCIES,
+  CALL_AGENCY,
+  checkReply,
+  COACHING_QUESTION,
+  FOLLOW_UP,
+  PRIVATE_REPLY,
+  QUESTION,
+  SCAM_NAMED,
+  type JamesTapId,
+} from './copy'
 import { jamesFacts } from './facts'
 import { JamesCheck } from './JamesCheck'
 
@@ -59,7 +69,11 @@ describe.each(['concept', 'sound'] as const)('every step (%s look)', (variant) =
   it('shows the true fact and the call-back line before any tap, and names no scam', () => {
     const text = textOf(renderToStaticMarkup(<JamesCheck />))
     expect(text).toContain('You asked us yesterday about the daily cash limit and how fast a wire arrives.')
+    expect(text).toContain(
+      'The government never asks you to move money to keep it safe. Call the agency on a number you look up yourself.',
+    )
     expect(text).toContain(CALL_AGENCY)
+    expect(text).toContain('Someone told me what to say to the bank')
     expect(text).not.toContain(SCAM_NAMED)
   })
 })
@@ -70,6 +84,8 @@ describe('the silent check', () => {
     [['none'], null],
     [['secret'], null],
     [['investigation', 'secret'], SCAM_NAMED],
+    [['coached'], null],
+    [['coached', 'move'], SCAM_NAMED],
     [['move', 'waiting', 'secret'], SCAM_NAMED],
     [['investigation', 'secret', 'private'], PRIVATE_REPLY],
   ]
@@ -87,9 +103,10 @@ describe('the teller', () => {
       'Yesterday at 2:04 PM James called the contact center about the daily cash limit and how fast a wire arrives. Today: $7,000 cash.',
     )
     expect(text).toContain('4.71x his 12-month 90th-percentile payment')
-    expect(text).toContain(QUESTION)
+    expect(text).toContain(`Ask first "Has anyone told you what to say to us today?" Then: "...or to keep this secret, or to stay on the phone?"`)
+    expect([COACHING_QUESTION, FOLLOW_UP].every((q) => text.includes(q))).toBe(true)
     expect(text).toContain('No hold. You and James decide.')
-    for (const b of ['Ask the question', 'Offer the private tablet check', 'Escalate to a specialist', 'Continue the withdrawal']) {
+    for (const b of ['Ask the question', 'Offer the private tablet check', 'Escalate to a specialist', "Continue: James's decision"]) {
       expect(text).toContain(b)
     }
   })
