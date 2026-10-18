@@ -3,6 +3,8 @@ import { motion } from 'motion/react'
 import { StaffWindow } from '../../ui/devices'
 import { day } from '../../ui/format'
 import { Source } from '../../ui/primitives'
+import { useLindaCase } from '../linda/lindaCase'
+import { nameScam } from '../linda/scams'
 import { ScriptPanel, SilentCheckPanel, TrustedPanel } from './CheckPanels'
 import { plural } from './helpers'
 import { CaseHeader, StatusPill } from './parts'
@@ -24,6 +26,8 @@ export function TrickedCase({
   now: Date
 }) {
   const f = trickedFacts(member)
+  const { state } = useLindaCase()
+  const sharedFit = state.shared && nameScam(state.taps) !== null
   return (
     <StaffWindow title={`Wire desk · ${f.caseId}`}>
       <div className="@container space-y-5">
@@ -33,12 +37,14 @@ export function TrickedCase({
           kind={`Wire hold · ${day(f.hit.at)}`}
           caseId={f.caseId}
           pill={
-            stage === 'checked' ? (
-              <StatusPill tone="danger">On hold · scam pattern</StatusPill>
-            ) : (
+            stage !== 'checked' ? (
               <StatusPill tone="warn" live>
                 On hold · silent check
               </StatusPill>
+            ) : sharedFit ? (
+              <StatusPill tone="danger">On hold · scam pattern</StatusPill>
+            ) : (
+              <StatusPill tone="warn">On hold · check finished</StatusPill>
             )
           }
         />

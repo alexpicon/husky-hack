@@ -4,24 +4,26 @@ import { HeartHandshake, MessageCircle, PauseCircle, Phone, PhoneCall } from 'lu
 import { useStory } from '../../story/engine'
 import { Tablet } from '../../ui/devices'
 import { useLook } from '../../ui/look'
-import { AUTONOMY, callBack, replies, shownTaps, verdict, type Reply } from './copy'
+import { AUTONOMY, callBack, readTaps, replies, verdict } from './copy'
 import { dollars, lindaFacts } from './facts'
+import { caseActions, useLindaCase } from './lindaCase'
 import { MatchResultSound } from './MatchResultSound'
 import { TabletHeader } from './parts'
 import { ShareSwitch } from './ShareSwitch'
-import { useLindaCase } from './lindaCase'
 
 function MatchResultConcept() {
   const f = lindaFacts()
   const { next } = useStory()
-  const [reply, setReply] = useState<Reply>(null)
-  const { shown, named } = shownTaps(useLindaCase().state.taps)
-  const say = verdict(named)
-  const call = callBack(named)
+  const { state, update } = useLindaCase()
+  const [calling, setCalling] = useState(false)
+  const read = readTaps(state.taps)
+  const say = verdict(read)
+  const call = callBack(read)
+  const reply = state.wantsToSend ? replies.staff : calling ? replies.calling : null
 
   return (
     <Tablet caption="Branch tablet - her answers stay private unless she shares them">
-      <div className="flex min-h-full flex-col gap-3 p-6">
+      <div className="flex min-h-full flex-col gap-3 px-6 py-5">
         <TabletHeader
           right={
             <>
@@ -32,8 +34,10 @@ function MatchResultConcept() {
         />
 
         <ul className="flex flex-wrap items-center gap-1.5" aria-label="What you tapped">
-          <li className="mr-1 text-sm font-medium text-ink-3">You tapped</li>
-          {shown.map((o) => (
+          <li className="mr-1 text-sm font-medium text-ink-3">
+            {read.shown.length ? 'You tapped' : "You didn't tap anything. That's OK."}
+          </li>
+          {read.shown.map((o) => (
             <li
               key={o.id}
               className="flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-sm font-medium text-ink-2"
@@ -48,7 +52,7 @@ function MatchResultConcept() {
         </ul>
 
         <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
-          <h2 className="font-display text-[30px] leading-[1.1] text-ink">{say.headline}</h2>
+          <h2 className="font-display text-[29px] leading-[1.1] text-ink">{say.headline}</h2>
           <p className="mt-1.5 text-[17px] text-ink-2">{say.subline}</p>
         </motion.div>
 
@@ -56,7 +60,7 @@ function MatchResultConcept() {
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          className="flex gap-3 rounded-2xl bg-brand-soft px-4 py-3.5 ring-1 ring-indigo-200 ring-inset"
+          className="flex gap-3 rounded-2xl bg-brand-soft px-4 py-3 ring-1 ring-indigo-200 ring-inset"
         >
           <Phone size={20} className="mt-0.5 shrink-0 text-brand" aria-hidden />
           <p className="text-[17px] leading-snug text-ink">
@@ -67,7 +71,7 @@ function MatchResultConcept() {
         <div className="grid grid-cols-2 gap-2.5">
           <button
             type="button"
-            onClick={() => setReply('calling')}
+            onClick={() => setCalling(true)}
             className="flex h-14 items-center justify-center gap-2 rounded-2xl bg-ink text-base font-semibold text-white shadow-sm transition hover:bg-slate-800 active:scale-[0.99]"
           >
             <PhoneCall size={18} aria-hidden /> Call from my own phone
@@ -95,17 +99,19 @@ function MatchResultConcept() {
               className={`text-base font-semibold ${reply ? 'text-safe' : 'text-ink'}`}
               aria-live="polite"
             >
-              {reply ? replies[reply] : AUTONOMY}
+              {reply ?? AUTONOMY}
             </motion.p>
           </AnimatePresence>
-          <button
-            type="button"
-            onClick={() => setReply('staff')}
-            className="flex shrink-0 items-center gap-1.5 rounded-xl px-3 py-2 text-[15px] font-semibold text-ink-2 underline decoration-slate-300 underline-offset-4 transition hover:bg-slate-100"
-          >
-            <MessageCircle size={16} aria-hidden />
-            I still want to send - talk to staff
-          </button>
+          {!state.wantsToSend && (
+            <button
+              type="button"
+              onClick={() => update(caseActions.askToSend)}
+              className="flex shrink-0 items-center gap-1.5 rounded-xl px-3 py-2 text-[15px] font-semibold text-ink-2 underline decoration-slate-300 underline-offset-4 transition hover:bg-slate-100"
+            >
+              <MessageCircle size={16} aria-hidden />
+              I still want to send - talk to staff
+            </button>
+          )}
         </div>
       </div>
     </Tablet>

@@ -58,7 +58,7 @@ export const linda: Scenario = {
       id: 'match',
       title: 'She checks the story herself',
       caption:
-        'Some of her taps fit a known scam, so she is shown how it works and how to check it on her own. The choice stays hers.',
+        'If some of her taps fit a known scam, she is shown how it works. Everyone is shown how to check the story on their own. The choice stays hers.',
       clock: at(t.match),
       member: (
         <Stage note="The call-back advice shows to everyone on hold, whatever they tap.">

@@ -1,5 +1,5 @@
 import { nameScam } from './scams'
-import { STORY_TAPS, TAP_OPTIONS, type TapId } from './taps'
+import { TAP_OPTIONS, type TapId } from './taps'
 
 export type Reply = 'calling' | 'staff' | null
 
@@ -10,28 +10,42 @@ export const replies: Record<Exclude<Reply, null>, string> = {
 
 export const AUTONOMY = "It's your money and your decision."
 
-type Named = ReturnType<typeof nameScam>
-
-/** The taps to show back to Linda: hers, or the story's when the presenter tapped nothing. */
-export function shownTaps(tapped: TapId[]) {
-  const ids = tapped.length ? tapped : STORY_TAPS
-  return { shown: TAP_OPTIONS.filter((o) => ids.includes(o.id)), named: nameScam(ids) }
+/** What her own taps say. Nothing here reads the kit's answer key or fills in for her. */
+export function readTaps(taps: readonly TapId[]) {
+  return {
+    shown: TAP_OPTIONS.filter((o) => taps.includes(o.id)),
+    named: nameScam(taps),
+    talkPrivately: taps.includes('private'),
+  }
 }
 
-/** What the check says back. Never an all-clear, and never a scam name from one tap. */
-export const verdict = (named: Named) =>
-  named
-    ? {
-        headline: `Some of what you tapped is how the ${named.scam.name} works.`,
-        subline: `Let's check before you send. ${named.scam.how}`,
-      }
-    : {
-        headline: "We can't confirm this request from your answers.",
-        subline: 'You can still get help checking it.',
-      }
+type Read = ReturnType<typeof readTaps>
+
+/**
+ * What the check says back: never an all-clear, never a scam named from one tap, and no
+ * scam words on screen when she asked to talk privately.
+ */
+export function verdict({ named, talkPrivately }: Read) {
+  if (talkPrivately) {
+    return {
+      headline: "Thank you. We'll find you a private place to talk.",
+      subline: "Someone from our team will come to you. You don't have to explain anything here.",
+    }
+  }
+  if (named) {
+    return {
+      headline: `Some of what you tapped is how the ${named.scam.name} works.`,
+      subline: `Let's check before you send. ${named.scam.how}`,
+    }
+  }
+  return {
+    headline: "We can't confirm this request from your answers.",
+    subline: 'You can still get help checking it.',
+  }
+}
 
 /** Shown to everyone on hold, whatever they tap: a coached member may tap what she was told to. */
-export const callBack = (named: Named) => ({
+export const callBack = ({ named }: Read) => ({
   lead: `Before you send, call ${named?.scam.who ?? 'the person this money is for'} on the number YOU saved,`,
   rest: 'not a number someone gave you today.',
 })

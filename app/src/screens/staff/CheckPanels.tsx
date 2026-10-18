@@ -1,4 +1,12 @@
-import { Check, EyeOff, HeartHandshake, MessageCircleHeart, ScanFace, UserRound } from 'lucide-react'
+import {
+  Check,
+  DoorClosed,
+  EyeOff,
+  HeartHandshake,
+  MessageCircleHeart,
+  ScanFace,
+  UserRound,
+} from 'lucide-react'
 import { clock } from '../../ui/format'
 import { Source } from '../../ui/primitives'
 import { Panel, StatusPill } from './parts'
@@ -13,17 +21,20 @@ type CaseProps = { f: TrickedFacts; stage: TrickedStage; now: Date }
 
 const sentence = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 
-/** Only the taps she chose to share. Skipping and not sharing look the same to staff. */
+/**
+ * Only the taps she chose to share, and her request to talk privately, which is the one tap
+ * staff always see. Skipping and not sharing look the same to staff.
+ */
 function useShared() {
   const { state } = useLindaCase()
   const taps = state.shared ? state.taps : []
-  return { taps, named: nameScam(taps) }
+  return { taps, named: nameScam(taps), talkPrivately: state.taps.includes('private') }
 }
 
 export function SilentCheckPanel({ f, stage, now }: CaseProps) {
   const where = f.hit.channel === 'Branch' ? 'the branch tablet' : 'her phone'
   const finished = stage === 'checked'
-  const { taps, named } = useShared()
+  const { taps, named, talkPrivately } = useShared()
   const spoken = f.spokenCheck && f.spokenCheck.at <= now ? f.spokenCheck : null
   const pill = !finished ? (
     <StatusPill tone="brand" live>
@@ -38,6 +49,15 @@ export function SilentCheckPanel({ f, stage, now }: CaseProps) {
   )
   return (
     <Panel title="Silent check" icon={<ScanFace size={14} />} aside={pill}>
+      {talkPrivately && (
+        <p className="mb-3 flex items-start gap-2.5 rounded-xl bg-warn-soft px-3.5 py-2.5 text-sm text-ink ring-1 ring-amber-200 ring-inset">
+          <DoorClosed size={16} className="mt-0.5 shrink-0 text-warn" />
+          <span>
+            <span className="font-semibold">{f.name} asked to talk privately.</span> Find a private
+            desk, away from anyone with her. Her screen shows no scam words.
+          </span>
+        </p>
+      )}
       {finished && taps.length > 0 ? (
         <>
           <p className="text-sm text-ink-2">
