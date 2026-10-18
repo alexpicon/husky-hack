@@ -2,6 +2,7 @@
 import { describe, expect, it } from 'vitest'
 import { eventsFor, memberKeys, type KitEvent } from './kit'
 import {
+  FOLLOW_UP_RAILS,
   followUpTransfer,
   growingPattern,
   growingRun,
@@ -81,6 +82,38 @@ describe('the follow-up hold', () => {
 
   it('needs a card first: with the card payee marked as his own, nothing is held', () => {
     expect(firstHit('M1002', followUpTransfer(eventsFor, new Set(['R1002-08'])))).toBeUndefined()
+  })
+
+  it("holds every wire to the account while the case is open: Michael's $1,500, $2,400 and $3,840", () => {
+    const held = eventsFor('M1002').filter(isFollowUpTransfer)
+    expect(held.map((e) => [e.paymentId, e.amount, e.recipientId])).toEqual([
+      ['P1002-010', 1500, 'R1002-09'],
+      ['P1002-011', 2400, 'R1002-09'],
+      ['P1002-012', 3840, 'R1002-09'],
+    ])
+    expect(sum(held)).toBe(7740)
+  })
+
+  it('holds all 30 romance scam wires and transfers for a call, and no other payment of any member', () => {
+    const scam = new Set(memberKeys.flatMap((k) => k.scamPaymentIds))
+    const byGroup = (group: string) => {
+      const members = memberKeys.filter((k) => groupOf(k) === group)
+      const moves = members.flatMap((k) =>
+        eventsFor(k.member).filter((e) => e.type === 'Payment Initiated' && FOLLOW_UP_RAILS.includes(e.rail)),
+      )
+      const held = moves.filter(isFollowUpTransfer)
+      return {
+        held: held.length,
+        heldScam: held.filter((e) => scam.has(e.paymentId)).length,
+        scam: moves.filter((e) => scam.has(e.paymentId)).length,
+        members: `${members.filter((k) => held.some((e) => e.member === k.member)).length}/${members.length}`,
+      }
+    }
+    expect(byGroup(GROUPS.romance)).toEqual({ held: 30, heldScam: 30, scam: 30, members: '12/12' })
+    for (const g of [GROUPS.family, GROUPS.govt, GROUPS.takeover]) expect(byGroup(g).held).toBe(0)
+    const honest = [byGroup(GROUPS.routine), byGroup(GROUPS.lookalike)]
+    expect(honest.map((h) => h.members)).toEqual(['0/50', '0/20'])
+    expect(honest.reduce((n, h) => n + h.held, 0)).toBe(0)
   })
 
   it('ignores a payment to the same payee as the card', () => {

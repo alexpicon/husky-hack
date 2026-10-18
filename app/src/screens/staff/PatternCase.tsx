@@ -1,58 +1,21 @@
-import { History, Quote } from 'lucide-react'
+import { Quote } from 'lucide-react'
 import { motion } from 'motion/react'
-import type { KitEvent } from '../../data/kit'
 import { useReportedCase } from '../../report/report'
 import { ReportBanner } from '../../report/ReportBanner'
 import { StaffWindow } from '../../ui/devices'
-import { clock, day, money } from '../../ui/format'
+import { day } from '../../ui/format'
 import { Source } from '../../ui/primitives'
-import { Timeline, type TimelineItem } from '../../ui/timeline'
 import type { WireChoice } from '../michael/check'
 import { useMichaelCheck } from '../michael/checkState'
 import { MichaelCheckSync } from '../michael/checkStore'
-import { MICHAEL, MICHAEL_NAME, michaelFacts, patternFact, wireFact, type MichaelFacts } from '../michael/facts'
+import { honestLine, MICHAEL, MICHAEL_NAME, michaelFacts, patternFact, wireFact } from '../michael/facts'
 import { shortDate } from './helpers'
-import { CaseHeader, Panel, StatusPill } from './parts'
+import { CaseHeader, StatusPill } from './parts'
 import { PatternAnswersPanel, PatternPaymentsPanel, RomanceScriptPanel, WireHoldPanel } from './PatternPanels'
+import { OneCasePanel } from './PatternTimeline'
 
-/** pattern: the card on his 4th growing P2P. wire: his first wire, held. report: the day he reports. */
+/** pattern: the card on his 4th growing P2P. wire: his first wire, held. report: the case, open until he reports. */
 export type PatternStage = 'pattern' | 'wire' | 'report'
-
-/** What happened in the kit up to `now`, with the two moments Second Look adds marked as such. */
-function kitTimeline(f: MichaelFacts, now: Date, wire: WireChoice | null): TimelineItem[] {
-  const held =
-    wire === 'cancel'
-      ? `Until ${clock(f.holdEnds)}. He cancelled it, so nothing was sent; in the kit it was.`
-      : `Until ${clock(f.holdEnds)}. He decides.`
-  const warned = (paymentId: string) =>
-    f.warnings.some((w) => w.paymentId === paymentId && w.memberResponse === 'Confirmed Intended')
-  const marks = new Map<KitEvent, TimelineItem>([
-    [f.card, { time: shortDate(f.card.at), label: 'With Second Look: the pattern card', detail: 'Before this payment sends. No hold.', tone: 'brand' }],
-    [f.wire, { time: shortDate(f.wire.at), label: 'With Second Look: the wire held for a call', detail: held, tone: 'warn' }],
-  ])
-  const items = [...f.run, ...f.wires]
-    .filter((e) => e.at <= now)
-    .flatMap((e): TimelineItem[] => {
-      const payment = {
-        time: shortDate(e.at),
-        label: `${e.rail} ${money(e.amount)} to ${e.recipientId}`,
-        detail: `${clock(e.at)}${warned(e.paymentId) ? ' · warning shown, he confirmed' : ''}`,
-        source: e.id,
-      }
-      const mark = marks.get(e)
-      return mark ? [mark, payment] : [payment]
-    })
-  if (f.reported.at <= now) {
-    items.push({
-      time: shortDate(f.reported.at),
-      label: 'In the kit: scam reported',
-      detail: `${clock(f.reported.at)} · ${f.reported.channel}`,
-      tone: 'danger',
-      source: f.reported.id,
-    })
-  }
-  return items
-}
 
 function Pill({ stage, reported, wire }: { stage: PatternStage; reported: boolean; wire: WireChoice | null }) {
   if (reported) return <StatusPill tone="danger">Scam reported</StatusPill>
@@ -65,29 +28,33 @@ function Pill({ stage, reported, wire }: { stage: PatternStage; reported: boolea
     )
   }
   if (stage === 'pattern') return <StatusPill tone="brand">Pattern card shown</StatusPill>
-  return <StatusPill tone="neutral">No open case</StatusPill>
+  return <StatusPill tone="warn">Case open · every wire gets a call</StatusPill>
 }
 
 /** `now` is the story clock: the case never shows a kit event from after it. */
 export function PatternCase({ stage, now }: { stage: PatternStage; now: Date }) {
   const f = michaelFacts()
   const reportedCase = useReportedCase(MICHAEL)
-  const { wire } = useMichaelCheck().state
+  const { wire, card } = useMichaelCheck().state
   const hit = stage === 'pattern' ? f.card : f.wire
-  const kind = stage === 'report' ? `Romance pattern · ${day(now)}` : `${stage === 'wire' ? 'Wire hold' : 'Pattern card'} · ${day(hit.at)}`
+  const kind = stage === 'report' ? `Relationship investment pattern · ${day(now)}` : `${stage === 'wire' ? 'Wire hold' : 'Pattern card'} · ${day(hit.at)}`
   return (
-    <StaffWindow title={`Member Protection · ${reportedCase ?? (stage === 'report' ? 'No open case' : `${stage === 'wire' ? 'Hold' : 'Card'} on ${hit.paymentId}`)}`}>
+    <StaffWindow title={`Member Protection · ${reportedCase ?? (stage === 'report' ? `One case: ${MICHAEL_NAME} (${MICHAEL})` : `${stage === 'wire' ? 'Hold' : 'Card'} on ${hit.paymentId}`)}`}>
       <MichaelCheckSync />
       <div className="@container space-y-5">
         <CaseHeader
           name={MICHAEL_NAME}
           member={MICHAEL}
           kind={kind}
-          caseId={reportedCase}
+          caseId={reportedCase ?? (stage === 'report' ? `Open since ${shortDate(f.card.at)}` : undefined)}
           pill={<Pill stage={stage} reported={reportedCase !== undefined} wire={wire} />}
         />
         <ReportBanner member={MICHAEL} />
-        {stage !== 'report' && (
+        {stage === 'report' ? (
+          <p className="rounded-2xl bg-slate-50 px-5 py-4 font-display text-[22px] leading-tight tracking-tight text-ink ring-1 ring-line">
+            {honestLine(f)}
+          </p>
+        ) : (
           <motion.div
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
@@ -99,7 +66,7 @@ export function PatternCase({ stage, now }: { stage: PatternStage; now: Date }) 
               Sound's fact, the first line {MICHAEL_NAME} sees
             </div>
             <p className="mt-1.5 font-display text-[26px] leading-tight tracking-tight text-ink">
-              {stage === 'wire' ? wireFact(f) : patternFact(f)}
+              {stage === 'wire' ? wireFact(f, card !== 'not-now') : patternFact(f)}
             </p>
             <div className="mt-1.5">
               <Source ids={stage === 'wire' ? [f.wire.id, f.wirePayeeAdded.id] : f.run.map((e) => e.id)} />
@@ -109,13 +76,7 @@ export function PatternCase({ stage, now }: { stage: PatternStage; now: Date }) 
         <div className="grid items-start gap-4 @2xl:grid-cols-2">
           <div className="space-y-4">
             {stage === 'wire' && <WireHoldPanel f={f} />}
-            {stage === 'report' ? (
-              <Panel title="His payments, from the kit" icon={<History size={14} />}>
-                <Timeline compact items={kitTimeline(f, now, wire)} />
-              </Panel>
-            ) : (
-              <PatternPaymentsPanel f={f} />
-            )}
+            {stage === 'report' ? <OneCasePanel f={f} now={now} /> : <PatternPaymentsPanel f={f} />}
           </div>
           <div className="space-y-4">
             {stage === 'wire' && <RomanceScriptPanel f={f} />}

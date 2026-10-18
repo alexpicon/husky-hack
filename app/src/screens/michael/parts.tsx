@@ -1,4 +1,4 @@
-import { Check, Eye, EyeOff, Info, Landmark, TriangleAlert, Users } from 'lucide-react'
+import { ArrowDownToLine, Check, Eye, EyeOff, Info, Landmark, TriangleAlert, Users } from 'lucide-react'
 import { motion } from 'motion/react'
 import type { ReactNode } from 'react'
 import type { Look } from '../../ui/look'
@@ -6,7 +6,7 @@ import { Source } from '../../ui/primitives'
 import { SOUND } from '../../ui/soundApp'
 import { checkActions, romanceFit, ROMANCE_OPTIONS, type MichaelOption } from './check'
 import { useMichaelCheck } from './checkState'
-import { ROMANCE_LINE, TRUSTED_LINE } from './facts'
+import { ROMANCE_LINE, TRUSTED_LINE, WITHDRAWAL_CHECK } from './facts'
 
 const sound = (look: Look) => look === 'sound'
 
@@ -58,10 +58,13 @@ export function Options({ look }: { look: Look }) {
   )
 }
 
-/** His answers stay on his phone unless he turns this on. Every new check starts with it off. */
-export function ShareToggle({ look }: { look: Look }) {
+/**
+ * His answers stay on his screen unless he turns this on. Every new check starts with it off. It
+ * shows once he has tapped on the card, or once `answered` says he has answered on a later screen.
+ */
+export function ShareToggle({ look, answered }: { look: Look; answered?: boolean }) {
   const { state, update } = useMichaelCheck()
-  if (state.taps.length === 0) return null
+  if (!(answered ?? state.taps.length > 0)) return null
   const on = state.shared
   const Icon = on ? Eye : EyeOff
   const track = on ? (sound(look) ? SOUND.link : 'var(--color-brand)') : '#c4c8d2'
@@ -121,5 +124,25 @@ export function CheckResult({ look }: { look: Look }) {
         {TRUSTED_LINE}
       </Line>
     </div>
+  )
+}
+
+/** The one check he can do himself, on the card for everyone but a member paying his own account. */
+export function WithdrawalCheck({ look }: { look: Look }) {
+  const { state } = useMichaelCheck()
+  if (state.taps.includes('own')) return null
+  return (
+    <section
+      aria-label={WITHDRAWAL_CHECK.title}
+      className={`flex items-start gap-2.5 rounded-2xl px-3.5 py-3 ${sound(look) ? 'bg-white shadow-[0_2px_10px_rgb(15_23_42/0.07)]' : 'bg-brand-soft/70 ring-1 ring-indigo-100'}`}
+    >
+      <ArrowDownToLine size={20} className="mt-0.5 shrink-0" style={{ color: sound(look) ? SOUND.navy : undefined }} aria-hidden />
+      <div>
+        <h3 className="text-[12px] font-bold tracking-wide uppercase" style={sound(look) ? { color: SOUND.navy } : undefined}>
+          {WITHDRAWAL_CHECK.title}
+        </h3>
+        <p className="mt-0.5 text-[15px] leading-snug">{WITHDRAWAL_CHECK.body}</p>
+      </div>
+    </section>
   )
 }

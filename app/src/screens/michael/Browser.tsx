@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { Lock } from 'lucide-react'
 import { SoundMark } from '../../ui/brand'
 import type { Look } from '../../ui/look'
+import { DeviceScreen } from '../../ui/primitives'
 import { SOUND, soundFont } from '../../ui/soundApp'
 
 /** Michael's computer: in the kit he sent his wires from Sound online banking, not the app. */
@@ -10,7 +11,7 @@ export function Browser({ look, caption, children }: { look: Look; caption?: str
   return (
     <figure className="flex flex-col items-center gap-3">
       <div className="rounded-[1.4rem] bg-slate-900 p-3 shadow-device ring-1 ring-slate-700">
-        <div className="relative flex h-[470px] w-[640px] flex-col overflow-hidden rounded-xl bg-white">
+        <div className="relative flex h-[680px] w-[640px] flex-col overflow-hidden rounded-xl bg-white">
           <div className="flex h-9 shrink-0 items-center gap-3 border-b border-line bg-slate-100 px-3">
             <span className="flex gap-1.5" aria-hidden>
               <i className="size-2.5 rounded-full bg-rose-300" />
@@ -33,7 +34,7 @@ export function Browser({ look, caption, children }: { look: Look; caption?: str
             className="min-h-0 flex-1 overflow-y-auto px-5 py-4"
             style={sound ? { ...soundFont, background: SOUND.canvas, color: SOUND.text } : undefined}
           >
-            {children}
+            <DeviceScreen>{children}</DeviceScreen>
           </div>
         </div>
       </div>

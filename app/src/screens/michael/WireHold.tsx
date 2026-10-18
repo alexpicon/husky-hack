@@ -10,13 +10,17 @@ import { checkActions, type WireChoice } from './check'
 import { useMichaelCheck } from './checkState'
 import { callLine, michaelFacts, TRUSTED_LINE, wireFact } from './facts'
 import { FactLine } from './parts'
+import { WithdrawalTest } from './WithdrawalTest'
 
 const CHOSEN: Record<WireChoice, string> = {
   wait: "We'll call you before the hold ends. After the call, you decide.",
   cancel: 'Cancelled. Nothing was sent, and the money stays in your account.',
 }
 
-/** His first wire, held for a call from Sound. He decides after the call; his choice reaches staff and step 3. */
+/**
+ * His first wire, held for a call from Sound, with the withdrawal test asked before the call. He
+ * decides after the call; his answers reach staff (the test only if he shares) and step 3.
+ */
 export function WireHold() {
   const look = useLook()
   const sound = look === 'sound'
@@ -48,9 +52,10 @@ export function WireHold() {
         </div>
         <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
           <FactLine look={look} ids={[f.wirePayeeAdded.id, f.cardPayeeAdded.id]}>
-            {wireFact(f)}
+            {wireFact(f, state.card !== 'not-now')}
           </FactLine>
         </motion.div>
+        <WithdrawalTest look={look} />
         <div className="grid grid-cols-2 gap-3">
           <p className={`flex items-start gap-2.5 rounded-2xl px-3.5 py-3 text-[14px] leading-snug ${card}`}>
             <PhoneIncoming size={18} className="mt-0.5 shrink-0" aria-hidden />

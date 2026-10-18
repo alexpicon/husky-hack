@@ -73,7 +73,7 @@ describe.each(['concept', 'sound'] as const)('his choice on the held wire (%s lo
     expect(member).toContain('-$2,400.00')
     expect(member).toContain('Here he cancelled the $1,500.00 wire, so it never left his account.')
     expect(member).toContain('In the kit, without Second Look $8,487.77')
-    expect(text(reportStep.staff)).toContain('He cancelled it, so nothing was sent; in the kit it was.')
+    expect(text(reportStep.staff)).toContain('1st wire · held for a call · $1,500.00 He cancelled it, so it was not sent.')
   })
 
   it.each([['wait'], [null]] as const)('shows the wire as sent after "%s", as in the kit', (wire) => {
@@ -83,7 +83,7 @@ describe.each(['concept', 'sound'] as const)('his choice on the held wire (%s lo
     expect(member).toContain('-$1,500.00')
     expect(member).not.toContain('Cancelled, not sent')
     expect(member).not.toContain('Here he cancelled')
-    expect(text(reportStep.staff)).toContain('Until 8:00 PM. He decides.')
+    expect(text(reportStep.staff)).toContain('Held until 8:00 PM for a call. After the call he sent it, as in the kit.')
   })
 
   it('names payees on his screens without the kit IDs', () => {

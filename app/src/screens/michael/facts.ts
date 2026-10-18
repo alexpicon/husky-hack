@@ -46,6 +46,8 @@ function build() {
   const ids = new Set(payments.map((e) => e.paymentId))
   const onPayments = (type: string) => all.filter((e) => e.type === type && ids.has(e.paymentId))
   const wires = payments.filter((e) => e.recipientId === wire.recipientId)
+  const wireIds = new Set(wires.map((e) => e.paymentId))
+  const completed = onPayments('Payment Completed')
 
   return {
     card,
@@ -65,7 +67,10 @@ function build() {
     warnings: onPayments('Warning Displayed'),
     reported: find('Scam Reported', all, (e) => e.type === 'Scam Reported'),
     /** Sent to the two payees, less anything the kit says came back. */
-    lost: cents(total(onPayments('Payment Completed')) - total(onPayments('Funds Recovered'))),
+    lost: cents(total(completed) - total(onPayments('Funds Recovered'))),
+    /** Everything that left for the two payees, and the part that left by wire, after the turn. */
+    sent: total(completed),
+    wired: total(completed.filter((e) => wireIds.has(e.paymentId))),
     alreadySent: total(payments.filter((e) => e.at < card.at)),
     fromCard: total(payments.filter((e) => e.at >= card.at)),
   }
@@ -91,10 +96,11 @@ export function patternFact(f: MichaelFacts = michaelFacts()) {
   return `This would be your ${ordinal(f.run.length)} payment in ${f.runDays} days to someone you added on ${shortDate(f.cardPayeeAdded.at)}, each bigger than the last: ${amounts(f.run)}.`
 }
 
-/** The first line he sees on the held wire. */
-export function wireFact(f: MichaelFacts = michaelFacts()) {
+/** The first line he sees on the held wire. If he chose "Not now" on the card, his 4th payment never left. */
+export function wireFact(f: MichaelFacts = michaelFacts(), fourthSent = true) {
   const first = f.firstWireEver ? 'your first wire ever' : 'a wire'
-  return `This would be ${first}, to an account added ${f.minutesSinceWirePayeeAdded} minutes ago, after ${f.growingBeforeWire} growing payments to someone else you added on ${shortDate(f.cardPayeeAdded.at)}.`
+  const growing = f.growingBeforeWire - (fourthSent ? 0 : 1)
+  return `This would be ${first}, to an account added ${f.minutesSinceWirePayeeAdded} minutes ago, after ${growing} growing payments to someone else you added on ${shortDate(f.cardPayeeAdded.at)}.`
 }
 
 /** "8 PM" */
@@ -113,14 +119,30 @@ export function payeeLabel(recipientId: string, f: MichaelFacts = michaelFacts()
 }
 
 export const TRUSTED_LINE = 'Talk to someone you trust before you send more.'
-export const ROMANCE_LINE = 'Some of what you tapped is how a romance scam works.'
+export const ROMANCE_LINE = 'Some of what you tapped is how a relationship investment scam works.'
 
-/** What staff say on the call while his wire is held. */
+/** The one check he can do himself: a fake platform shows gains but won't let money out. */
+export const WITHDRAWAL_CHECK = {
+  title: 'One check before you send more',
+  body: "Try taking $100 out of the platform. Real platforms let you. If you can't, or they ask for a fee or tax first, stop and call us.",
+}
+
+/** "$441" for whole dollars, "$8,487.77" otherwise. */
+export const dollars = (n: number) => money(n).replace(/\.00$/, '')
+
+/** The line step 3 always says: what was gone before the card, and whose decision each payment was. */
+export const honestLine = (f: MichaelFacts = michaelFacts()) =>
+  `First ${dollars(f.alreadySent)} gone before the card. He decides at every step.`
+
+export const WITHDRAWAL_QUESTION = 'Have you been able to withdraw from the platform?'
+
+/** What staff say on the call while his wire is held. It opens with the withdrawal test. */
 export function romanceScript(f: MichaelFacts) {
   return [
-    "Thank you for taking our call. You haven't done anything wrong.",
+    WITHDRAWAL_QUESTION,
+    "If you couldn't, or they asked for a fee or tax first, that's how these scams keep you paying. You haven't done anything wrong.",
     'Have you met the person this money is for in person?',
-    'Romance scams often start with someone met online who talks about an investment, and payments that grow. Does any of that sound familiar?',
+    'Relationship investment scams often start with someone met online who talks about an investment, and payments that grow. Does any of that sound familiar?',
     `Would you talk to someone you trust before you send more? The wire stays on hold until ${clock(f.holdEnds)} while you do.`,
     "It's your money and your decision. If you still want it sent, we'll release it.",
   ]

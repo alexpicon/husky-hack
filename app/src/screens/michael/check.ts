@@ -34,21 +34,53 @@ export function romanceFit(taps: readonly MichaelTap[]): MichaelTap[] | null {
   return fitting.length >= MIN_FITTING_TAPS ? fitting : null
 }
 
+/** His choice on the card: send the 4th payment, or "Not now", which sends nothing. */
+export type CardChoice = 'send' | 'not-now'
+
 /** His choice on the held wire: wait for Sound's call, or cancel it. */
 export type WireChoice = 'wait' | 'cancel'
+
+/** His answer on the held wire to "Did the withdrawal test work?" */
+export type TestAnswer = 'worked' | 'failed' | 'untried'
+
+/** No answer clears the hold or skips the call: a fake platform can let a little out early. */
+export const TEST_OPTIONS: { id: TestAnswer; label: string; reply: string }[] = [
+  {
+    id: 'worked',
+    label: 'Yes, I took money out',
+    reply: 'Thanks. Some fake platforms let a little out early to win trust, so a specialist will still call you.',
+  },
+  {
+    id: 'failed',
+    label: 'No, or they asked for a fee first',
+    reply: "That's how these scams keep you paying. Your wire stays on hold, and a specialist will call you.",
+  },
+  { id: 'untried', label: "I haven't tried", reply: 'You can still try it before we call. Your wire stays on hold while you do.' },
+]
 
 /**
  * Michael's answers on the pattern card and the held wire, shared by every window. `run` is the
  * demo run they belong to and `v` counts edits; a newer run wins, then the newer copy.
  */
-export type MichaelCheck = { run: number; v: number; taps: MichaelTap[]; shared: boolean; wire: WireChoice | null }
+export type MichaelCheck = {
+  run: number
+  v: number
+  taps: MichaelTap[]
+  shared: boolean
+  card: CardChoice | null
+  wire: WireChoice | null
+  test: TestAnswer | null
+}
 
-export const initialCheck: MichaelCheck = { run: 0, v: 0, taps: [], shared: false, wire: null }
+export const initialCheck: MichaelCheck = { run: 0, v: 0, taps: [], shared: false, card: null, wire: null, test: null }
 
 export const checkActions = {
   tap: (c: MichaelCheck, id: MichaelTap): MichaelCheck => ({ ...c, taps: toggleTap(c.taps, id) }),
   share: (c: MichaelCheck, shared: boolean): MichaelCheck => ({ ...c, shared }),
-  wire: (c: MichaelCheck, wire: WireChoice): MichaelCheck => ({ ...c, wire }),
+  /** Each choice is final once given: a second window's late tap never changes it. */
+  card: (c: MichaelCheck, card: CardChoice): MichaelCheck => (c.card ? c : { ...c, card }),
+  wire: (c: MichaelCheck, wire: WireChoice): MichaelCheck => (c.wire ? c : { ...c, wire }),
+  test: (c: MichaelCheck, test: TestAnswer): MichaelCheck => (c.test ? c : { ...c, test }),
   reset: (c: MichaelCheck): MichaelCheck => ({ ...initialCheck, run: c.run, v: c.v }),
   /** A new demo run starts him over; a window still on an older run never clears a newer one. */
   forRun: (c: MichaelCheck, run: number): MichaelCheck => (run > c.run ? { ...initialCheck, run, v: c.v } : c),
@@ -61,7 +93,10 @@ export function mergeChecks(local: MichaelCheck, incoming: MichaelCheck): Michae
   return JSON.stringify(local) >= JSON.stringify(incoming) ? local : incoming
 }
 
-/** What staff see: his taps only if he shares them. Marking his own account always shows, since it stops the card. */
+/**
+ * What staff see: his taps and his withdrawal-test answer only if he shares them. Marking his own
+ * account always shows, since it stops the card.
+ */
 export function staffView(c: MichaelCheck) {
-  return { taps: c.shared ? c.taps : [], ownAccount: c.taps.includes('own') }
+  return { taps: c.shared ? c.taps : [], ownAccount: c.taps.includes('own'), test: c.shared ? c.test : null }
 }

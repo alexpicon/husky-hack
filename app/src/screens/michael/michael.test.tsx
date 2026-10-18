@@ -46,6 +46,13 @@ describe("Michael's facts, from his events", () => {
     expect(f.alreadySent + f.fromCard).toBeCloseTo(f.lost, 2)
   })
 
+  it('finds $7,740 of his $8,487.77 moved after the turn to wires', () => {
+    expect(f.sent).toBe(8487.77)
+    expect(f.wired).toBe(7740)
+    expect(f.wired).toBe(f.wires.reduce((s, e) => s + e.amount, 0))
+    expect(f.alreadySent + f.card.amount + f.wired).toBeCloseTo(f.sent, 2)
+  })
+
   it('finds his report, and the warnings he confirmed', () => {
     expect(f.reported.at).toEqual(new Date(2026, 9, 10, 17, 16))
     expect(f.reported.channel).toBe('Contact Center')
@@ -105,7 +112,7 @@ describe.each(['concept', 'sound'] as const)('every step (%s look)', (variant) =
     expect(text).toContain(patternFact())
     expect(text).toContain('Talk to someone you trust before you send more.')
     expect(text).toContain('Send $306.77')
-    expect(text).not.toContain('romance scam')
+    expect(text).not.toContain('investment scam')
   })
 
   it('keeps staff on the card with no hold and no taps until he shares', () => {
@@ -119,7 +126,7 @@ describe.each(['concept', 'sound'] as const)('every step (%s look)', (variant) =
     const staff = textOf(renderToStaticMarkup(<>{michael.steps[1].staff}</>))
     expect(member).toContain(wireFact())
     expect(member).toContain('Held until 8:00 PM')
-    expect(staff).toContain('Call script · Romance scam')
+    expect(staff).toContain('Call script · Relationship investment scam')
   })
 
   it('labels the kit loss and never calls the rest saved', () => {
@@ -146,7 +153,7 @@ describe.each(['concept', 'sound'] as const)('his taps on the card (%s look)', (
     expect(text(staff)).toContain('Answers private')
     expect(text(staff)).not.toContain("We've never met in person")
     writeCheck({ ...initialCheck, v: 2, taps: ['never-met', 'investment'], shared: true })
-    expect(text(staff)).toContain('Taps fit a romance scam')
+    expect(text(staff)).toContain('Taps fit a relationship investment scam')
     expect(text(staff)).toContain("We've never met in person")
   })
 

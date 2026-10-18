@@ -7,7 +7,7 @@ import {
 } from '../../data/michaelRules'
 import { clock, money } from '../../ui/format'
 import { Source } from '../../ui/primitives'
-import { romanceFit, ROMANCE_OPTIONS, staffView } from '../michael/check'
+import { romanceFit, ROMANCE_OPTIONS, staffView, TEST_OPTIONS } from '../michael/check'
 import { useMichaelCheck } from '../michael/checkState'
 import { callLine, hour, MICHAEL_NAME, romanceScript, type MichaelFacts } from '../michael/facts'
 import { shortDate } from './helpers'
@@ -17,11 +17,12 @@ import { HOLD_HOURS } from './trickedFacts'
 type Props = { f: MichaelFacts }
 
 export function PatternPaymentsPanel({ f }: Props) {
+  const notNow = useMichaelCheck().state.card === 'not-now'
   return (
     <Panel
       title={`Growing payments to ${f.card.recipientId}`}
       icon={<TrendingUp size={14} />}
-      aside={<StatusPill tone="brand">Card shown · no hold</StatusPill>}
+      aside={<StatusPill tone="brand">Card shown · no hold{notNow && ` · ${money(f.card.amount)} not sent`}</StatusPill>}
     >
       <ol className="divide-y divide-line/70 border-y border-line/70">
         <li className="flex items-baseline justify-between gap-3 py-1.5 text-sm">
@@ -54,7 +55,7 @@ export function PatternAnswersPanel() {
   const { taps, ownAccount } = staffView(state)
   const fit = romanceFit(taps)
   const pill = fit ? (
-    <StatusPill tone="danger">Taps fit a romance scam</StatusPill>
+    <StatusPill tone="danger">Taps fit a relationship investment scam</StatusPill>
   ) : taps.length ? (
     <StatusPill tone="brand">Answers shared</StatusPill>
   ) : (
@@ -142,9 +143,26 @@ export function WireHoldPanel({ f }: Props) {
   )
 }
 
+/** His withdrawal-test answer, only if he shared it; a private answer tells staff nothing, not even that he answered. */
+function SharedTest() {
+  const { test } = staffView(useMichaelCheck().state)
+  const answer = TEST_OPTIONS.find((o) => o.id === test)
+  return (
+    <p className="mt-3 rounded-xl bg-slate-50 px-3.5 py-2.5 text-sm text-ink-2 ring-1 ring-line ring-inset">
+      {answer ? (
+        <>
+          <span className="font-semibold text-ink">He shared his withdrawal test:</span> "{answer.label}"
+        </>
+      ) : (
+        `${MICHAEL_NAME}'s withdrawal-test answer stays on his screen unless he shares it.`
+      )}
+    </p>
+  )
+}
+
 export function RomanceScriptPanel({ f }: Props) {
   return (
-    <Panel title="Call script · Romance scam" icon={<MessageCircleHeart size={14} />} delay={0.05}>
+    <Panel title="Call script · Relationship investment scam" icon={<MessageCircleHeart size={14} />} delay={0.05}>
       <ol className="space-y-2">
         {romanceScript(f).map((line, i) => (
           <li key={line} className="flex gap-3 text-sm leading-relaxed text-ink">
@@ -155,6 +173,7 @@ export function RomanceScriptPanel({ f }: Props) {
           </li>
         ))}
       </ol>
+      <SharedTest />
     </Panel>
   )
 }

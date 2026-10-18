@@ -15,30 +15,40 @@ function recentPayments(): KitEvent[] {
   return [...f.run, ...f.wires].filter((e) => e.at <= f.reported.at).reverse()
 }
 
-/** The held wire he cancelled shows as not sent; every other row is what the kit says he sent. */
-function Row({ e, cancelled }: { e: KitEvent; cancelled: boolean }) {
+/** Why a row never left in this run: he cancelled the held wire, or chose "Not now" on the card. */
+type NotSent = 'cancelled' | 'not-now' | null
+
+const NOT_SENT_LABEL = { cancelled: ' · Cancelled, not sent', 'not-now': ' · Not now, not sent' }
+
+/** A row he stopped shows as not sent; every other row is what the kit says he sent. */
+function Row({ e, notSent }: { e: KitEvent; notSent: NotSent }) {
+  const stopped = notSent !== null
   return (
     <li className="flex items-baseline justify-between gap-3 border-b border-black/[0.07] py-2 last:border-0">
       <span className="min-w-0">
         <span className="block text-[15px] font-medium">To {payeeLabel(e.recipientId)}</span>
         <span className="text-[13px] opacity-70">
           {shortDate(e.at)} · {e.rail}
-          {cancelled && ' · Cancelled, not sent'}
+          {notSent && NOT_SENT_LABEL[notSent]}
         </span>{' '}
         <Source ids={e.id} />
       </span>
-      <span className={`num shrink-0 text-[15px] font-semibold ${cancelled ? 'line-through opacity-50' : ''}`}>
-        {cancelled ? money(e.amount) : `-${money(e.amount)}`}
+      <span className={`num shrink-0 text-[15px] font-semibold ${stopped ? 'line-through opacity-50' : ''}`}>
+        {stopped ? money(e.amount) : `-${money(e.amount)}`}
       </span>
     </li>
   )
 }
 
+/** Points at the report and its last line: a fee to get money back is these scams' final squeeze. */
 function Hint() {
   return (
     <p className="flex items-start gap-2 px-1 text-[13px] leading-snug opacity-80">
       <ShieldAlert size={15} className="mt-px shrink-0" aria-hidden />
-      "I think I've been scammed" is at the top of every screen. One tap opens a case.
+      <span>
+        "I think I've been scammed" is at the top of every screen. One tap opens a case, and it ends with: anyone
+        who asks for a fee to get your money back is a scammer.
+      </span>
     </p>
   )
 }
@@ -46,9 +56,11 @@ function Hint() {
 /** The day he reports: his recent payments, with the report link above them on every screen. */
 export function ReportHome() {
   const activity = recentPayments()
-  const { wire } = useMichaelCheck().state
-  const held = michaelFacts().wire
-  const row = (e: KitEvent) => <Row key={e.id} e={e} cancelled={wire === 'cancel' && e.id === held.id} />
+  const { wire, card } = useMichaelCheck().state
+  const f = michaelFacts()
+  const notSent = (e: KitEvent): NotSent =>
+    wire === 'cancel' && e.id === f.wire.id ? 'cancelled' : card === 'not-now' && e.id === f.card.id ? 'not-now' : null
+  const row = (e: KitEvent) => <Row key={e.id} e={e} notSent={notSent(e)} />
   if (useLook() === 'sound') {
     return (
       <SoundAppScreen title="Accounts" tab="accounts">

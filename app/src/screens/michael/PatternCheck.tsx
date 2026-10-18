@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useStory } from '../../story/engine'
@@ -7,16 +6,24 @@ import { useLook, type Look } from '../../ui/look'
 import { SOUND, SoundAppScreen, SoundButton } from '../../ui/soundApp'
 import { AUTONOMY } from '../linda/copy'
 import { AppBar } from '../m1039/parts'
+import { checkActions } from './check'
 import { useMichaelCheck } from './checkState'
 import { michaelFacts, patternFact } from './facts'
-import { CheckResult, FactLine, Options, ShareToggle } from './parts'
+import { CheckResult, FactLine, Options, ShareToggle, WithdrawalCheck } from './parts'
 
-/** Michael decides: Send still works, and "Not now" sends nothing. */
+/** Michael decides: Send still works, and "Not now" sends nothing. Later steps show what he chose. */
 function useDecision() {
   const { next } = useStory()
-  const { state } = useMichaelCheck()
-  const [waiting, setWaiting] = useState(false)
-  return { own: state.taps.includes('own'), waiting, wait: () => setWaiting(true), send: next }
+  const { state, update } = useMichaelCheck()
+  return {
+    own: state.taps.includes('own'),
+    waiting: state.card === 'not-now',
+    wait: () => update((c) => checkActions.card(c, 'not-now')),
+    send: () => {
+      update((c) => checkActions.card(c, 'send'))
+      next()
+    },
+  }
 }
 
 function Body({ look }: { look: Look }) {
@@ -40,6 +47,7 @@ function Body({ look }: { look: Look }) {
       <Options look={look} />
       <ShareToggle look={look} />
       <CheckResult look={look} />
+      <WithdrawalCheck look={look} />
     </>
   )
 }
@@ -71,8 +79,14 @@ function PatternSound() {
           Before you send {money(card.amount)}
         </div>
         <Body look="sound" />
-        {d.waiting ? <Decided look="sound" /> : !d.own && <SoundButton onClick={d.wait}>Not now</SoundButton>}
-        {send}
+        {d.waiting ? (
+          <Decided look="sound" />
+        ) : (
+          <div className="flex gap-2.5">
+            {!d.own && <SoundButton onClick={d.wait}>Not now</SoundButton>}
+            {send}
+          </div>
+        )}
       </div>
     </SoundAppScreen>
   )
@@ -95,21 +109,23 @@ function PatternConcept() {
         {d.waiting ? (
           <Decided look="concept" />
         ) : (
-          !d.own && (
-            <button type="button" onClick={d.wait} className={primary}>
-              Not now
+          <div className="flex gap-2.5">
+            {!d.own && (
+              <button type="button" onClick={d.wait} className={primary}>
+                Not now
+              </button>
+            )}
+            <button type="button" onClick={d.send} className={d.own ? primary : outline}>
+              Send {money(card.amount)} <ArrowRight size={18} aria-hidden />
             </button>
-          )
+          </div>
         )}
-        <button type="button" onClick={d.send} className={d.own ? primary : outline}>
-          Send {money(card.amount)} <ArrowRight size={18} aria-hidden />
-        </button>
       </div>
     </div>
   )
 }
 
-/** The pattern card before his 4th growing payment sends, with a romance silent check. */
+/** The pattern card before his 4th growing payment sends, with a silent check and one check he can do himself. */
 export function PatternCheck() {
   return useLook() === 'sound' ? <PatternSound /> : <PatternConcept />
 }
