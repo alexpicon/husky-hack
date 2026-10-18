@@ -28,7 +28,7 @@ const text = (node: ReactNode) =>
 const byId = new Map(events.map((e) => [e.id, e]))
 const [, teller, outcome] = james.steps
 const KIT_LINE =
-  'In the kit, without Second Look: the teller asked this question and the $7,000 stayed with James. In 5 other government journeys, $35,500 in cash went out.'
+  "In the kit, without Second Look: one teller happened to ask James, and the $7,000 stayed with him. In the kit, 5 others in this scam weren't asked: $35,500 left the branch. The heads-up makes the question happen every time."
 
 describe.each(['concept', 'sound'] as const)('step three follows the teller (%s look)', (variant) => {
   beforeEach(() => {
@@ -40,7 +40,7 @@ describe.each(['concept', 'sound'] as const)('step three follows the teller (%s 
     changeAnswers((a) => answerActions.teller(a, 'ask'))
     changeAnswers((a) => answerActions.teller(a, 'escalate'))
     const [member, staff] = [text(outcome.member), text(outcome.staff)]
-    expect(outcome.title).toBe('He asks for help, and the cash stays')
+    expect(outcome.title).toBe('One case across departments: the cash stays')
     expect(member).toContain('Your cash stays with you.')
     expect(member).not.toContain('handed over')
     expect(staff).toContain('Withdrawal cancelled by James')
@@ -51,7 +51,7 @@ describe.each(['concept', 'sound'] as const)('step three follows the teller (%s 
     changeAnswers((a) => answerActions.teller(a, 'ask'))
     changeAnswers((a) => answerActions.teller(a, 'continue'))
     const [member, staff] = [text(outcome.member), text(outcome.staff)]
-    expect(outcome.title).toBe('He goes ahead, and the cash is handed over')
+    expect(outcome.title).toBe('One case across departments: the cash is handed over')
     expect(outcome.caption).not.toMatch(/cancel|asks for help/)
     expect(member).toContain('The $7,000 was handed over.')
     expect(member).toContain(HANDED_OVER)
@@ -132,7 +132,7 @@ describe('two windows, as on two laptops', () => {
   })
 
   it('start empty on a new run, and an earlier run never comes back', () => {
-    writeAnswers({ ...initialAnswers, run: 2, v: 9, taps: ['secret'], teller: ['continue'] })
+    writeAnswers({ ...initialAnswers, run: 2, v: 9, agent: 'transfer', taps: ['secret'], teller: ['continue'] })
     startRun(3)
     expect(readAnswers()).toEqual({ ...initialAnswers, run: 3 })
     receiveAnswers({ ...initialAnswers, run: 2, v: 20, teller: ['continue'] })
@@ -142,7 +142,7 @@ describe('two windows, as on two laptops', () => {
   })
 
   it('start empty when the story is back on step one', () => {
-    writeAnswers({ ...initialAnswers, run: 1, v: 4, taps: ['move'], teller: ['ask', 'continue'] })
+    writeAnswers({ ...initialAnswers, run: 1, v: 4, agent: 'hesitated', taps: ['move'], teller: ['ask', 'continue'] })
     changeAnswers(answerActions.reset)
     expect(readAnswers()).toEqual({ ...initialAnswers, run: 1, v: 5 })
   })

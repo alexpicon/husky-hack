@@ -1,6 +1,7 @@
 import { History, Scale } from 'lucide-react'
 import { clock, day } from '../../ui/format'
 import { Timeline, type TimelineItem } from '../../ui/timeline'
+import { agentLine, type AgentChoice } from '../james/agent'
 import { handedOver, type TellerAction } from '../james/answers'
 import { useJamesAnswers } from '../james/answersState'
 import { COACHING_QUESTION, QUESTION } from '../james/copy'
@@ -10,6 +11,28 @@ import { dollars } from '../linda/facts'
 import { plural } from './helpers'
 import { Panel, StatusPill } from './parts'
 import { TellerDesk } from './TellerDesk'
+
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
+
+/** The day before, from another department: the call the heads-up linked to this case, and the agent's choice if one was logged. */
+function linkedCall(agent: AgentChoice | null): TimelineItem {
+  const f = jamesFacts()
+  return {
+    time: clock(f.call.at),
+    label: 'Contact center call · linked to this case',
+    detail: `${cap(f.topic)}.${agent ? ` ${cap(agentLine(agent))}.` : ''}`,
+    tone: 'brand',
+    source: f.call.id,
+  }
+}
+
+function Day({ at, channel }: { at: Date; channel: string }) {
+  return (
+    <p className="mb-2 text-xs font-semibold text-ink-2">
+      {day(at)} · {channel}
+    </p>
+  )
+}
 
 function started(): TimelineItem {
   const f = jamesFacts()
@@ -73,32 +96,40 @@ function handedOverItems(done: TellerAction[]): TimelineItem[] {
   return steps
 }
 
-/** Step three: how the afternoon ended, as the teller chose at step two, and what the heads-up changes for every other teller. */
+/** Step three: one case across departments, ending as the teller chose at step two, and what the heads-up changes for every other teller. */
 export function TellerOutcome() {
   const f = jamesFacts()
-  const out = f.elsewhere
+  const out = f.unasked
   const { state } = useJamesAnswers()
   const over = handedOver(state)
   return (
     <TellerDesk
-      title={`Teller line · ${f.caseId}`}
-      kind={`Cash withdrawal · ${day(f.cash.at)}`}
+      title={`One case · ${f.caseId}`}
+      kind={`Contact center and branch · ${day(f.call.at)} to ${day(f.cash.at)}`}
       caseId={f.caseId}
       pill={over ? <StatusPill tone="danger">Cash handed over</StatusPill> : <StatusPill tone="safe">Withdrawal cancelled</StatusPill>}
     >
       <div className="grid items-start gap-4 @2xl:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
-        <Panel title="This afternoon" icon={<History size={14} />}>
-          <Timeline items={over ? handedOverItems(state.teller) : cancelledItems()} compact />
+        <Panel title="One case across departments" icon={<History size={14} />}>
+          <Day at={f.call.at} channel={f.call.channel} />
+          <Timeline items={[linkedCall(state.agent)]} compact />
+          <div className="mt-4">
+            <Day at={f.cash.at} channel={f.cash.channel} />
+            <Timeline items={over ? handedOverItems(state.teller) : cancelledItems()} compact />
+          </div>
         </Panel>
         <Panel title="The kit, side by side" icon={<Scale size={14} />} delay={0.05}>
           <p className="text-[15px] leading-relaxed text-ink-2">
-            <span className="font-semibold text-ink">In the kit, without Second Look:</span> the teller
-            asked this question and the {dollars(f.cash.amount)} stayed with {JAMES_NAME}. In{' '}
-            {plural(out.payments.length, 'other government journey')},{' '}
-            <span className="font-semibold text-danger">{dollars(out.total)}</span> in cash went out.
+            <span className="font-semibold text-ink">In the kit, without Second Look:</span> one teller
+            happened to ask {JAMES_NAME}, and the {dollars(f.cash.amount)} stayed with him.
+          </p>
+          <p className="mt-3 text-[15px] leading-relaxed text-ink-2">
+            In the kit, {plural(out.payments.length, 'other')} in this scam{' '}
+            {out.payments.length === 1 ? "wasn't" : "weren't"} asked:{' '}
+            <span className="font-semibold text-danger">{dollars(out.total)}</span> left the branch.
           </p>
           <p className="mt-3 rounded-xl bg-warn-soft px-3.5 py-3 text-[15px] leading-snug font-semibold text-ink ring-1 ring-amber-200 ring-inset">
-            The heads-up puts this question in front of every teller, every time.
+            The heads-up makes the question happen every time.
           </p>
         </Panel>
       </div>

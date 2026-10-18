@@ -18,6 +18,8 @@ import {
   SCAM_NAMED,
   type JamesTapId,
 } from './copy'
+import { CallCenter } from '../staff/CallCenter'
+import { AGENT_QUESTION, CALL_REASON, PILOT_LABEL } from './agent'
 import { jamesFacts } from './facts'
 import { JamesCheck } from './JamesCheck'
 
@@ -48,7 +50,13 @@ describe('the kit behind the story', () => {
     expect(f.confirm.memberResponse).toBe('Requested Help')
     expect(f.offered.memberResponse).toBe('Accepted Offer')
     expect(clock(f.cancelled.at)).toBe('4:55 PM')
-    expect([f.elsewhere.payments.length, f.elsewhere.total]).toEqual([5, 35_500])
+    expect([f.unasked.payments.length, f.unasked.total]).toEqual([5, 35_500])
+  })
+
+  it("holds the pilot's reason code to the kit's own note on the call", () => {
+    expect(f.call.note).toMatch(/daily cash limit/)
+    expect(f.call.note).toMatch(/wire/)
+    expect(CALL_REASON).toBe('asked about daily cash limit and wire speed')
   })
 })
 
@@ -96,6 +104,24 @@ describe('the silent check', () => {
   })
 })
 
+describe('the contact center agent, a pilot concept', () => {
+  it('sees the reason code, one question and three choices, with no hold', () => {
+    const text = textOf(renderToStaticMarkup(<CallCenter />))
+    expect(text).toContain(PILOT_LABEL)
+    expect(text).toContain("Pilot concept: uses the call's reason code, never the call itself.")
+    expect(text).toContain('Call reason: asked about daily cash limit and wire speed')
+    expect(text).toContain('Scammers often coach members to ask this first.')
+    expect(text).toContain(`Ask: "${AGENT_QUESTION}"`)
+    for (const b of ['Asked: no concern', 'Asked: he hesitated', 'Transfer to a specialist']) expect(text).toContain(b)
+    expect(text).toContain("No hold. Logged on James's case.")
+  })
+
+  it('shows nothing from the next day', () => {
+    const text = textOf(renderToStaticMarkup(<CallCenter />))
+    expect(text).not.toMatch(/\$7,000|P1004-004|CASE-|4:17/)
+  })
+})
+
 describe('the teller', () => {
   it('sees the call, the cash and one question, with no hold', () => {
     const text = textOf(renderToStaticMarkup(<TellerHeadsUp />))
@@ -115,22 +141,40 @@ describe('the teller', () => {
     const text = textOf(renderToStaticMarkup(<TellerOutcome />))
     const label = text.indexOf('In the kit, without Second Look:')
     expect(label).toBeGreaterThan(-1)
-    expect(text.indexOf('5 other government journeys')).toBeGreaterThan(label)
+    expect(text).toContain(
+      "In the kit, 5 others in this scam weren't asked: $35,500 left the branch. The heads-up makes the question happen every time.",
+    )
     expect(text.indexOf('$35,500')).toBeGreaterThan(label)
-    expect(text).toContain('The heads-up puts this question in front of every teller, every time.')
   })
 })
 
-const sources = import.meta.glob(['./*.{ts,tsx}', '!./*.test.{ts,tsx}', '../staff/Teller*.tsx', '../../story/james.tsx', '../../data/jamesRules.ts'], {
-  query: '?raw',
-  import: 'default',
-  eager: true,
-}) as Record<string, string>
+const sources = import.meta.glob(
+  [
+    './*.{ts,tsx}',
+    '!./*.test.{ts,tsx}',
+    '../staff/Teller*.tsx',
+    '../staff/CallCenter*.tsx',
+    '../../story/james.tsx',
+    '../../data/jamesRules.ts',
+  ],
+  {
+    query: '?raw',
+    import: 'default',
+    eager: true,
+  },
+) as Record<string, string>
 
 describe('the answer key stays out of James', () => {
   it('finds the files it checks', () => {
     expect(Object.keys(sources)).toEqual(
-      expect.arrayContaining(['./facts.ts', '../staff/TellerHeadsUp.tsx', '../../story/james.tsx', '../../data/jamesRules.ts']),
+      expect.arrayContaining([
+        './facts.ts',
+        './agent.ts',
+        '../staff/TellerHeadsUp.tsx',
+        '../staff/CallCenter.tsx',
+        '../../story/james.tsx',
+        '../../data/jamesRules.ts',
+      ]),
     )
   })
 

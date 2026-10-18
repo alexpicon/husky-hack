@@ -33,10 +33,24 @@ const completed = new Set(
   events.filter((e) => e.type === 'Payment Completed').map((e) => e.paymentId),
 )
 
+const asked = new Set(
+  events.filter((e) => e.type === 'Confirmation Requested').map((e) => e.paymentId),
+)
+
+const totalOf = (payments: KitEvent[]) => payments.reduce((sum, e) => sum + e.amount, 0)
+
 /** Cash the heads-up would have fired on that went out in the kit, from kit events alone. */
 export function headsUpCashOut() {
   const payments = events.filter(
     (e) => isTellerHeadsUp(e) && e.rail === 'Cash' && completed.has(e.paymentId),
   )
-  return { payments, total: payments.reduce((sum, e) => sum + e.amount, 0) }
+  return { payments, total: totalOf(payments) }
+}
+
+/** Of that cash, what a teller handed over at a branch with no question asked on the payment. */
+export function unaskedBranchCash() {
+  const payments = headsUpCashOut().payments.filter(
+    (e) => e.channel === 'Branch' && !asked.has(e.paymentId),
+  )
+  return { payments, total: totalOf(payments) }
 }

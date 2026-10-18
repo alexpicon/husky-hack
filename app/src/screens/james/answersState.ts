@@ -29,9 +29,9 @@ export function changeAnswers(change: (a: JamesAnswers) => JamesAnswers) {
   if (next !== current) writeAnswers({ ...next, v: current.v + 1 })
 }
 
-/** Another window's copy arrived: keep the winner. */
+/** Another window's copy arrived: keep the winner. A copy saved before a field existed gets its start value. */
 export function receiveAnswers(incoming: JamesAnswers) {
-  const merged = mergeAnswers(current, incoming)
+  const merged = mergeAnswers(current, { ...initialAnswers, ...incoming })
   // A fresh object re-sends this window's newer copy to the one that sent a stale one.
   writeAnswers(merged === current ? { ...current } : merged)
 }

@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest'
 import { clock } from '../ui/format'
 import { eventsFor, memberKeys, type KitEvent } from './kit'
-import { headsUpCashOut, isTellerHeadsUp, tellerHeadsUp } from './jamesRules'
+import { headsUpCashOut, isTellerHeadsUp, tellerHeadsUp, unaskedBranchCash } from './jamesRules'
 import { counts } from './testCounts'
 import { firstHit, groupOf } from './triggers'
 
@@ -82,5 +82,12 @@ describe('scam cash in the kit', () => {
     const fromEvents = headsUpCashOut()
     expect(fromEvents.payments.map((e) => e.paymentId).sort()).toEqual(out.map((e) => e.paymentId).sort())
     expect(fromEvents.total).toBe(35_500)
+  })
+
+  it('saw no question on any of the 5, each at a branch, for the step-three line', () => {
+    expect(out.every((e) => e.channel === 'Branch' && !fate(e, 'Confirmation Requested'))).toBe(true)
+    const unasked = unaskedBranchCash()
+    expect(unasked.payments.map((e) => e.paymentId).sort()).toEqual(out.map((e) => e.paymentId).sort())
+    expect(unasked.total).toBe(35_500)
   })
 })

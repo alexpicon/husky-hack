@@ -1,4 +1,4 @@
-import { headsUpCashOut, isTellerHeadsUp, recentCalls } from '../../data/jamesRules'
+import { isTellerHeadsUp, recentCalls, unaskedBranchCash } from '../../data/jamesRules'
 import { eventsFor, type KitEvent } from '../../data/kit'
 import { firstHit } from '../../data/triggers'
 import { day } from '../../ui/format'
@@ -51,7 +51,7 @@ function build() {
     cancelled,
     opened: find('Case Created', after, (e) => e.type === 'Case Created' && e.at >= cancelled.at),
     caseId: `CASE-${JAMES}-${cash.paymentId}`,
-    elsewhere: headsUpCashOut(),
+    unasked: unaskedBranchCash(),
   }
 }
 

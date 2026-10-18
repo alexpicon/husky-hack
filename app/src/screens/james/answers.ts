@@ -1,3 +1,4 @@
+import type { AgentChoice } from './agent'
 import { toggleJamesTap, type JamesTapId } from './copy'
 
 /** The teller's buttons on the heads-up. Escalating and continuing each end it. */
@@ -6,14 +7,23 @@ export type TellerAction = 'ask' | 'tablet' | 'escalate' | 'continue'
 export const ENDS: readonly TellerAction[] = ['escalate', 'continue']
 
 /**
- * James's taps and the teller's choices at step two, shared by every window.
- * `run` is the demo run they belong to; `v` counts edits in that run, and the newer copy wins.
+ * The contact center agent's choice at step one, James's taps and the teller's choices at step
+ * two, shared by every window. `run` is the demo run they belong to; `v` counts edits in that
+ * run, and the newer copy wins.
  */
-export type JamesAnswers = { run: number; v: number; taps: JamesTapId[]; teller: TellerAction[] }
+export type JamesAnswers = {
+  run: number
+  v: number
+  agent: AgentChoice | null
+  taps: JamesTapId[]
+  teller: TellerAction[]
+}
 
-export const initialAnswers: JamesAnswers = { run: 0, v: 0, taps: [], teller: [] }
+export const initialAnswers: JamesAnswers = { run: 0, v: 0, agent: null, taps: [], teller: [] }
 
 export const answerActions = {
+  /** The agent logs one outcome per call, and it stands. */
+  agent: (a: JamesAnswers, id: AgentChoice): JamesAnswers => (a.agent ? a : { ...a, agent: id }),
   tap: (a: JamesAnswers, id: JamesTapId): JamesAnswers => ({ ...a, taps: toggleJamesTap(a.taps, id) }),
   teller: (a: JamesAnswers, id: TellerAction): JamesAnswers => {
     if (a.teller.includes(id)) return a

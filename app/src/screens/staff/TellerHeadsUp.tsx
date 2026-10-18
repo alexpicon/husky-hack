@@ -3,6 +3,7 @@ import { ArrowUpRight, Banknote, BellRing, MessageCircleQuestion, TabletSmartpho
 import { HEADS_UP_WINDOW_HOURS } from '../../data/jamesRules'
 import { clock, day } from '../../ui/format'
 import { Source } from '../../ui/primitives'
+import { agentLine } from '../james/agent'
 import { answerActions, ENDS, type TellerAction } from '../james/answers'
 import { useJamesAnswers } from '../james/answersState'
 import { COACHING_QUESTION, FOLLOW_UP } from '../james/copy'
@@ -57,7 +58,12 @@ export function TellerHeadsUp() {
   const { state, update } = useJamesAnswers()
   const done = state.teller
   return (
-    <TellerDesk title="Teller line · heads-up" kind={`Cash withdrawal · ${day(cash.at)}`} pill={<Pill done={done} />}>
+    <TellerDesk
+      title="Teller line · heads-up"
+      kind={`Cash withdrawal · ${day(cash.at)}`}
+      caseId={state.agent ? `Case open since ${daysAgo(call.at, cash.at)}'s call` : undefined}
+      pill={<Pill done={done} />}
+    >
       <motion.div
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
@@ -70,6 +76,11 @@ export function TellerHeadsUp() {
           {cap(daysAgo(call.at, cash.at))} at {clock(call.at)} {JAMES_NAME} called the contact center {f.topic}.
           Today: {dollars(cash.amount)} {cash.rail.toLowerCase()}.
         </p>
+        {state.agent && (
+          <p className="mt-1 text-[17px] leading-snug font-semibold text-ink">
+            {cap(daysAgo(call.at, cash.at))}: {agentLine(state.agent)}.
+          </p>
+        )}
         <div className="mt-1.5 flex flex-wrap items-baseline gap-x-3">
           <span className="text-sm font-semibold text-ink">No hold. You and {JAMES_NAME} decide.</span>
           <Source ids={[call.id, cash.id]} />

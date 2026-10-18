@@ -7,7 +7,7 @@ import { JamesCheck } from '../screens/james/JamesCheck'
 import { JamesOutcome } from '../screens/james/JamesOutcome'
 import { dollars } from '../screens/linda/facts'
 import { Stage } from '../screens/linda/parts'
-import { TellerCall } from '../screens/staff/TellerCall'
+import { CallCenter } from '../screens/staff/CallCenter'
 import { TellerHeadsUp } from '../screens/staff/TellerHeadsUp'
 import { TellerOutcome } from '../screens/staff/TellerOutcome'
 import { clock, day } from '../ui/format'
@@ -27,7 +27,7 @@ export const james: Scenario = {
       id: 'call',
       memberLabel: 'What happened, from the kit',
       title: 'A call the day before',
-      caption: `${JAMES_NAME} calls the contact center about the daily cash limit and how fast a wire arrives. Sound already keeps this record; Second Look connects it to tomorrow's branch visit.`,
+      caption: `${JAMES_NAME} calls the contact center about the daily cash limit and how fast a wire arrives. Sound already keeps this record; Second Look connects it to tomorrow's branch visit. As a pilot concept, the agent also gets one question to ask on the call, from its reason code alone.`,
       clock: at(f.call.at),
       member: (
         <Stage>
@@ -40,7 +40,7 @@ export const james: Scenario = {
         <>
           <ResetJames />
           <JamesSync />
-          <TellerCall />
+          <CallCenter />
         </>
       ),
     },
@@ -67,13 +67,13 @@ export const james: Scenario = {
       // Getters, so the narration is read when the step renders and follows the teller's choice at step two.
       get title() {
         return handedOver(readAnswers())
-          ? 'He goes ahead, and the cash is handed over'
-          : 'He asks for help, and the cash stays'
+          ? 'One case across departments: the cash is handed over'
+          : 'One case across departments: the cash stays'
       },
       get caption() {
         return handedOver(readAnswers())
-          ? `${JAMES_NAME} goes ahead and the teller hands over the ${amount}. Cash can't be recalled; Sound opens a case and he can report it any time. The heads-up puts this question in front of every teller, every time.`
-          : `${JAMES_NAME} asks for help. A specialist joins, he chooses to add a trusted contact, and he cancels the ${amount} withdrawal. The heads-up puts this question in front of every teller, every time.`
+          ? `One case links yesterday's call to today's cash. ${JAMES_NAME} goes ahead and the teller hands over the ${amount}. Cash can't be recalled; Sound opens a case and he can report it any time. The heads-up makes the question happen every time.`
+          : `One case links yesterday's call to today's cash. ${JAMES_NAME} asks for help. A specialist joins, he chooses to add a trusted contact, and he cancels the ${amount} withdrawal. The heads-up makes the question happen every time.`
       },
       clock: at(f.opened.at),
       member: (
@@ -92,6 +92,6 @@ export const james: Scenario = {
   ],
   zones: {
     member: { tone: 'member', label: 'James: branch tablet', who: 'James, at the teller window' },
-    staff: { tone: 'staff', label: 'Sound staff: teller', who: 'The teller serving James' },
+    staff: { tone: 'staff', label: 'Sound staff', who: 'The contact center agent on his call, then the teller serving James' },
   },
 }

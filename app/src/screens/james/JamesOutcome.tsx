@@ -20,12 +20,12 @@ function Line({ sound, icon: Icon, children }: { sound: boolean; icon: LucideIco
     return (
       <SoundCard className="flex items-start gap-3 py-2.5">
         <NavyIcon icon={Icon} size={22} />
-        <p className="text-[15px] leading-snug">{children}</p>
+        <p className="text-[14px] leading-snug">{children}</p>
       </SoundCard>
     )
   }
   return (
-    <p className="flex items-start gap-3 rounded-2xl bg-brand-soft px-4 py-2.5 text-[15px] leading-snug text-ink ring-1 ring-indigo-200 ring-inset">
+    <p className="flex items-start gap-3 rounded-2xl bg-brand-soft px-4 py-2.5 text-[14px] leading-snug text-ink ring-1 ring-indigo-200 ring-inset">
       <Icon size={18} className="mt-0.5 shrink-0 text-brand" aria-hidden />
       <span>{children}</span>
     </p>
@@ -41,7 +41,7 @@ function Cancelled({ sound }: { sound: boolean }) {
           initial={{ opacity: 0, x: -6 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: i * 0.08 }}
-          className="flex items-baseline gap-3 border-b border-line/60 py-1.5 last:border-0"
+          className="flex items-baseline gap-3 border-b border-line/60 py-1 last:border-0"
         >
           <Check size={15} strokeWidth={3} className="shrink-0 self-center text-safe" aria-hidden />
           <span className="num w-[64px] shrink-0 font-mono text-xs text-ink-3">{l.at}</span>
