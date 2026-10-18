@@ -1,10 +1,17 @@
 /** The recordings bundled under public/voice-check/: exactly the reviewed clips, all well formed. */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { CatalogClip, CheckPair, CheckPortrait } from './voiceCheck'
 
-const ROOT = new URL('../../../../public/voice-check/', import.meta.url)
-const read = <T>(path: string): T => JSON.parse(readFileSync(new URL(path, ROOT), 'utf8')) as T
+const DIR = '../../../../public/voice-check/'
+const text = import.meta.glob(['../../../../public/voice-check/data/*.json', '../../../../public/voice-check/CREDITS.md'], {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>
+const read = <T>(path: string): T => JSON.parse(text[DIR + path]) as T
+const names = (files: Record<string, unknown>) => Object.keys(files).map((f) => f.split('/').pop()!)
+const clipFiles = names(import.meta.glob('../../../../public/voice-check/clips/*'))
+const photoFiles = names(import.meta.glob('../../../../public/voice-check/portraits/*'))
 
 const pairs = read<CheckPair[]>('data/pairs.json')
 const catalog = read<CatalogClip[]>('data/catalog.json')
@@ -38,15 +45,15 @@ describe('the bundled voice set', () => {
   })
 
   it('ships each listed file and nothing else', () => {
-    for (const c of catalog) expect(existsSync(new URL(c.file, ROOT))).toBe(true)
-    expect(readdirSync(new URL('clips/', ROOT)).sort()).toEqual(catalog.map((c) => `${c.id}.mp3`).sort())
+    expect(catalog.map((c) => c.file).sort()).toEqual(catalog.map((c) => `clips/${c.id}.mp3`).sort())
+    expect(clipFiles.sort()).toEqual(catalog.map((c) => `${c.id}.mp3`).sort())
     const photos = Object.values(portraits).map((p) => p.file.replace('portraits/', ''))
-    expect(readdirSync(new URL('portraits/', ROOT)).sort()).toEqual(photos.sort())
+    expect(photoFiles.sort()).toEqual(photos.sort())
     expect(Object.keys(portraits).sort()).toEqual([...new Set(pairs.map((p) => p.speaker))].sort())
   })
 
   it('credits every speaker it shows', () => {
-    const credits = readFileSync(new URL('CREDITS.md', ROOT), 'utf8')
+    const credits = text[DIR + 'CREDITS.md']
     for (const p of Object.values(portraits)) expect(credits).toContain(`**${p.person}**`)
     expect(credits).toContain(`All ${catalog.length} clips (${pairs.length} genuine/synthetic pairs`)
   })
