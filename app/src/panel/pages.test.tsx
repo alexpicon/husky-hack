@@ -6,6 +6,7 @@ import { judgeName, postLine, PRIVACY, PRIVATE_PAGE, SOURCE_LINE } from './copy'
 import { PanelPhone } from './PanelPhone'
 import { PanelWall, WallRow } from './PanelWall'
 import { clipQuote, GROUP_RESULTS, NO_PATTERN, QUOTE_MAX } from './results'
+import { TapPicker } from './TapPicker'
 
 vi.hoisted(() => {
   Object.assign(globalThis, {
@@ -63,6 +64,14 @@ describe("a judge's phone", () => {
     expect(buttons.length).toBeGreaterThan(0)
     for (const b of buttons) expect(b).toMatch(/\b(?:h-12|min-h-11|min-h-12)\b/)
     for (const [, px] of html.matchAll(/w-\[(\d+)px\]/g)) expect(Number(px)).toBeLessThanOrEqual(288)
+  })
+
+  it('sets its small text on the page background in ink-2, which keeps 4.5:1 there', () => {
+    expect(html.match(/<span class="num[^"]*"/)?.[0]).toContain('text-ink-2')
+    const picker = renderToStaticMarkup(<TapPicker chosen={[]} heard={[]} onToggle={() => {}} />)
+    const legends = picker.match(/<legend[^>]*>/g) ?? []
+    expect(legends).toHaveLength(3)
+    for (const legend of legends) expect(legend).toContain('text-ink-2')
   })
 
   it('without a wall code, says the result stays on the phone', () => {

@@ -21,7 +21,7 @@ export function TapPicker({ chosen, heard, onToggle }: Props) {
     <div className="flex flex-col gap-4">
       {PANEL_GROUPS.map((group) => (
         <fieldset key={group} className="flex flex-col gap-2">
-          <legend className="mb-2 text-xs font-semibold tracking-wide text-ink-3 uppercase">
+          <legend className="mb-2 text-xs font-semibold tracking-wide text-ink-2 uppercase">
             {GROUP_NAMES[group]}
           </legend>
           {PANEL_TAPS.filter((t) => t.group === group).map((t) => {

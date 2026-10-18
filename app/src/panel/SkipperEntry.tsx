@@ -87,7 +87,7 @@ export function SkipperEntry({ code, mode, judge, after, onPosted }: Props) {
           placeholder="He said his lawyer…"
           className="w-full resize-none rounded-2xl bg-white px-3.5 py-3 text-[16px] leading-snug ring-1 ring-slate-300 outline-none focus:ring-2 focus:ring-brand read-only:bg-slate-50 read-only:text-ink-2"
         />
-        <span className="num self-end text-[11px] text-ink-3">
+        <span className="num self-end text-[11px] text-ink-2">
           {text.length} / {MAX_TEXT}
         </span>
       </label>
@@ -118,7 +118,7 @@ export function SkipperEntry({ code, mode, judge, after, onPosted }: Props) {
               </li>
             ))}
           </ul>
-          <p className="text-xs text-ink-3">{SOURCE_LINE[phase.heard.source]}</p>
+          <p className="text-xs text-ink-2">{SOURCE_LINE[phase.heard.source]}</p>
           <div className="grid grid-cols-1 gap-2 min-[360px]:grid-cols-2">
             <Button size="lg" onClick={() => finish(phase.heard.taps.map((t) => t.tap))} className="min-h-11">
               Yes, that's right
