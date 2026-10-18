@@ -11,6 +11,8 @@ import { dollars } from '../linda/facts'
 import { plural } from './helpers'
 import { Panel, StatusPill } from './parts'
 import { TellerDesk } from './TellerDesk'
+import { WhyPaused } from './WhyPaused'
+import { whyHeadsUp } from './pauseReasons'
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 
@@ -109,6 +111,7 @@ export function TellerOutcome() {
       caseId={f.caseId}
       pill={over ? <StatusPill tone="danger">Cash handed over</StatusPill> : <StatusPill tone="safe">Withdrawal cancelled</StatusPill>}
     >
+      <WhyPaused why={whyHeadsUp(f)} />
       <div className="grid items-start gap-4 @2xl:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
         <Panel title="One case across departments" icon={<History size={14} />}>
           <Day at={f.call.at} channel={f.call.channel} />

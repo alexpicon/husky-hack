@@ -7,6 +7,7 @@ import { james } from '../../story/james'
 import { clock, day } from '../../ui/format'
 import { TellerHeadsUp } from '../staff/TellerHeadsUp'
 import { TellerOutcome } from '../staff/TellerOutcome'
+import { whyHeadsUp } from '../staff/pauseReasons'
 import {
   AGENCIES,
   CALL_AGENCY,
@@ -134,6 +135,14 @@ describe('the teller', () => {
     expect(text).toContain('No hold. You and James decide.')
     for (const b of ['Ask the question', 'Offer the private tablet check', 'Escalate to a specialist', "Continue: James's decision"]) {
       expect(text).toContain(b)
+    }
+  })
+
+  it('says why the case exists on the heads-up and on the case, from the call and the cash', () => {
+    const { label, line } = whyHeadsUp(jamesFacts())
+    for (const Desk of [TellerHeadsUp, TellerOutcome]) {
+      const text = textOf(renderToStaticMarkup(<Desk />))
+      expect(text).toContain(`${label} ${line}`)
     }
   })
 
