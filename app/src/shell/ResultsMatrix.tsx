@@ -1,4 +1,6 @@
 import { motion } from 'motion/react'
+import { POLICY } from '../data/policy'
+import { TRICKED_RECIPIENT_MAX_AGE_DAYS, TRICKED_RULES } from '../data/trickedRules'
 import { evaluate, isTakeover, isTricked, type GroupResult } from '../data/triggers'
 import { Card, Eyebrow } from '../ui/primitives'
 
@@ -11,9 +13,12 @@ const ROWS: { group: string; label: string; kind: 'scam' | 'honest' }[] = [
   { group: 'Routine', label: 'Routine members', kind: 'honest' },
 ]
 
+const tricked = TRICKED_RULES[POLICY.lindaRule]
+const trickedSub = `${tricked.sameDay ? 'day’s wires to one payee' : 'wire'} ≥ ${tricked.ratio}x 12-month 90th-percentile, payee added < ${TRICKED_RECIPIENT_MAX_AGE_DAYS} day ago`
+
 const COLUMNS = [
   { key: 'takeover', label: 'Takeover trigger', sub: 'reset + contact change + new recipient', results: evaluate(isTakeover) },
-  { key: 'tricked', label: 'Tricked trigger', sub: 'wire/cash ≥ 3x usual, new or long-unused', results: evaluate(isTricked) },
+  { key: 'tricked', label: 'Tricked trigger', sub: trickedSub, results: evaluate(isTricked) },
 ]
 
 function Cell({ r, kind }: { r: GroupResult; kind: 'scam' | 'honest' }) {
