@@ -111,7 +111,7 @@ export function TodayCard() {
           <div className="bg-danger-soft px-6 py-4">
             <div className="text-xs font-semibold text-danger">Lost for good</div>
             <div className="num mt-1 font-display text-[34px] leading-none text-danger">
-              {dollars(f.key.netLoss)}
+              {dollars(f.lostForGood)}
             </div>
             <div className="mt-2 text-xs leading-snug text-ink-2">
               Recall failed {shortDate(f.recallFailed.at)} <Source ids={f.recallFailed.id} />

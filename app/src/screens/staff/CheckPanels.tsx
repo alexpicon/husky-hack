@@ -1,13 +1,17 @@
 import { Check, EyeOff, HeartHandshake, MessageCircleHeart, ScanFace, UserRound } from 'lucide-react'
+import { clock } from '../../ui/format'
 import { Source } from '../../ui/primitives'
 import { Panel, StatusPill } from './parts'
 import { grandparentScam, silentTaps } from './silentCheck'
 import type { TrickedFacts } from './trickedFacts'
 import type { TrickedStage } from './TrickedCase'
 
-export function SilentCheckPanel({ f, stage }: { f: TrickedFacts; stage: TrickedStage }) {
+type CaseProps = { f: TrickedFacts; stage: TrickedStage; now: Date }
+
+export function SilentCheckPanel({ f, stage, now }: CaseProps) {
   const where = f.hit.channel === 'Branch' ? 'the branch tablet' : 'her phone'
   const shared = stage === 'checked'
+  const spoken = f.spokenCheck && f.spokenCheck.at <= now ? f.spokenCheck : null
   return (
     <Panel
       title="Silent check"
@@ -53,10 +57,11 @@ export function SilentCheckPanel({ f, stage }: { f: TrickedFacts; stage: Tricked
           </div>
         </div>
       )}
-      {f.spokenCheck?.note && (
+      {spoken?.note && (
         <p className="mt-3 border-t border-line/70 pt-2.5 text-xs leading-relaxed text-ink-3">
           <span className="font-semibold text-ink-2">Why silent:</span> in the kit, the spoken
-          check failed. Note on file: "{f.spokenCheck.note}" <Source ids={f.spokenCheck.id} />
+          check at {clock(spoken.at)} failed. Note on file: "{spoken.note}"{' '}
+          <Source ids={spoken.id} />
         </p>
       )}
     </Panel>
@@ -104,7 +109,8 @@ export function TrustedPanel({ f }: { f: TrickedFacts }) {
           <div className="mt-0.5 text-xs leading-relaxed text-ink-3">
             {f.trustedOnFile
               ? `One tap asks them to call ${f.name}. They never see amounts or the account.`
-              : `Offer to add one: informed only, never sees amounts or the account.`}
+              : 'Offer to add one after this case closes: informed only, never sees amounts ' +
+                'or the account.'}
           </div>
         </div>
       </div>

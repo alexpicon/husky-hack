@@ -1,5 +1,5 @@
 import { TrickedCase } from '../screens/staff/TrickedCase'
-import { dollars, lindaFacts, storyTimes } from '../screens/linda/facts'
+import { dollars, LINDA_NAME, lindaFacts, storyTimes } from '../screens/linda/facts'
 import { MatchResult } from '../screens/linda/MatchResult'
 import { Stage } from '../screens/linda/parts'
 import { SilentCheck } from '../screens/linda/SilentCheck'
@@ -13,6 +13,7 @@ const f = lindaFacts()
 const t = storyTimes()
 const at = (d: Date) => `${day(d)} · ${clock(d)}`
 const amount = dollars(f.wire.amount)
+const illustrative = `Illustrative: if ${LINDA_NAME} had enrolled someone earlier. In the kit she had none and declined the offer at ${clock(f.offered.at)}.`
 
 export const linda: Scenario = {
   id: 'linda',
@@ -31,7 +32,7 @@ export const linda: Scenario = {
           <TodayCard />
         </Stage>
       ),
-      staff: <TrickedCase member="M1001" stage="held" />,
+      staff: <TrickedCase member="M1001" stage="held" now={t.caught} />,
     },
     {
       id: 'silent-check',
@@ -44,20 +45,20 @@ export const linda: Scenario = {
           <SilentCheck />
         </Stage>
       ),
-      staff: <TrickedCase member="M1001" stage="held" />,
+      staff: <TrickedCase member="M1001" stage="held" now={t.check} />,
     },
     {
       id: 'match',
       title: 'She checks the story herself',
       caption:
-        'Her taps match a known scam, so she is shown how it works and how to check it on her own. The choice stays hers.',
+        'Some of her taps fit a known scam, so she is shown how it works and how to check it on her own. The choice stays hers.',
       clock: at(t.match),
       member: (
-        <Stage note="Shown to everyone this hold applies to, whatever they tap.">
+        <Stage note="The call-back advice shows to everyone on hold, whatever they tap.">
           <MatchResult />
         </Stage>
       ),
-      staff: <TrickedCase member="M1001" stage="checked" />,
+      staff: <TrickedCase member="M1001" stage="checked" now={t.match} />,
     },
     {
       id: 'trusted',
@@ -67,14 +68,14 @@ export const linda: Scenario = {
         'If Linda picked a trusted person earlier, one tap asks them to call her. They never see an amount or her account.',
       clock: at(t.trusted),
       member: (
-        <Stage>
+        <Stage label={illustrative}>
           <div className="flex items-start gap-6">
             <TrustedPhone />
             <TrustedRules />
           </div>
         </Stage>
       ),
-      staff: <TrickedCase member="M1001" stage="checked" />,
+      staff: <TrickedCase member="M1001" stage="checked" now={t.trusted} />,
     },
   ],
 }

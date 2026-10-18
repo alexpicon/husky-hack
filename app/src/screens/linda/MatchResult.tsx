@@ -4,7 +4,7 @@ import { HeartHandshake, MessageCircle, PauseCircle, Phone, PhoneCall } from 'lu
 import { useStory } from '../../story/engine'
 import { Tablet } from '../../ui/devices'
 import { useLook } from '../../ui/look'
-import { AUTONOMY, matchHeadline, matchSubline, replies, shownTaps, type Reply } from './copy'
+import { AUTONOMY, callBack, replies, shownTaps, verdict, type Reply } from './copy'
 import { dollars, lindaFacts } from './facts'
 import { MatchResultSound } from './MatchResultSound'
 import { TabletHeader } from './parts'
@@ -13,9 +13,10 @@ import { useTaps } from './taps'
 function MatchResultConcept() {
   const f = lindaFacts()
   const { next } = useStory()
-  const tapped = useTaps()
   const [reply, setReply] = useState<Reply>(null)
-  const { shown, matches } = shownTaps(tapped)
+  const { shown, named } = shownTaps(useTaps())
+  const say = verdict(named)
+  const call = callBack(named)
 
   return (
     <Tablet caption="Branch tablet - Linda chose to share her taps with staff">
@@ -43,12 +44,8 @@ function MatchResultConcept() {
         </ul>
 
         <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
-          <h2 className="font-display text-[30px] leading-[1.1] text-ink">
-            {matchHeadline(matches, f.scamName)}
-          </h2>
-          <p className="mt-1.5 text-[17px] text-ink-2">
-            {matchSubline(matches)}
-          </p>
+          <h2 className="font-display text-[30px] leading-[1.1] text-ink">{say.headline}</h2>
+          <p className="mt-1.5 text-[17px] text-ink-2">{say.subline}</p>
         </motion.div>
 
         <motion.div
@@ -59,11 +56,7 @@ function MatchResultConcept() {
         >
           <Phone size={20} className="mt-0.5 shrink-0 text-brand" aria-hidden />
           <p className="text-[17px] leading-snug text-ink">
-            <strong>
-              Before you send, call {matches ? 'your grandson' : 'them'} on the number YOU have
-              saved,
-            </strong>{' '}
-            not a number someone gave you today.
+            <strong>{call.lead}</strong> {call.rest}
           </p>
         </motion.div>
 

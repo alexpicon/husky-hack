@@ -10,7 +10,6 @@ describe("Linda's facts come from the kit", () => {
     expect(f.wire.amount).toBe(8500)
     expect(f.yearsSinceLastWire).toBe(6)
     expect(f.minutesSinceAdded).toBe(7)
-    expect(f.scamName).toBe('grandparent scam')
   })
 
   it('replays the day in order', () => {
@@ -32,7 +31,7 @@ describe("Linda's facts come from the kit", () => {
     expect(f.cash.amount).toBe(4250)
     expect(f.cashStopped.note).toContain('bail')
     expect(f.recallFailed.paymentId).toBe(f.wire.paymentId)
-    expect(f.key.netLoss).toBe(8500)
+    expect(f.lostForGood).toBe(8500)
   })
 })
 

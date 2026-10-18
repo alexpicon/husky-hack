@@ -2,13 +2,13 @@ import { motion } from 'motion/react'
 import { Ban, BellRing, Hand, UserRoundCheck, UserRoundX, type LucideIcon } from 'lucide-react'
 import { clock } from '../../ui/format'
 import { Card, Eyebrow, Source } from '../../ui/primitives'
-import { lindaFacts } from './facts'
+import { LINDA_NAME, lindaFacts } from './facts'
 
 type Rule = { icon: LucideIcon; title: string; body: string }
 
 export function TrustedRules() {
   const f = lindaFacts()
-  const name = f.key.persona
+  const name = LINDA_NAME
   const rules: Rule[] = [
     { icon: Hand, title: 'Optional', body: `${name} decides whether to have one at all.` },
     {
@@ -16,7 +16,11 @@ export function TrustedRules() {
       title: `Chosen by ${name}`,
       body: 'Set up ahead of time, at a branch or in the app.',
     },
-    { icon: UserRoundX, title: 'Removable anytime', body: 'One tap, no questions asked.' },
+    {
+      icon: UserRoundX,
+      title: 'Removable anytime',
+      body: 'One tap in the app, or at a branch or by phone.',
+    },
     {
       icon: BellRing,
       title: 'Informed only',
@@ -25,7 +29,9 @@ export function TrustedRules() {
     {
       icon: Ban,
       title: 'Skipped if they look involved',
-      body: 'No message if they were just added, or if they are the new recipient.',
+      body:
+        'No message if they were added in the last 30 days, or match the new recipient where ' +
+        'we can tell. Illustrative: the kit has no contact identities.',
     },
   ]
 
@@ -54,7 +60,7 @@ export function TrustedRules() {
         <div className="mt-5 rounded-2xl bg-warn-soft p-3.5 ring-1 ring-amber-200 ring-inset">
           <div className="text-xs font-semibold text-warn">Why ahead of time</div>
           <p className="mt-1 text-[13px] leading-snug text-ink-2">
-            Today the offer came mid-scam, at{' '}
+            In the kit the offer came mid-scam, at{' '}
             <span className="num font-mono">{clock(f.offered.at)}</span>, and {name} said no.
             Asked earlier, it's one quiet tap when it matters.
           </p>

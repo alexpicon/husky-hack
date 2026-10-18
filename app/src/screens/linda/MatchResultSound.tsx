@@ -3,18 +3,18 @@ import { AnimatePresence, motion } from 'motion/react'
 import { HeartHandshake, MessageCircle, Phone, PhoneCall } from 'lucide-react'
 import { useStory } from '../../story/engine'
 import { SOUND, SoundButton, SoundCard } from '../../ui/soundApp'
-import { AUTONOMY, matchHeadline, matchSubline, replies, shownTaps, type Reply } from './copy'
-import { lindaFacts } from './facts'
+import { AUTONOMY, callBack, replies, shownTaps, verdict, type Reply } from './copy'
 import { NavyIcon, SoundKiosk } from './kiosk'
 import { useTaps } from './taps'
 
 const SAFE = '#1f7a4d'
 
 export function MatchResultSound() {
-  const f = lindaFacts()
   const { next } = useStory()
   const [reply, setReply] = useState<Reply>(null)
-  const { shown, matches } = shownTaps(useTaps())
+  const { shown, named } = shownTaps(useTaps())
+  const say = verdict(named)
+  const call = callBack(named)
 
   return (
     <SoundKiosk caption="Branch tablet - Linda chose to share her taps with staff">
@@ -36,10 +36,10 @@ export function MatchResultSound() {
 
       <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
         <h2 className="text-[24px] leading-tight font-bold" style={{ color: SOUND.navy }}>
-          {matchHeadline(matches, f.scamName)}
+          {say.headline}
         </h2>
         <p className="mt-1 text-[16px]" style={{ color: SOUND.muted }}>
-          {matchSubline(matches)}
+          {say.subline}
         </p>
       </motion.div>
 
@@ -51,11 +51,7 @@ export function MatchResultSound() {
         <SoundCard className="flex items-start gap-3 py-3.5">
           <NavyIcon icon={Phone} />
           <p className="text-[17px] leading-snug">
-            <strong>
-              Before you send, call {matches ? 'your grandson' : 'them'} on the number YOU have
-              saved,
-            </strong>{' '}
-            not a number someone gave you today.
+            <strong>{call.lead}</strong> {call.rest}
           </p>
         </SoundCard>
       </motion.div>

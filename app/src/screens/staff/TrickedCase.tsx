@@ -13,7 +13,16 @@ import { HoldPanel, WireFacts } from './WirePanels'
 /** held: wire on hold, silent check in progress. checked: member shared what she tapped. */
 export type TrickedStage = 'held' | 'checked'
 
-export function TrickedCase({ member, stage }: { member: 'M1001'; stage: TrickedStage }) {
+/** `now` is the story clock: the case never shows a kit event from after it. */
+export function TrickedCase({
+  member,
+  stage,
+  now,
+}: {
+  member: 'M1001'
+  stage: TrickedStage
+  now: Date
+}) {
   const f = trickedFacts(member)
   return (
     <StaffWindow title={`Wire desk · ${f.caseId}`}>
@@ -58,7 +67,7 @@ export function TrickedCase({ member, stage }: { member: 'M1001'; stage: Tricked
             <HoldPanel f={f} />
           </div>
           <div className="space-y-4">
-            <SilentCheckPanel f={f} stage={stage} />
+            <SilentCheckPanel f={f} stage={stage} now={now} />
             <ScriptPanel f={f} stage={stage} />
             <TrustedPanel f={f} />
           </div>

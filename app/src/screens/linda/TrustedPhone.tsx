@@ -1,16 +1,18 @@
+import { useState } from 'react'
 import { motion } from 'motion/react'
 import { EyeOff, Phone as PhoneIcon } from 'lucide-react'
 import { SoundMark } from '../../ui/brand'
 import { clock, day } from '../../ui/format'
 import { Phone } from '../../ui/devices'
-import { lindaFacts, storyTimes } from './facts'
+import { LINDA_NAME, storyTimes } from './facts'
 
 const lockClock = (d: Date) =>
   d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }).replace(/\s?[AP]M$/, '')
 
 export function TrustedPhone() {
-  const name = lindaFacts().key.persona
+  const name = LINDA_NAME
   const at = storyTimes().trusted
+  const [calling, setCalling] = useState(false)
 
   return (
     <Phone time={clock(at)} caption={`${name}'s trusted person gets one message`} dark>
@@ -42,9 +44,11 @@ export function TrustedPhone() {
           </p>
           <button
             type="button"
-            className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-ink text-base font-semibold text-white transition hover:bg-slate-800 active:scale-[0.99]"
+            onClick={() => setCalling(true)}
+            disabled={calling}
+            className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-ink text-base font-semibold text-white transition hover:bg-slate-800 active:scale-[0.99] disabled:bg-safe"
           >
-            <PhoneIcon size={18} aria-hidden /> Call {name}
+            <PhoneIcon size={18} aria-hidden /> {calling ? `Calling ${name}` : `Call ${name}`}
           </button>
         </motion.article>
 

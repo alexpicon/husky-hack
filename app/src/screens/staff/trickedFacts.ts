@@ -1,9 +1,10 @@
 import eventsCsv from '@kit/HuskyHack_Synthetic_Events_v2.csv?raw'
 import { parseCsv, type Row } from '../../data/csv'
-import { eventsFor, keyFor, type KitEvent } from '../../data/kit'
+import { eventsFor, type KitEvent } from '../../data/kit'
 import { firstHit, isTricked } from '../../data/triggers'
 import { trickedRatio } from '../../data/trickedRules'
 import { minutesBetween } from '../../ui/format'
+import { LINDA, LINDA_NAME } from '../linda/facts'
 import { need } from './helpers'
 
 /** Starter kit capability: Sound can hold an outgoing wire for up to 4 hours. */
@@ -46,7 +47,7 @@ export function trickedFacts(member: string): TrickedFacts {
   const ratio = need(trickedRatio(hit), `${hit.id} amount_to_baseline_ratio`)
   return {
     member,
-    name: keyFor(member).persona || `Member ${member}`,
+    name: member === LINDA ? LINDA_NAME : `Member ${member}`,
     caseId: `CASE-${member}-${hit.paymentId}`,
     hit,
     recipientAdded,

@@ -1,8 +1,10 @@
-import { eventsFor, keyFor, type KitEvent } from '../../data/kit'
+import { eventsFor, type KitEvent } from '../../data/kit'
 import { firstHit, isTricked } from '../../data/triggers'
 import { minutesBetween, money } from '../../ui/format'
 
 export const LINDA = 'M1001'
+/** Named in the starter kit, which lists M1001 to M1004 as Linda, Michael, Sarah and James. */
+export const LINDA_NAME = 'Linda'
 
 function find(label: string, list: KitEvent[], match: (e: KitEvent) => boolean): KitEvent {
   const hit = list.find(match)
@@ -58,7 +60,6 @@ function build() {
     (e) => e.type === 'Payment Cancelled' && e.paymentId === cash.paymentId,
   )
   const recallFailed = find('Recovery Unsuccessful', after, onWire('Recovery Unsuccessful'))
-  const key = keyFor(LINDA)
 
   return {
     wire,
@@ -72,11 +73,10 @@ function build() {
     cash,
     cashStopped,
     recallFailed,
-    key,
+    lostForGood: recallFailed.amount,
     yearsSinceLastWire: Math.floor(wire.daysSinceLastSameRail / 365.25),
     minutesSinceAdded: minutesBetween(added.at, wire.at),
     ratio: wire.baselineRatio,
-    scamName: `${key.subtype.split(' / ')[0].toLowerCase()} scam`,
   }
 }
 
