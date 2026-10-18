@@ -154,7 +154,7 @@ const JAMES: SkipperTap[] = [
     id: 'investigation',
     label: "Someone says I'm under investigation",
     about:
-      'Someone says the member is under investigation, faces a warrant, arrest or lawsuit, or calls from the IRS, Social Security, the FBI or police.',
+      'Someone says the member is under investigation, faces a warrant, arrest or lawsuit, or says they call from a government agency such as the IRS, Social Security, the FTC, the FBI or police.',
     kind: 'signal',
     words: [
       /\b(?:investigat\w*|warrant|arrest(?:ed)?|irs|social security|fbi|dea|ftc|federal agent|marshal|sheriff|subpoena|laundering|suspended)\b/i,

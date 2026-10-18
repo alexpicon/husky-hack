@@ -3,8 +3,7 @@
  * nothing but her text and the tap list. Every call to the model is a mock.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { GET, POST } from '../../../api/skipper'
-import { tapsCall } from './ai'
+import { GET, POST, tapsCall } from '../../../api/skipper'
 import { SKIPPER_LISTS } from './lists'
 
 const sources = import.meta.glob(['../../../api/skipper.ts', './{lists,verify,note,ai}.ts'], {
@@ -43,14 +42,10 @@ describe('what the function may read', () => {
     expect(sources[`./${name}.ts`]).not.toMatch(/^import (?!type )/m)
   })
 
-  it('imports only those four files', () => {
-    const imports = [...sources[fn].matchAll(/from '([^']+)'/g)].map((m) => m[1])
-    expect(imports.sort()).toEqual([
-      '../app/src/skipper/ai',
-      '../app/src/skipper/lists',
-      '../app/src/skipper/note',
-      '../app/src/skipper/verify',
-    ])
+  it('imports nothing, so it deploys as one file', () => {
+    expect(sources[fn]).toMatch(/export async function POST/)
+    expect(sources[fn]).not.toMatch(/^import /m)
+    expect(sources[fn]).not.toMatch(/\brequire\(/)
   })
 
   it('puts only her text and the tap list in the prompt', () => {
@@ -90,6 +85,7 @@ describe('switched on', () => {
   beforeEach(() => {
     vi.stubEnv('ANTHROPIC_API_KEY', 'test-key')
     vi.stubEnv('SKIPPER_AI', 'on')
+    vi.stubEnv('SKIPPER_MODEL', '')
   })
   afterEach(() => {
     vi.unstubAllEnvs()
