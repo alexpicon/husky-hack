@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react'
 import { defineConfig, type Plugin } from 'vite'
 import { devPanelApi } from './dev/panelApi.ts'
 import { devSessionApi } from './dev/sessionApi.ts'
+import { devSkipperApi } from './dev/skipperApi.ts'
 
 const kitDir = fileURLToPath(new URL('../huskyhacks', import.meta.url))
 
