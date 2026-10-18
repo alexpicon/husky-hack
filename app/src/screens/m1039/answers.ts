@@ -1,9 +1,13 @@
 import { HOLD_HOURS } from './facts'
 
-export type TapAnswer = 'no' | 'not-sure'
+export type TapAnswer = 'yes' | 'no' | 'not-sure'
 
-/** What the member taps on the text, and Sound's reply. "Yes" moves the story on to the release. */
+/** What the member taps on the text, and Sound's reply. "Yes" also moves the story on to the release. */
 export const tapReplies: Record<TapAnswer, { said: string; reply: string }> = {
+  yes: {
+    said: 'Yes, it was me',
+    reply: "Thanks. We've released the payment for processing.",
+  },
   no: {
     said: "No, it wasn't me",
     reply:
@@ -15,6 +19,9 @@ export const tapReplies: Record<TapAnswer, { said: string; reply: string }> = {
       "That's OK. The payment stays paused and nothing is sent. A Sound specialist will call you at this number, the one on file, to go through it with you.",
   },
 }
+
+/** On the text after "I lost that phone" in the app: a reply here can no longer release it. */
+export const closedOnText = "This request is closed, and nothing will be sent. You don't need to reply."
 
 /** On the text, which only the phone on file receives. */
 export const noAnswerOnText = `No answer within ${HOLD_HOURS} hours? It isn't sent. We'll text and call this number, and you can send it again.`

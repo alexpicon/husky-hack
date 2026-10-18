@@ -1,18 +1,22 @@
+import { readAnswer } from '../screens/m1039/answerState'
+import { AnswerScope } from '../screens/m1039/answerStore'
 import { CheckScreen } from '../screens/m1039/CheckScreen'
 import { facts } from '../screens/m1039/facts'
-import { HonestCard } from '../screens/m1039/HonestCard'
+import { M1039Case } from '../screens/m1039/M1039Case'
 import { MemberPhone } from '../screens/m1039/MemberPhone'
+import { Outcome } from '../screens/m1039/Outcome'
+import { outcomeStep, tapCaption } from '../screens/m1039/outcomes'
 import { PayScreen } from '../screens/m1039/PayScreen'
-import { ReleasedScreen } from '../screens/m1039/ReleasedScreen'
 import { TapScreen } from '../screens/m1039/TapScreen'
 import { TakeoverCase } from '../screens/staff/TakeoverCase'
 import { clock, day, money } from '../ui/format'
 import type { Scenario } from './engine'
 
-const { payment, reset, address, tapAt, todayMinutes, lookalikes, honest } = facts
+const { payment, reset, address, tapAt } = facts
 const paidAt = `${day(payment.at)} · ${clock(payment.at)}`
 const tappedAt = `${day(tapAt)} · ${clock(tapAt)}`
 
+/** The words on the last two steps follow M1039's answer, so they are read when the step is drawn. */
 export const m1039: Scenario = {
   id: 'm1039',
   label: 'M1039',
@@ -25,11 +29,17 @@ export const m1039: Scenario = {
       caption: `Yesterday this member reset a forgotten password at ${clock(reset.at)} and updated their address after a move at ${clock(address.at)}. Now they pay ${money(payment.amount)} to a new landlord. When they press Send, the light check fires: only the address changed.`,
       clock: paidAt,
       member: (
-        <MemberPhone time={clock(payment.at)} caption="Sound app: paying the new landlord">
-          <PayScreen />
-        </MemberPhone>
+        <AnswerScope fresh>
+          <MemberPhone time={clock(payment.at)} caption="Sound app: paying the new landlord">
+            <PayScreen />
+          </MemberPhone>
+        </AnswerScope>
       ),
-      staff: <TakeoverCase member="M1039" stage="watching" />,
+      staff: (
+        <AnswerScope fresh>
+          <TakeoverCase member="M1039" stage="watching" />
+        </AnswerScope>
+      ),
     },
     {
       id: 'check',
@@ -38,39 +48,57 @@ export const m1039: Scenario = {
         'Their email and phone never changed, so Sound asks on the phone they have had with us all along. No lock, no blame.',
       clock: paidAt,
       member: (
-        <MemberPhone time={clock(payment.at)} caption="Sound app: a calm, one-step check">
-          <CheckScreen />
-        </MemberPhone>
+        <AnswerScope>
+          <MemberPhone time={clock(payment.at)} caption="Sound app: a calm, one-step check">
+            <CheckScreen />
+          </MemberPhone>
+        </AnswerScope>
       ),
-      staff: <TakeoverCase member="M1039" stage="asked" />,
+      staff: (
+        <AnswerScope>
+          <TakeoverCase member="M1039" stage="asked" />
+        </AnswerScope>
+      ),
     },
     {
       id: 'tap',
       title: 'Was this you?',
-      caption:
-        'A text to the number Sound already trusts. No password, no code, no link. One tap answers it.',
+      get caption() {
+        return tapCaption(readAnswer().answer)
+      },
       clock: tappedAt,
       member: (
-        <MemberPhone time={clock(tapAt)} caption="Text from Sound to the unchanged phone" app={false}>
-          <TapScreen />
-        </MemberPhone>
+        <AnswerScope>
+          <MemberPhone time={clock(tapAt)} caption="Text from Sound to the unchanged phone" app={false}>
+            <TapScreen />
+          </MemberPhone>
+        </AnswerScope>
       ),
-      staff: <TakeoverCase member="M1039" stage="asked" />,
+      staff: (
+        <AnswerScope>
+          <M1039Case unanswered="asked" />
+        </AnswerScope>
+      ),
     },
     {
       id: 'released',
-      title: 'One tap. Rent released when they tap.',
-      caption: `In the kit, without Second Look, this payment went in ${todayMinutes} minutes with no check. With Second Look it is released when they tap. We add one tap for the ${lookalikes.flagged} movers; ${honest.untouched} of ${honest.total} honest members see nothing.`,
+      get title() {
+        return outcomeStep(readAnswer().answer).title
+      },
+      get caption() {
+        return outcomeStep(readAnswer().answer).caption
+      },
       clock: tappedAt,
       member: (
-        <div className="flex flex-col items-center gap-5">
-          <MemberPhone time={clock(tapAt)} caption="Sound app: payment sent for processing">
-            <ReleasedScreen />
-          </MemberPhone>
-          <HonestCard />
-        </div>
+        <AnswerScope>
+          <Outcome />
+        </AnswerScope>
       ),
-      staff: <TakeoverCase member="M1039" stage="released" />,
+      staff: (
+        <AnswerScope>
+          <M1039Case unanswered="released" />
+        </AnswerScope>
+      ),
     },
   ],
 }

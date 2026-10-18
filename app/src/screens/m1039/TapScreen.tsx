@@ -1,11 +1,12 @@
-import { useState, type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { Check, ChevronLeft, Clock } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useStory } from '../../story/engine'
 import { Source } from '../../ui/primitives'
 import { clock, money } from '../../ui/format'
 import { useLook } from '../../ui/look'
-import { noAnswerOnText, tapReplies, type TapAnswer } from './answers'
+import { closedOnText, noAnswerOnText, tapReplies } from './answers'
+import { useM1039Answer, type M1039Answer } from './answerState'
 import { facts } from './facts'
 import { SoundMark } from './parts'
 
@@ -27,11 +28,13 @@ const secondary =
 
 /**
  * The text to M1039's unchanged phone. Every answer has an outcome; "Yes" releases the rent.
+ * An answer is final, so the buttons go once one is given, here or in the app.
  * `answered` starts the thread after an answer, for a still frame or a render test.
  */
-export function TapScreen({ answered = null }: { answered?: TapAnswer | null }) {
+export function TapScreen({ answered = null }: { answered?: M1039Answer | null }) {
   const { next } = useStory()
-  const [answer, setAnswer] = useState<TapAnswer | null>(answered)
+  const { answer: given, give } = useM1039Answer()
+  const answer = answered ?? given
   const { payment } = facts
   const sender = useLook() === 'sound' ? 'Sound Credit Union' : 'Sound'
   return (
@@ -56,7 +59,8 @@ export function TapScreen({ answered = null }: { answered?: TapAnswer | null }) 
           Tap Yes and we'll release it for processing. If a website or caller told you to expect this
           text, tap No. We'll never ask for your password or a code.
         </Bubble>
-        {answer && (
+        {answer === 'lost-phone' && <Bubble delay={0.3}>{closedOnText}</Bubble>}
+        {answer && answer !== 'lost-phone' && (
           <>
             <Bubble delay={0} mine>
               {tapReplies[answer].said}
@@ -75,26 +79,32 @@ export function TapScreen({ answered = null }: { answered?: TapAnswer | null }) 
         >
           <button
             type="button"
-            onClick={next}
+            onClick={() => {
+              give('yes')
+              next()
+            }}
             className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-safe text-[17px] font-semibold text-white shadow-float transition hover:bg-teal-800 active:scale-[0.98]"
           >
             <Check size={20} strokeWidth={2.6} />
-            Yes, it was me
+            {tapReplies.yes.said}
           </button>
           <div className="grid grid-cols-2 gap-2.5">
-            <button type="button" onClick={() => setAnswer('no')} className={secondary}>
+            <button type="button" onClick={() => give('no')} className={secondary}>
               {tapReplies.no.said}
             </button>
-            <button type="button" onClick={() => setAnswer('not-sure')} className={secondary}>
+            <button type="button" onClick={() => give('not-sure')} className={secondary}>
               {tapReplies['not-sure'].said}
             </button>
           </div>
         </motion.div>
       )}
-      <p className="flex gap-2 px-5 pt-3 pb-6 text-[14px] leading-snug text-ink-3">
-        <Clock size={15} className="mt-0.5 shrink-0" aria-hidden />
-        {noAnswerOnText}
-      </p>
+      {/* Yes and a lost phone close the request, so the 4-hour line no longer applies. */}
+      {answer !== 'yes' && answer !== 'lost-phone' && (
+        <p className="flex gap-2 px-5 pt-3 pb-6 text-[14px] leading-snug text-ink-3">
+          <Clock size={15} className="mt-0.5 shrink-0" aria-hidden />
+          {noAnswerOnText}
+        </p>
+      )}
     </div>
   )
 }

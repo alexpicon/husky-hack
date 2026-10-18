@@ -1,17 +1,18 @@
-import { useState } from 'react'
 import { Building2, MessageSquareText } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useStory } from '../../story/engine'
 import { money } from '../../ui/format'
 import { SOUND, SoundAppScreen, SoundButton, SoundCard, SoundRow } from '../../ui/soundApp'
 import { LOST_PHONE, lostPhone, noAnswerInApp } from './answers'
+import { useM1039Answer } from './answerState'
 import { facts } from './facts'
 import { SoundChip } from './soundParts'
 import { muted } from './soundTokens'
 
 export function CheckSound({ phoneLost = false }: { phoneLost?: boolean }) {
   const { next } = useStory()
-  const [lost, setLost] = useState(phoneLost)
+  const { answer, give } = useM1039Answer()
+  const lost = phoneLost || answer === 'lost-phone'
   const { payment } = facts
   return (
     <SoundAppScreen title="Bill Pay" tab="payments" back>
@@ -60,9 +61,11 @@ export function CheckSound({ phoneLost = false }: { phoneLost?: boolean }) {
               <MessageSquareText size={19} />
               Check your messages
             </SoundButton>
-            <SoundButton variant="outline" onClick={() => setLost(true)}>
-              {LOST_PHONE}
-            </SoundButton>
+            {answer === null && (
+              <SoundButton variant="outline" onClick={() => give('lost-phone')}>
+                {LOST_PHONE}
+              </SoundButton>
+            )}
           </>
         )}
 

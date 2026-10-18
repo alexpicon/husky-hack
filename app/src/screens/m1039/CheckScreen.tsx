@@ -1,10 +1,10 @@
-import { useState } from 'react'
 import { Building2, Clock, MessageSquareText } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useStory } from '../../story/engine'
 import { money } from '../../ui/format'
 import { useLook } from '../../ui/look'
 import { LOST_PHONE, lostPhone, noAnswerInApp } from './answers'
+import { useM1039Answer } from './answerState'
 import { CheckSound } from './CheckSound'
 import { facts } from './facts'
 
@@ -15,7 +15,8 @@ export function CheckScreen({ phoneLost = false }: { phoneLost?: boolean }) {
 
 function ConceptCheckScreen({ phoneLost }: { phoneLost: boolean }) {
   const { next } = useStory()
-  const [lost, setLost] = useState(phoneLost)
+  const { answer, give } = useM1039Answer()
+  const lost = phoneLost || answer === 'lost-phone'
   const { payment } = facts
   return (
     <div className="flex min-h-full flex-col bg-linear-to-b from-brand-soft via-white to-white px-5 pt-4 pb-6">
@@ -78,13 +79,15 @@ function ConceptCheckScreen({ phoneLost }: { phoneLost: boolean }) {
             <MessageSquareText size={19} />
             Check your messages
           </button>
-          <button
-            type="button"
-            onClick={() => setLost(true)}
-            className="mt-2.5 h-12 w-full shrink-0 rounded-2xl bg-white text-[16px] font-semibold text-ink ring-1 ring-line ring-inset transition hover:bg-slate-50 active:scale-[0.98]"
-          >
-            {LOST_PHONE}
-          </button>
+          {answer === null && (
+            <button
+              type="button"
+              onClick={() => give('lost-phone')}
+              className="mt-2.5 h-12 w-full shrink-0 rounded-2xl bg-white text-[16px] font-semibold text-ink ring-1 ring-line ring-inset transition hover:bg-slate-50 active:scale-[0.98]"
+            >
+              {LOST_PHONE}
+            </button>
+          )}
         </>
       )}
 
