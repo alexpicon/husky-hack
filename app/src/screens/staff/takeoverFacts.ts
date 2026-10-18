@@ -2,15 +2,18 @@ import { eventsFor, keyFor, type KitEvent } from '../../data/kit'
 import {
   contactChangeConfirmed,
   contactChanges,
+  isSessionTakeover,
   isStopChange,
   isTakeover,
+  sessionEvents,
   takeoverSignals,
   takeoverTier,
   type TakeoverSignals,
   type TakeoverTier,
 } from '../../data/takeoverRules'
+import { POLICY } from '../../data/policy'
 import { firstHit } from '../../data/triggers'
-import { clock } from '../../ui/format'
+import { clock, minutesBetween } from '../../ui/format'
 import { need, when } from './helpers'
 
 export type ContactKind = 'email' | 'phone' | 'address'
@@ -39,6 +42,8 @@ export type TakeoverFacts = {
   fullStop: boolean
   /** The member confirmed their email or phone change on the contact they had before it. */
   changeConfirmed: boolean
+  /** D3: the latest reset, code or failed sign-in, when the 2-hour rule is on and fired. */
+  session?: KitEvent
   recipientAdded: KitEvent
   trail: KitEvent[]
   followUp?: KitEvent
@@ -50,7 +55,8 @@ export type TakeoverFacts = {
 const cache = new Map<string, TakeoverFacts>()
 
 export function takeoverFacts(member: string): TakeoverFacts {
-  const cached = cache.get(member)
+  const cacheKey = `${member}:${POLICY.sessionRule}`
+  const cached = cache.get(cacheKey)
   if (cached) return cached
   const all = eventsFor(member)
   const key = keyFor(member)
@@ -82,6 +88,7 @@ export function takeoverFacts(member: string): TakeoverFacts {
     tier,
     fullStop: tier === 'stop',
     changeConfirmed: contactChangeConfirmed(member) && changes.some((c) => isStopChange(c.event)),
+    session: POLICY.sessionRule && isSessionTakeover(hit) ? sessionEvents(hit).at(-1) : undefined,
     recipientAdded,
     trail: [...window.filter((e) => trailCategories.includes(e.category)), hit],
     followUp: all
@@ -91,7 +98,7 @@ export function takeoverFacts(member: string): TakeoverFacts {
     dollarsSent: key.dollarsSent,
     netLoss: key.netLoss,
   }
-  cache.set(member, facts)
+  cache.set(cacheKey, facts)
   return facts
 }
 
@@ -120,12 +127,30 @@ function clockRange(from: KitEvent, to: KitEvent, ref: KitEvent) {
 
 export const tierName = (f: TakeoverFacts) => (f.fullStop ? 'Full stop' : 'Light check')
 
-/** Why this tier fired, in the words the staff card uses. */
-export function tierReason(f: TakeoverFacts): string {
+const sessionWords: Record<string, string> = {
+  'Password Reset': 'a password reset',
+  'One-Time Code Sent': 'a one-time code',
+  'Failed Login': 'a failed sign-in',
+}
+
+/** Why this tier fired, one line per rule, in the words the staff card uses. */
+export function tierReasons(f: TakeoverFacts): string[] {
   const swapped = f.changes.filter((c) => c.kind !== 'address')
-  if (swapped.length === 0) return 'Only the address changed: one tap on the unchanged phone'
-  const kinds = [...new Set(swapped.map((c) => c.kind))].join(' and ')
-  const range = clockRange(swapped[0].event, swapped[swapped.length - 1].event, f.hit)
-  const what = `${kinds[0].toUpperCase()}${kinds.slice(1)} changed ${range}`
-  return f.changeConfirmed ? what : `${what}, not confirmed on the prior contact`
+  if (!f.fullStop && swapped.length === 0) {
+    return ['Only the address changed: one tap on the unchanged phone']
+  }
+  const reasons: string[] = []
+  if (swapped.length > 0) {
+    const kinds = [...new Set(swapped.map((c) => c.kind))].join(' and ')
+    const range = clockRange(swapped[0].event, swapped[swapped.length - 1].event, f.hit)
+    const what = `${kinds[0].toUpperCase()}${kinds.slice(1)} changed ${range}`
+    reasons.push(f.changeConfirmed ? what : `${what}, not confirmed on the prior contact`)
+  }
+  if (f.session) {
+    const minutes = minutesBetween(f.session.at, f.hit.at)
+    reasons.push(
+      `2-hour rule: a payee added today, paid ${minutes} min after ${sessionWords[f.session.type]}`,
+    )
+  }
+  return reasons
 }

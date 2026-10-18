@@ -1,8 +1,9 @@
 /** The staff case names the takeover tier that fired and why. */
 import { renderToStaticMarkup } from 'react-dom/server'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
+import { POLICY } from '../../data/policy'
 import { TakeoverCase, type TakeoverStage } from './TakeoverCase'
-import { takeoverFacts, tierReason } from './takeoverFacts'
+import { takeoverFacts, tierReasons } from './takeoverFacts'
 import { TakeoverTier } from './TakeoverTier'
 
 const textOf = (html: string) =>
@@ -20,7 +21,8 @@ describe("Sarah's case: the full stop", () => {
   it('is the full stop because her email and phone changed and nobody confirmed it', () => {
     expect(f.tier).toBe('stop')
     expect(f.changeConfirmed).toBe(false)
-    expect(tierReason(f)).toMatch(/^Email and phone changed 10:14-10:15\sPM, not confirmed on the prior contact$/)
+    expect(tierReasons(f)).toHaveLength(1)
+    expect(tierReasons(f)[0]).toMatch(/^Email and phone changed 10:14-10:15\sPM, not confirmed on the prior contact$/)
   })
 
   it('says so on the case once it is open', () => {
@@ -45,7 +47,7 @@ describe("M1039's case: the light check", () => {
   it('is the light check because only the address changed', () => {
     expect(f.tier).toBe('check')
     expect(f.fullStop).toBe(false)
-    expect(tierReason(f)).toBe('Only the address changed: one tap on the unchanged phone')
+    expect(tierReasons(f)).toEqual(['Only the address changed: one tap on the unchanged phone'])
   })
 
   it('says so on the case', () => {
@@ -65,5 +67,26 @@ describe('a contact change confirmed on the prior number', () => {
     expect(text).toMatch(/Email and phone changed 10:14-10:15 PM/)
     expect(text).not.toContain('not confirmed')
     expect(text).toContain('Contact change confirmed on the prior number')
+  })
+})
+
+describe('D3, the 2-hour rule, on the staff case', () => {
+  const defaults = { ...POLICY }
+  afterEach(() => Object.assign(POLICY, defaults))
+  const rule = /2-hour rule: a payee added today, paid 13 min after a password reset/
+
+  it('adds its reason to Sarah\'s full stop only when the rule is on', () => {
+    expect(staffText('M1003', 'paused')).not.toMatch(rule)
+    POLICY.sessionRule = true
+    const text = staffText('M1003', 'paused')
+    expect(text).toMatch(rule)
+    expect(text).toMatch(/Email and phone changed 10:14-10:15 PM, not confirmed on the prior contact/)
+    expect(text).toContain('Also a full stop: a payment to a payee added today, within 2 hours')
+  })
+
+  it('leaves M1039 on the light check, because they paid a day after their reset', () => {
+    POLICY.sessionRule = true
+    expect(takeoverFacts('M1039').tier).toBe('check')
+    expect(staffText('M1039', 'asked')).not.toMatch(/2-hour rule:/)
   })
 })

@@ -1,5 +1,6 @@
 import { Check, KeyRound, Radar, UserPlus, UserRoundPen } from 'lucide-react'
 import type { ReactNode } from 'react'
+import { POLICY } from '../../data/policy'
 import { money } from '../../ui/format'
 import { Source } from '../../ui/primitives'
 import { when } from './helpers'
@@ -107,6 +108,8 @@ export function SignalsPanel({
           ? 'released by a YES on the prior contact.'
           : 'released only after a specialist calls the number on file before the change.'}{' '}
         Only the address changed: one tap on the unchanged phone.
+        {POLICY.sessionRule &&
+          ' Also a full stop: a payment to a payee added today, within 2 hours of a reset, a one-time code or a failed sign-in.'}
       </p>
     </Panel>
   )

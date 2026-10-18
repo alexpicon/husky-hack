@@ -1,21 +1,28 @@
 import { eventsFor, type KitEvent } from './kit'
+import { POLICY } from './policy'
 
 /** An email, phone or address change counts if it falls in this many days up to the payment. */
 export const CONTACT_WINDOW_DAYS = 30
+/** D3: a reset, code or failed sign-in counts if it falls in this many hours up to the payment. */
+export const SESSION_WINDOW_HOURS = 2
 
 /** The full stop holds the payment; the light check asks for one tap on the unchanged phone. */
 export type TakeoverTier = 'stop' | 'check'
 
 const STOP_CHANGES = ['Email Change', 'Phone Change']
 const CHECK_CHANGES = ['Address Change']
+const SESSION_EVENTS = ['Password Reset', 'One-Time Code Sent', 'Failed Login']
 
-const DAY_MS = 24 * 3_600_000
+const HOUR_MS = 3_600_000
+const DAY_MS = 24 * HOUR_MS
 
 type History = (member: string) => KitEvent[]
 
 export type TakeoverOptions = {
   /** The member's events; tests swap in a made-up night. */
   history?: History
+  /** D3, the 2-hour rule. Defaults to POLICY.sessionRule, read each time the rule runs. */
+  sessionRule?: boolean
   /** Defaults to contactChangeConfirmed. */
   confirmed?: (member: string) => boolean
 }
@@ -44,8 +51,22 @@ export function contactChangeConfirmed(_member: string): boolean {
   return false
 }
 
+/** A blank age fails on purpose: in JavaScript `null < 1` is true. */
+const payeeAddedToday = (e: KitEvent) => e.recipientAgeDays !== null && e.recipientAgeDays < 1
+
+/** Resets, one-time codes and failed sign-ins in the 2 hours up to the payment, oldest first. */
+export const sessionEvents = (e: KitEvent, history: History = eventsFor) =>
+  before(e, SESSION_EVENTS, SESSION_WINDOW_HOURS * HOUR_MS, history)
+
+const sessionTakeover = (e: KitEvent, history?: History) =>
+  e.type === 'Payment Initiated' && payeeAddedToday(e) && sessionEvents(e, history).length > 0
+
+/** D3: a payment to a payee added today, within 2 hours of a reset, a code or a failed sign-in. */
+export const isSessionTakeover = (e: KitEvent) => sessionTakeover(e)
+
 /** Which tier, if any, a payment falls in. */
 export function takeoverTier(e: KitEvent, opts: TakeoverOptions = {}): TakeoverTier | null {
+  if ((opts.sessionRule ?? POLICY.sessionRule) && sessionTakeover(e, opts.history)) return 'stop'
   if (e.type !== 'Payment Initiated' || !e.passwordResetRecent || e.recipientStatus !== 'New') {
     return null
   }
@@ -55,7 +76,7 @@ export function takeoverTier(e: KitEvent, opts: TakeoverOptions = {}): TakeoverT
   return changes.length > 0 ? 'check' : null
 }
 
-/** Full stop: a reset, a new recipient, and an email or phone change nobody confirmed. */
+/** Full stop: a reset, a new recipient, and an email or phone change nobody confirmed; or D3. */
 export const isTakeoverStop = (e: KitEvent) => takeoverTier(e) === 'stop'
 
 /** Light check: a reset, a new recipient, and only an address change. */
