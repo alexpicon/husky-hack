@@ -130,10 +130,19 @@ The kit is about 41% scam victims by design, and real life is far lower. So thes
 
 ## 90-day pilot (all numbers are assumptions)
 
-- **Days 1–30:** run the triggers in the background only (shadow mode). Count how many honest members would be paused.
-- **Days 31–90:** turn on takeover mode for everyone, and tricked mode at 2 branches plus the wire desk.
-- **We measure:** dollars of harm prevented, time from hold to release for honest members (target: same day), how many members finish the silent check, staff time per case, and holds waiting after hours.
-- **Stop rule:** if honest members are bothered too often, raise the thresholds before expanding.
+- **Days 1-30, a shadow month:** the rules run in the background only. We count the honest members who would have been paused. To go live, triggered test cases must be paused before send in integration tests (100%).
+- **Days 31-90, a small group:** live at 2 branches, the wire desk and a small opted-in digital group. Expand only if honest-member delays and complaints stay within targets.
+- **Stop rule:** if honest members are paused too often, review the rule, staffing and group before expanding. Raising amount thresholds alone reopens the small-scam gap.
+
+**Assumptions, not Sound data**, in the starter kit's success measures:
+
+| Measure | Assumed today | Pilot target |
+|---|---|---|
+| Dollars of harm prevented | Unknown: the shadow month measures it | Set from the shadow month, not invented |
+| False-positive rate (honest payments given an extra review) | 3 in 100 | 1 in 100 or fewer |
+| Time from hold to release for legitimate members (median / slowest 5%) | 2 h / 4 h | 15 min / 1 h, in service hours |
+| Employee effort (staff time per resolved case) | 15 min | 8 min or less |
+| After-hours holds waiting for review (held past 4 hours) | Some wait for the next morning | None: an unreviewed payment is not sent |
 
 ---
 
