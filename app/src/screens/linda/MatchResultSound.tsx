@@ -6,6 +6,7 @@ import { SOUND, SoundButton, SoundCard } from '../../ui/soundApp'
 import { AUTONOMY, callBack, readTaps, replies, verdict } from './copy'
 import { NavyIcon, SoundKiosk } from './kiosk'
 import { caseActions, useLindaCase } from './lindaCase'
+import { outcomeCopy } from './outcomes'
 import { ShareSwitch } from './ShareSwitch'
 
 const REPLY_GREEN = '#1f7a4d'
@@ -17,7 +18,8 @@ export function MatchResultSound() {
   const read = readTaps(state.taps)
   const say = verdict(read)
   const call = callBack(read)
-  const reply = state.wantsToSend ? replies.staff : calling ? replies.calling : null
+  const ending = state.outcome && outcomeCopy(state.outcome).title
+  const reply = ending || (state.wantsToSend ? replies.staff : calling ? replies.calling : null)
 
   return (
     <SoundKiosk caption="Branch tablet - her answers stay private unless she shares them">
@@ -91,7 +93,7 @@ export function MatchResultSound() {
             {reply ?? AUTONOMY}
           </motion.p>
         </AnimatePresence>
-        {!state.wantsToSend && (
+        {!state.wantsToSend && !state.outcome && (
           <button
             type="button"
             onClick={() => update(caseActions.askToSend)}

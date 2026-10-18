@@ -3,7 +3,8 @@ import { motion } from 'motion/react'
 import { StaffWindow } from '../../ui/devices'
 import { day } from '../../ui/format'
 import { Source } from '../../ui/primitives'
-import { useLindaCase } from '../linda/lindaCase'
+import { useLindaCase, type LindaCase } from '../linda/lindaCase'
+import { outcomeCopy } from '../linda/outcomes'
 import { nameScam } from '../linda/scams'
 import { ScriptPanel, SilentCheckPanel, TrustedPanel } from './CheckPanels'
 import { plural } from './helpers'
@@ -12,8 +13,29 @@ import { trickedFacts } from './trickedFacts'
 import { TrickedActions } from './TrickedActions'
 import { HoldPanel, WireFacts } from './WirePanels'
 
-/** held: wire on hold, silent check in progress. checked: member shared what she tapped. */
+/** held: wire on hold, silent check in progress. checked: she has finished the check. */
 export type TrickedStage = 'held' | 'checked'
+
+function CasePill({ state, stage }: { state: LindaCase; stage: TrickedStage }) {
+  if (state.outcome) {
+    const ending = outcomeCopy(state.outcome)
+    return <StatusPill tone={ending.tone}>{ending.status}</StatusPill>
+  }
+  if (state.staffActions.includes('escalated')) {
+    return <StatusPill tone="danger">On hold · escalated</StatusPill>
+  }
+  if (stage !== 'checked') {
+    return (
+      <StatusPill tone="warn" live>
+        On hold · silent check
+      </StatusPill>
+    )
+  }
+  if (state.shared && nameScam(state.taps)) {
+    return <StatusPill tone="danger">On hold · scam pattern</StatusPill>
+  }
+  return <StatusPill tone="warn">On hold · check finished</StatusPill>
+}
 
 /** `now` is the story clock: the case never shows a kit event from after it. */
 export function TrickedCase({
@@ -27,26 +49,16 @@ export function TrickedCase({
 }) {
   const f = trickedFacts(member)
   const { state } = useLindaCase()
-  const sharedFit = state.shared && nameScam(state.taps) !== null
+  const caseId = state.staffActions.includes('case-opened') ? f.caseId : undefined
   return (
-    <StaffWindow title={`Wire desk · ${f.caseId}`}>
+    <StaffWindow title={`Wire desk · ${caseId ?? `Hold on ${f.hit.paymentId}`}`}>
       <div className="@container space-y-5">
         <CaseHeader
           name={f.name}
           member={member}
           kind={`Wire hold · ${day(f.hit.at)}`}
-          caseId={f.caseId}
-          pill={
-            stage !== 'checked' ? (
-              <StatusPill tone="warn" live>
-                On hold · silent check
-              </StatusPill>
-            ) : sharedFit ? (
-              <StatusPill tone="danger">On hold · scam pattern</StatusPill>
-            ) : (
-              <StatusPill tone="warn">On hold · check finished</StatusPill>
-            )
-          }
+          caseId={caseId}
+          pill={<CasePill state={state} stage={stage} />}
         />
         <motion.div
           initial={{ opacity: 0, y: 6 }}
@@ -66,11 +78,11 @@ export function TrickedCase({
             <Source ids={[f.hit.id, f.recipientAdded.id]} />
           </div>
         </motion.div>
-        <TrickedActions name={f.name} />
+        <TrickedActions f={f} now={now} />
         <div className="grid items-start gap-4 @2xl:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
           <div className="space-y-4">
             <WireFacts f={f} />
-            <HoldPanel f={f} />
+            <HoldPanel f={f} now={now} />
           </div>
           <div className="space-y-4">
             <SilentCheckPanel f={f} stage={stage} now={now} />

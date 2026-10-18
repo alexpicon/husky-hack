@@ -4,11 +4,10 @@ import { eventsFor, type KitEvent } from '../../data/kit'
 import { firstHit, isTricked } from '../../data/triggers'
 import { trickedRatio } from '../../data/trickedRules'
 import { minutesBetween } from '../../ui/format'
-import { LINDA, LINDA_NAME } from '../linda/facts'
+import { HOLD_HOURS, LINDA, LINDA_NAME } from '../linda/facts'
 import { need } from './helpers'
 
-/** Starter kit capability: Sound can hold an outgoing wire for up to 4 hours. */
-export const HOLD_HOURS = 4
+export { HOLD_HOURS }
 
 /** Reads one full kit row, for columns the shared loader does not map. */
 function rawEvent(id: string): Row {

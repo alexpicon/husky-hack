@@ -5,8 +5,19 @@ import { Tablet } from '../../ui/devices'
 import { SOUND, soundFont } from '../../ui/soundApp'
 import { dollars, lindaFacts } from './facts'
 
-/** Linda's branch tablet in the Sound look: navy bar, grey canvas, white cards, no tab bar. */
-export function SoundKiosk({ caption, children }: { caption: string; children: ReactNode }) {
+/**
+ * Linda's branch tablet in the Sound look: navy bar, grey canvas, white cards, no tab bar.
+ * The bar says the wire is paused unless `status` says how it ended.
+ */
+export function SoundKiosk({
+  caption,
+  status,
+  children,
+}: {
+  caption: string
+  status?: ReactNode
+  children: ReactNode
+}) {
   const f = lindaFacts()
   return (
     <Tablet caption={caption}>
@@ -20,8 +31,13 @@ export function SoundKiosk({ caption, children }: { caption: string; children: R
         >
           <SoundLogo height={18} inverted />
           <span className="flex items-center gap-2 text-[15px] font-medium text-white">
-            <PauseCircle size={17} className="text-amber-300" aria-hidden />
-            Your wire is paused · <span className="num font-semibold">{dollars(f.wire.amount)}</span>
+            {status ?? (
+              <>
+                <PauseCircle size={17} className="text-amber-300" aria-hidden />
+                Your wire is paused
+              </>
+            )}{' '}
+            · <span className="num font-semibold">{dollars(f.wire.amount)}</span>
           </span>
         </header>
         <div className="flex flex-1 flex-col gap-3 px-5 py-4">{children}</div>

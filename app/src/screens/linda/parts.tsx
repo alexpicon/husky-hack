@@ -1,12 +1,11 @@
 import type { ReactNode } from 'react'
 import { SoundLogo } from '../../ui/brand'
 import { motion } from 'motion/react'
-import { Info, Lightbulb, Sparkles } from 'lucide-react'
-import { Badge } from '../../ui/primitives'
+import { Info, Lightbulb } from 'lucide-react'
 
 /**
- * Wraps each of Linda's member screens with the preview badge, an optional label that says
- * what is illustrative, and an optional design note.
+ * Wraps each of Linda's member screens, with an optional label that says what is
+ * illustrative and an optional design note.
  */
 export function Stage({
   children,
@@ -19,10 +18,6 @@ export function Stage({
 }) {
   return (
     <div className="flex flex-col items-center gap-4">
-      <Badge tone="warn">
-        <Sparkles size={12} aria-hidden />
-        Preview - working Sunday
-      </Badge>
       {label && (
         <p className="flex max-w-[600px] items-start gap-2 rounded-2xl bg-warn-soft px-4 py-2.5 text-[13px] leading-snug font-medium text-ink ring-1 ring-amber-200 ring-inset">
           <Lightbulb size={15} className="mt-0.5 shrink-0 text-warn" aria-hidden />

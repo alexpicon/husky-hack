@@ -1,5 +1,6 @@
 import { TrickedCase } from '../screens/staff/TrickedCase'
 import { dollars, LINDA_NAME, lindaFacts, storyTimes } from '../screens/linda/facts'
+import { Decide } from '../screens/linda/Decide'
 import { ResetLindaCase } from '../screens/linda/LindaCaseProvider'
 import { MatchResult } from '../screens/linda/MatchResult'
 import { Stage } from '../screens/linda/parts'
@@ -19,7 +20,7 @@ const illustrative = `Illustrative: if ${LINDA_NAME} had enrolled someone earlie
 export const linda: Scenario = {
   id: 'linda',
   label: 'Linda',
-  sublabel: 'Tricked member · preview',
+  sublabel: 'Tricked member',
   tone: 'warn',
   steps: [
     {
@@ -83,6 +84,19 @@ export const linda: Scenario = {
         </Stage>
       ),
       staff: <TrickedCase member="M1001" stage="checked" now={t.trusted} />,
+    },
+    {
+      id: 'outcome',
+      title: 'She decides, and it ends',
+      caption:
+        'She cancels, asks for help, or sends after talking to staff. If no one hears from her before the hold ends, the wire is not sent. Staff see the same case, and an ending is final.',
+      clock: at(t.decide),
+      member: (
+        <Stage>
+          <Decide at={t.decide} />
+        </Stage>
+      ),
+      staff: <TrickedCase member="M1001" stage="checked" now={t.decide} />,
     },
   ],
 }

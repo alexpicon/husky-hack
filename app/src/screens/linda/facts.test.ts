@@ -38,11 +38,16 @@ describe("Linda's facts come from the kit", () => {
 describe("Linda's story clock", () => {
   it('runs the silent check minutes after the wire is caught', () => {
     const t = storyTimes()
-    expect([t.caught, t.check, t.match, t.trusted].map(clock)).toEqual([
+    expect([t.caught, t.check, t.match, t.trusted, t.decide].map(clock)).toEqual([
       '2:11 PM',
       '2:12 PM',
       '2:14 PM',
       '2:15 PM',
+      '2:16 PM',
     ])
+  })
+
+  it('holds the wire for the kit maximum of 4 hours, until 6:11 PM', () => {
+    expect(clock(lindaFacts().holdEnds)).toBe('6:11 PM')
   })
 })

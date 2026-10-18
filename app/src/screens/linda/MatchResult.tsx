@@ -7,6 +7,7 @@ import { useLook } from '../../ui/look'
 import { AUTONOMY, callBack, readTaps, replies, verdict } from './copy'
 import { dollars, lindaFacts } from './facts'
 import { caseActions, useLindaCase } from './lindaCase'
+import { outcomeCopy } from './outcomes'
 import { MatchResultSound } from './MatchResultSound'
 import { TabletHeader } from './parts'
 import { ShareSwitch } from './ShareSwitch'
@@ -19,7 +20,8 @@ function MatchResultConcept() {
   const read = readTaps(state.taps)
   const say = verdict(read)
   const call = callBack(read)
-  const reply = state.wantsToSend ? replies.staff : calling ? replies.calling : null
+  const ending = state.outcome && outcomeCopy(state.outcome).title
+  const reply = ending || (state.wantsToSend ? replies.staff : calling ? replies.calling : null)
 
   return (
     <Tablet caption="Branch tablet - her answers stay private unless she shares them">
@@ -102,7 +104,7 @@ function MatchResultConcept() {
               {reply ?? AUTONOMY}
             </motion.p>
           </AnimatePresence>
-          {!state.wantsToSend && (
+          {!state.wantsToSend && !state.outcome && (
             <button
               type="button"
               onClick={() => update(caseActions.askToSend)}

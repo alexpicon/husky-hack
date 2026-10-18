@@ -5,6 +5,8 @@ import { minutesBetween, money } from '../../ui/format'
 export const LINDA = 'M1001'
 /** Named in the starter kit, which lists M1001 to M1004 as Linda, Michael, Sarah and James. */
 export const LINDA_NAME = 'Linda'
+/** Starter kit capability: Sound can hold an outgoing wire for up to 4 hours. */
+export const HOLD_HOURS = 4
 
 function find(label: string, list: KitEvent[], match: (e: KitEvent) => boolean): KitEvent {
   const hit = list.find(match)
@@ -77,6 +79,7 @@ function build() {
     yearsSinceLastWire: Math.floor(wire.daysSinceLastSameRail / 365.25),
     minutesSinceAdded: minutesBetween(added.at, wire.at),
     ratio: wire.baselineRatio,
+    holdEnds: plusMinutes(wire.at, HOLD_HOURS * 60),
   }
 }
 
@@ -88,6 +91,7 @@ export function storyTimes() {
     check: plusMinutes(wire.at, 1),
     match: plusMinutes(wire.at, 3),
     trusted: plusMinutes(wire.at, 4),
+    decide: plusMinutes(wire.at, 5),
   }
 }
 
