@@ -9,16 +9,6 @@
     "license": "Public domain",
     "license_url": ""
   },
-  "Donald Trump": {
-    "file": "portraits/donald-trump.jpg",
-    "person": "Donald Trump",
-    "wikipedia": "https://en.wikipedia.org/wiki/Donald_Trump",
-    "source": "https://commons.wikimedia.org/wiki/File:Official_Presidential_Portrait_of_President_Donald_J._Trump_(2025).jpg",
-    "artist": "Daniel Torok",
-    "credit": "White HouseFacebook",
-    "license": "Public domain",
-    "license_url": ""
-  },
   "FDR": {
     "file": "portraits/fdr.jpg",
     "person": "Franklin D. Roosevelt",
@@ -39,26 +29,6 @@
     "license": "Public domain",
     "license_url": ""
   },
-  "George W. Bush": {
-    "file": "portraits/george-w-bush.jpeg",
-    "person": "George W. Bush",
-    "wikipedia": "https://en.wikipedia.org/wiki/George_W._Bush",
-    "source": "https://commons.wikimedia.org/wiki/File:George-W-Bush.jpeg",
-    "artist": "Eric Draper",
-    "credit": "This image was released by the United States Department of Defense with the ID 030114-O-0000D-001_screen (next).\nThis tag does not indicate the copyright status of the attached work. A normal copyright tag is still required. See Commons:Licensing.\n\n\nالعربية ∙ বাংলা ∙ \nBahasa Indonesia ∙ \nBahaso Jambi ∙ \nDeutsch ∙ Deutsch (Sie-Form) ∙ English ∙ español ∙ euskara ∙ فارسی ∙ français ∙ italiano ∙ 日本語 ∙ 한국어 ∙ македонски ∙ മലയാളം ∙ Plattdüütsch ∙ Nederlands ∙ polski ∙ پښتو ∙ português ∙ русский ∙ slovenščina ∙ svenska ∙ Türkçe ∙ українська ∙ 简体中文 ∙ 繁體中文 ∙ +/−",
-    "license": "Public domain",
-    "license_url": ""
-  },
-  "Gilbert Gottfried": {
-    "file": "portraits/gilbert-gottfried.jpg",
-    "person": "Gilbert Gottfried",
-    "wikipedia": "https://en.wikipedia.org/wiki/Gilbert_Gottfried",
-    "source": "https://commons.wikimedia.org/wiki/File:Gilbert_Gottfried_(49732474471).jpg",
-    "artist": "Super Festivals from Ft. Lauderdale, USA",
-    "credit": "80301200282",
-    "license": "CC BY 2.0",
-    "license_url": "https://creativecommons.org/licenses/by/2.0"
-  },
   "JFK": {
     "file": "portraits/jfk.jpg",
     "person": "John F. Kennedy",
@@ -66,46 +36,6 @@
     "source": "https://commons.wikimedia.org/wiki/File:John_F._Kennedy,_White_House_color_photo_portrait.jpg",
     "artist": "Cecil W. Stoughton",
     "credit": "This tag does not indicate the copyright status of the attached work. A normal copyright tag is still required. See Commons:Licensing.",
-    "license": "Public domain",
-    "license_url": ""
-  },
-  "Louis C.K.": {
-    "file": "portraits/louis-c-k.png",
-    "person": "Louis C.K.",
-    "wikipedia": "https://en.wikipedia.org/wiki/Louis_C.K.",
-    "source": "https://commons.wikimedia.org/wiki/File:Louis_C.K._on_Your_Moms_House_Podcast_2022.png",
-    "artist": "YMH Studios",
-    "credit": "YouTube: https://www.youtube.com/watch?v=SpPHbZzDEO4&ab_channel=YMHStudios – View/save archived versions on archive.org",
-    "license": "CC BY 3.0",
-    "license_url": "https://creativecommons.org/licenses/by/3.0"
-  },
-  "Mr. Rogers": {
-    "file": "portraits/mr-rogers.jpg",
-    "person": "Fred Rogers",
-    "wikipedia": "https://en.wikipedia.org/wiki/Fred_Rogers",
-    "source": "https://commons.wikimedia.org/wiki/File:Fred-Rogers_1988_(full)_(cropped).jpg",
-    "artist": "Family Communications, Inc.",
-    "credit": "Csuitespotlight, info from Neighborhood archive",
-    "license": "Public domain",
-    "license_url": ""
-  },
-  "Nelson Mandela": {
-    "file": "portraits/nelson-mandela.jpg",
-    "person": "Nelson Mandela",
-    "wikipedia": "https://en.wikipedia.org/wiki/Nelson_Mandela",
-    "source": "https://commons.wikimedia.org/wiki/File:Nelson_Mandela_1994.jpg",
-    "artist": "Kingkongphoto & www.celebrity-photos.com from Laurel",
-    "credit": "Flickr: NELSON MANDELA",
-    "license": "CC BY-SA 2.0",
-    "license_url": "https://creativecommons.org/licenses/by-sa/2.0"
-  },
-  "William F. Buckley": {
-    "file": "portraits/william-f-buckley.jpg",
-    "person": "William F. Buckley Jr.",
-    "wikipedia": "https://en.wikipedia.org/wiki/William_F._Buckley_Jr.",
-    "source": "https://commons.wikimedia.org/wiki/File:William_F._Buckley,_Jr._Public_Domain_(cropped).jpg",
-    "artist": "Unknown photographer",
-    "credit": "\"William F. Buckley Jr., The Art of Fiction No. 146\" in The Paris Review.\n\nhttps://www.theparisreview.org/interviews/1395/the-art-of-fiction-no-146-william-f-buckley-jr\nThe photograph was originally published online by Reuters/National Review in 2008 and guaranteed free non-commercial use; further information can be seen in the metadata. However, as a handout photo originally, it almost certainly emerged in the 1970s with no evident copyright notice, hence the chosen licensing information.",
     "license": "Public domain",
     "license_url": ""
   }
