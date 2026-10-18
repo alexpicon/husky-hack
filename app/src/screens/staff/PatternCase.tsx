@@ -13,6 +13,8 @@ import { shortDate } from './helpers'
 import { CaseHeader, StatusPill } from './parts'
 import { PatternAnswersPanel, PatternPaymentsPanel, RomanceScriptPanel, WireHoldPanel } from './PatternPanels'
 import { OneCasePanel } from './PatternTimeline'
+import { WhyPaused } from './WhyPaused'
+import { whyPattern } from './pauseReasons'
 
 /** pattern: the card on his 4th growing P2P. wire: his first wire, held. report: the case, open until he reports. */
 export type PatternStage = 'pattern' | 'wire' | 'report'
@@ -49,6 +51,7 @@ export function PatternCase({ stage, now }: { stage: PatternStage; now: Date }) 
           caseId={reportedCase ?? (stage === 'report' ? `Open since ${shortDate(f.card.at)}` : undefined)}
           pill={<Pill stage={stage} reported={reportedCase !== undefined} wire={wire} />}
         />
+        <WhyPaused why={whyPattern(f, stage, now)} />
         <ReportBanner member={MICHAEL} />
         {stage === 'report' ? (
           <p className="rounded-2xl bg-slate-50 px-5 py-4 font-display text-[22px] leading-tight tracking-tight text-ink ring-1 ring-line">

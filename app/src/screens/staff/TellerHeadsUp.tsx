@@ -12,6 +12,8 @@ import { dollars } from '../linda/facts'
 import { when } from './helpers'
 import { ActionButton, FactRow, Panel, StatusPill, type ActionLook } from './parts'
 import { TellerDesk } from './TellerDesk'
+import { WhyPaused } from './WhyPaused'
+import { whyHeadsUp } from './pauseReasons'
 
 const ACTIONS: { id: TellerAction; label: string; hint: string; done: string; icon: LucideIcon }[] = [
   { id: 'ask', label: 'Ask the question', hint: 'Read it as written', done: 'Question asked', icon: MessageCircleQuestion },
@@ -64,6 +66,7 @@ export function TellerHeadsUp() {
       caseId={state.agent ? `Case open since ${daysAgo(call.at, cash.at)}'s call` : undefined}
       pill={<Pill done={done} />}
     >
+      <WhyPaused why={whyHeadsUp(f)} />
       <motion.div
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}

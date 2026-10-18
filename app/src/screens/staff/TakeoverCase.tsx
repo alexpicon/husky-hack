@@ -11,6 +11,8 @@ import { ResponsePanel } from './ResponsePanel'
 import { SignalsPanel } from './SignalsPanel'
 import { TakeoverActions } from './TakeoverActions'
 import { takeoverFacts, tierName } from './takeoverFacts'
+import { WhyPaused } from './WhyPaused'
+import { whyTakeover } from './pauseReasons'
 import { heardYes, isOpen, pillFor, wasAsked, yesReleases } from './takeoverStages'
 
 /**
@@ -61,6 +63,7 @@ export function TakeoverCase({
             </StatusPill>
           }
         />
+        {open && <WhyPaused why={whyTakeover(f)} />}
         <ReportBanner member={member} />
         {(stage === 'secured' || (stage === 'released' && yesOk)) && <OutcomeBanner f={f} stage={stage} />}
         <TakeoverActions

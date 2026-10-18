@@ -13,6 +13,8 @@ import { plural } from './helpers'
 import { CaseHeader, StatusPill } from './parts'
 import { trickedFacts } from './trickedFacts'
 import { TrickedActions } from './TrickedActions'
+import { WhyPaused } from './WhyPaused'
+import { whyTricked } from './pauseReasons'
 import { HoldPanel, WireFacts } from './WirePanels'
 
 /** held: wire on hold, silent check in progress. checked: she has finished the check. */
@@ -63,6 +65,7 @@ export function TrickedCase({
           caseId={caseId}
           pill={<CasePill state={state} stage={stage} />}
         />
+        <WhyPaused why={whyTricked(f)} />
         <ReportBanner member={member} />
         <motion.div
           initial={{ opacity: 0, y: 6 }}
