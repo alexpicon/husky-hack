@@ -39,3 +39,18 @@ export function scoreText(score: Score): string {
   if (!score.total) return `No answers this time. ${CAUTION}`
   return `You got ${score.correct} of ${score.total}. ${CAUTION}`
 }
+
+export const HOW_IT_WORKS =
+  'Scammers can use AI to sound like someone you trust. Each pair is one voice, twice: one recording is real, one is AI. Play both, then pick the AI.'
+
+export const NO_ANALYSIS =
+  "Nothing here listens to you or checks anyone's voice. Your answers stay on this phone."
+
+export const DECLINED = 'Okay. The drill stays in the app whenever you want it.'
+
+export const LOAD_FAILED = "The recordings couldn't load right now. What the drill teaches still holds:"
+
+export const TRUSTED_ADDED =
+  'If a payment of yours is ever held, one tap can ask them to call you. They never see amounts or your account. You can remove them anytime.'
+
+export const TRUSTED_LATER = 'Okay. You can add one anytime, in the app or at a branch.'
