@@ -4,12 +4,14 @@ import type { Look } from '../../ui/look'
 import { SOUND } from '../../ui/soundApp'
 import { checkActions, TEST_OPTIONS } from './check'
 import { useMichaelCheck } from './checkState'
+import { WITHDRAWAL_QUESTION } from './facts'
 import { ShareToggle } from './parts'
 
-export const TEST_QUESTION = 'Did the withdrawal test work?'
+/** The same question the call opens with. */
+export const TEST_QUESTION = WITHDRAWAL_QUESTION
 
 /**
- * Before Sound calls: the check from the card, asked once. His answer is final, it never clears
+ * Before Sound calls: the call's first question, asked once. His answer is final, it never clears
  * the hold, and staff see it only if he shares it. Once he cancels the wire there is no hold and
  * no call, so the buttons lock and the reply about the hold goes.
  */

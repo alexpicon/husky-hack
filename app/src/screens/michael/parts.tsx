@@ -127,7 +127,7 @@ export function CheckResult({ look }: { look: Look }) {
   )
 }
 
-/** The one check he can do himself, on the card for everyone but a member paying his own account. */
+/** What a withdrawal can't prove, on the card for everyone but a member paying his own account. */
 export function WithdrawalCheck({ look }: { look: Look }) {
   const { state } = useMichaelCheck()
   if (state.taps.includes('own')) return null

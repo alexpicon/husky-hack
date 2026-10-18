@@ -24,7 +24,7 @@ export const michael: Scenario = {
       id: 'pattern',
       title: 'Each payment bigger than the last',
       opening: OPENINGS.michael,
-      caption: `No single payment looks risky: ${amounts(f.run)} to someone he added on ${shortDate(f.cardPayeeAdded.at)}. Before the ${ordinal(f.run.length)} sends, Sound shows him the pattern, a silent check, and one check he can do himself: try taking $100 out of the platform. Send still works. He decides.`,
+      caption: `No single payment looks risky: ${amounts(f.run)} to someone he added on ${shortDate(f.cardPayeeAdded.at)}. Before the ${ordinal(f.run.length)} sends, Sound shows him the pattern, a silent check, and one warning: being able to withdraw a small amount does not prove an investment is genuine. Send still works. He decides.`,
       clock: at(f.card.at),
       member: (
         <>
@@ -46,7 +46,7 @@ export const michael: Scenario = {
       id: 'wire',
       memberLabel: "Michael's computer: Sound online banking",
       title: 'His first wire ever, held for a call',
-      caption: `${f.cardToWireDays} days later he wires ${money(f.wire.amount)} to a second new payee. After a pattern card, that is held up to ${HOLD_HOURS} hours for a call from Sound. Before the call he is asked if the withdrawal test worked, and the call opens with the same question. After the call, he decides.`,
+      caption: `${f.cardToWireDays} days later he wires ${money(f.wire.amount)} to a second new payee. After a pattern card, that is held up to ${HOLD_HOURS} hours for a call from Sound. Before the call he is asked if he has been able to withdraw from the platform, and the call opens with the same question. After the call, he decides.`,
       clock: at(f.wire.at),
       member: (
         <>

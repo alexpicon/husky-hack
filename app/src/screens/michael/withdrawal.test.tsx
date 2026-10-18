@@ -1,4 +1,4 @@
-/** The withdrawal test on the card and the held wire, "Not now", and how every answer carries forward. */
+/** The withdrawal warning on the card, the withdrawal question on the held wire, "Not now", and how every answer carries forward. */
 import { renderToStaticMarkup } from 'react-dom/server'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { michael } from '../../story/michael'
@@ -58,8 +58,9 @@ describe.each(['concept', 'sound'] as const)('the withdrawal test (%s look)', (v
     const page = text(cardStep.member)
     expect(page).toContain(`${WITHDRAWAL_CHECK.title} ${WITHDRAWAL_CHECK.body}`)
     expect(WITHDRAWAL_CHECK.body).toBe(
-      "Try taking $100 out of the platform. Real platforms let you. If you can't, or they ask for a fee or tax first, stop and call us.",
+      'Being able to withdraw a small amount does not prove an investment is genuine. Do not send more money or pay a fee to unlock it. Contact Sound using a number you already trust.',
     )
+    expect(page).not.toMatch(/Real platforms|\$100 out|try taking/i)
     expect(page).toContain('Not now')
   })
 
@@ -70,7 +71,7 @@ describe.each(['concept', 'sound'] as const)('the withdrawal test (%s look)', (v
 
   it('asks it on the held wire before the call, with the call timing unchanged', () => {
     const page = text(wireStep.member)
-    expect(page).toContain('Before Sound calls you Did the withdrawal test work?')
+    expect(page).toContain(`Before Sound calls you ${WITHDRAWAL_QUESTION}`)
     for (const o of TEST_OPTIONS) expect(page).toContain(o.label)
     expect(TEST_OPTIONS.map((o) => o.label)).toEqual([
       'Yes, I took money out',
@@ -92,6 +93,14 @@ describe.each(['concept', 'sound'] as const)('the withdrawal test (%s look)', (v
     set({ test: 'failed', shared: true })
     expect(text(wireStep.staff)).toContain(`He shared his withdrawal test: "${FAILED.label}"`)
     expect(text(reportStep.staff)).toContain(`Withdrawal test, shared: "${FAILED.label}"`)
+  })
+
+  it('never tells him to try a withdrawal first', () => {
+    set({ test: 'untried' })
+    const member = text(wireStep.member)
+    expect(member).toContain("That's OK. Your wire stays on hold, and a specialist will call you.")
+    expect(member).not.toMatch(/\btry (it|taking)\b/i)
+    expect(cardStep.caption).not.toMatch(/\$100 out|try taking/i)
   })
 
   it('opens the staff call script with the withdrawal question', () => {

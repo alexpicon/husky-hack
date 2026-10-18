@@ -18,7 +18,7 @@ const CHOSEN: Record<WireChoice, string> = {
 }
 
 /**
- * His first wire, held for a call from Sound, with the withdrawal test asked before the call. He
+ * His first wire, held for a call from Sound, with the withdrawal question asked before the call. He
  * decides after the call; his answers reach staff (the test only if he shares) and step 3. Once he
  * cancels, nothing on the screen says the wire is held or that a call is coming.
  */

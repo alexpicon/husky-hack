@@ -121,10 +121,10 @@ export function payeeLabel(recipientId: string, f: MichaelFacts = michaelFacts()
 export const TRUSTED_LINE = 'Talk to someone you trust before you send more.'
 export const ROMANCE_LINE = 'Some of what you tapped is how a relationship investment scam works.'
 
-/** The one check he can do himself: a fake platform shows gains but won't let money out. */
+/** On the card: a fake platform can let a little money out to win trust, so a withdrawal proves nothing. */
 export const WITHDRAWAL_CHECK = {
-  title: 'One check before you send more',
-  body: "Try taking $100 out of the platform. Real platforms let you. If you can't, or they ask for a fee or tax first, stop and call us.",
+  title: 'Before you send more',
+  body: 'Being able to withdraw a small amount does not prove an investment is genuine. Do not send more money or pay a fee to unlock it. Contact Sound using a number you already trust.',
 }
 
 /** "$441" for whole dollars, "$8,487.77" otherwise. */
@@ -136,7 +136,7 @@ export const honestLine = (f: MichaelFacts = michaelFacts()) =>
 
 export const WITHDRAWAL_QUESTION = 'Have you been able to withdraw from the platform?'
 
-/** What staff say on the call while his wire is held. It opens with the withdrawal test. */
+/** What staff say on the call while his wire is held. It opens with the withdrawal question. */
 export function romanceScript(f: MichaelFacts) {
   return [
     WITHDRAWAL_QUESTION,

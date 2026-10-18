@@ -40,7 +40,7 @@ export type CardChoice = 'send' | 'not-now'
 /** His choice on the held wire: wait for Sound's call, or cancel it. */
 export type WireChoice = 'wait' | 'cancel'
 
-/** His answer on the held wire to "Did the withdrawal test work?" */
+/** His answer on the held wire to "Have you been able to withdraw from the platform?" */
 export type TestAnswer = 'worked' | 'failed' | 'untried'
 
 /** No answer clears the hold or skips the call: a fake platform can let a little out early. */
@@ -55,7 +55,7 @@ export const TEST_OPTIONS: { id: TestAnswer; label: string; reply: string }[] = 
     label: 'No, or they asked for a fee first',
     reply: "That's how these scams keep you paying. Your wire stays on hold, and a specialist will call you.",
   },
-  { id: 'untried', label: "I haven't tried", reply: 'You can still try it before we call. Your wire stays on hold while you do.' },
+  { id: 'untried', label: "I haven't tried", reply: "That's OK. Your wire stays on hold, and a specialist will call you." },
 ]
 
 /**
