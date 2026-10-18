@@ -1,4 +1,5 @@
 import { Banknote, Lock, PauseCircle } from 'lucide-react'
+import { p2pRecalls } from '../../report/kitFacts'
 import { minutesBetween, money } from '../../ui/format'
 import { Source, type Tone } from '../../ui/primitives'
 import { when } from './helpers'
@@ -9,19 +10,27 @@ import { HOLD_HOURS } from './trickedFacts'
 import type { TakeoverStage } from './TakeoverCase'
 
 const railRule: Record<string, string> = {
-  P2P: "P2P can't be recalled once sent, so it's paused before send.",
+  P2P: `P2P recalls usually fail: ${p2pRecalls.failed} of ${p2pRecalls.requested} in the kit. So it's paused before send.`,
   ACH: `ACH can be held up to ${HOLD_HOURS} hours while Sound checks with the member.`,
   Wire: `A wire can be held up to ${HOLD_HOURS} hours while Sound checks with the member.`,
 }
 
-const moneyState: Record<TakeoverStage, { label: string; tone: Tone }> = {
-  watching: { label: 'No payment yet', tone: 'neutral' },
-  paused: { label: 'Paused before send', tone: 'warn' },
-  asked: { label: 'Paused before send', tone: 'warn' },
-  'not-me': { label: 'Paused before send', tone: 'warn' },
-  secured: { label: 'Stopped. Never sent.', tone: 'safe' },
-  'its-me': { label: 'Paused, member said yes', tone: 'safe' },
-  released: { label: 'Released to recipient', tone: 'safe' },
+/** P2P is paused before it is sent; ACH and wires are held before Sound releases them. */
+const holdWords = (rail: string) =>
+  rail === 'P2P' ? { before: 'Paused before send', yes: 'Paused' } : { before: 'Held before release', yes: 'Held' }
+
+function moneyState(stage: TakeoverStage, rail: string): { label: string; tone: Tone } {
+  const words = holdWords(rail)
+  const states: Record<TakeoverStage, { label: string; tone: Tone }> = {
+    watching: { label: 'No payment yet', tone: 'neutral' },
+    paused: { label: words.before, tone: 'warn' },
+    asked: { label: words.before, tone: 'warn' },
+    'not-me': { label: words.before, tone: 'warn' },
+    secured: { label: 'Stopped. Never sent.', tone: 'safe' },
+    'its-me': { label: `${words.yes}, member said yes`, tone: 'safe' },
+    released: { label: 'Released to recipient', tone: 'safe' },
+  }
+  return states[stage]
 }
 
 const panelTitle: Partial<Record<TakeoverStage, string>> = {
@@ -40,8 +49,8 @@ const chip: Record<Tone, string> = {
 
 export function MoneyPanel({ f, stage }: { f: TakeoverFacts; stage: TakeoverStage }) {
   const { hit, recipientAdded, followUp } = f
-  const state = moneyState[stage]
   const rail = stage === 'watching' ? recipientAdded.rail : hit.rail
+  const state = moneyState(stage, hit.rail)
   const rule = railRule[rail] ?? 'Paused before send while Sound checks with the member.'
   const hold = caseHold(stage, f.fullStop)
   return (

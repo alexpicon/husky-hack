@@ -1,9 +1,14 @@
-import { events, eventsFor } from '../data/kit'
+import { events, eventsFor, memberKeys } from '../data/kit'
 import { minutesBetween } from '../ui/format'
 
-const p2p = (type: string) => events.filter((e) => e.type === type && e.rail === 'P2P').length
+const takeoverScamPayments = new Set(
+  memberKeys.filter((k) => k.scenario === 'Sound Impersonation + ATO').flatMap((k) => k.scamPaymentIds),
+)
 
-/** P2P recall requests in the kit, and how many the receiving bank refused. */
+const p2p = (type: string) =>
+  events.filter((e) => e.type === type && e.rail === 'P2P' && takeoverScamPayments.has(e.paymentId)).length
+
+/** Recall requests on takeover scam payments sent by P2P, and how many the receiving bank refused. */
 export const p2pRecalls = { requested: p2p('Recovery Request'), failed: p2p('Recovery Unsuccessful') }
 
 /** Minutes from each scam report in the kit to the case Sound opened for it. */
