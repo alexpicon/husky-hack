@@ -1,27 +1,10 @@
-import type { ReactNode } from 'react'
-import { Clock, KeyRound, MapPin, MessageSquareText, Phone, Smartphone, UserPlus } from 'lucide-react'
+import { Clock, MessageSquareText, Phone } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useStory } from '../../story/engine'
-import { Source } from '../../ui/primitives'
 import { money } from '../../ui/format'
 import { useLook } from '../../ui/look'
 import { CheckSound } from './CheckSound'
-import { facts, HOLD_HOURS, whenLabel } from './facts'
-
-function Noticed({ icon, label, at, source }: { icon: ReactNode; label: string; at: Date; source: string }) {
-  return (
-    <li className="flex items-center gap-3 py-2">
-      <span className="grid size-8 shrink-0 place-items-center rounded-full bg-slate-100 text-ink-2">
-        {icon}
-      </span>
-      <span className="flex-1 text-[16px] text-ink">{label}</span>
-      <span className="flex flex-col items-end leading-tight">
-        <span className="num text-[13px] text-ink-3">{whenLabel(at)}</span>
-        <Source ids={source} />
-      </span>
-    </li>
-  )
-}
+import { facts, HOLD_HOURS } from './facts'
 
 export function CheckScreen() {
   return useLook() === 'sound' ? <CheckSound /> : <ConceptCheckScreen />
@@ -29,7 +12,7 @@ export function CheckScreen() {
 
 function ConceptCheckScreen() {
   const { next } = useStory()
-  const { payment, reset, address, recipientAdded } = facts
+  const { payment } = facts
   return (
     <div className="flex min-h-full flex-col bg-linear-to-b from-brand-soft via-white to-white px-5 pt-4 pb-6">
       <div className="flex items-center justify-between gap-3">
@@ -45,36 +28,28 @@ function ConceptCheckScreen() {
         </motion.span>
       </div>
       <p className="mt-2 text-[17px] leading-snug text-ink-2">
-        A few things on your account are new, so we'd like a quick yes before{' '}
-        <span className="num font-semibold text-ink">{money(payment.amount)}</span> goes.
+        This payment needs a quick yes before{' '}
+        <span className="num font-semibold text-ink">{money(payment.amount)}</span> goes. If you
+        started it, check your messages from Sound.
       </p>
 
-      <ul className="mt-3 divide-y divide-line/70">
-        <Noticed icon={<KeyRound size={15} />} label="New password" at={reset.at} source={reset.id} />
-        <Noticed icon={<MapPin size={15} />} label="New address" at={address.at} source={address.id} />
-        <Noticed
-          icon={<UserPlus size={15} />}
-          label="New recipient"
-          at={recipientAdded.at}
-          source={recipientAdded.id}
-        />
-      </ul>
-
-      <motion.div
+      <motion.dl
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
-        className="mt-3 flex gap-3 rounded-2xl bg-safe-soft p-4 ring-1 ring-teal-100"
+        className="mt-5 divide-y divide-line rounded-2xl bg-white ring-1 ring-line"
       >
-        <Smartphone size={22} className="mt-0.5 shrink-0 text-safe" />
-        <div className="min-w-0">
-          <div className="text-[16px] font-semibold text-ink">We texted your phone</div>
-          <p className="mt-0.5 text-[15px] leading-snug text-ink-2">
-            The number you've had with us all along.{' '}
-            <span className="font-semibold text-safe">It hasn't changed.</span>
-          </p>
+        <div className="flex items-center justify-between gap-3 px-4 py-3">
+          <dt className="text-[15px] text-ink-2">Payment</dt>
+          <dd className="num text-[18px] font-semibold text-ink">{money(payment.amount)}</dd>
         </div>
-      </motion.div>
+        <div className="flex items-center justify-between gap-3 px-4 py-3">
+          <dt className="text-[15px] text-ink-2">Status</dt>
+          <dd className="rounded-full bg-brand-soft px-2.5 py-1 text-[13px] font-semibold text-brand ring-1 ring-indigo-100">
+            Waiting for your yes
+          </dd>
+        </div>
+      </motion.dl>
 
       <button
         type="button"

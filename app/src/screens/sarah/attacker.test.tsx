@@ -1,7 +1,12 @@
-/** What the person signed in as Sarah can learn from the pause, and what only the real Sarah and staff see. */
+/**
+ * What whoever is signed in can learn from a paused payment (Sarah's full stop, M1039's light
+ * check), and what only the real member and staff see.
+ */
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it, vi } from 'vitest'
 import { clock, money } from '../../ui/format'
+import { CheckScreen } from '../m1039/CheckScreen'
+import { facts as m1039 } from '../m1039/facts'
 import { TakeoverCase } from '../staff/TakeoverCase'
 import { Ask } from './Ask'
 import { sarah } from './facts'
@@ -51,6 +56,38 @@ describe.each(['concept', 'sound'] as const)("the attacker's paused screen (%s l
 
   it('does not say who else is being asked', () => {
     expect(text).not.toMatch(/contact details/i)
+  })
+})
+
+describe.each(['concept', 'sound'] as const)("M1039's in-app check (%s look)", (variant) => {
+  look.current = variant
+  const html = renderToStaticMarkup(<CheckScreen />)
+  const text = textOf(html)
+
+  it('renders the variant for its look', () => {
+    expect(html.includes('Bill Pay')).toBe(variant === 'sound')
+  })
+
+  it('asks for a quick yes and points to the messages, with the derived amount', () => {
+    expect(text).toContain(
+      `This payment needs a quick yes before ${money(m1039.payment.amount)} goes. If you started it, check your messages from Sound.`,
+    )
+    expect(money(m1039.payment.amount)).toBe('$4,151.68')
+  })
+
+  it('carries no time, event ID or light-check signal', () => {
+    expect(html).not.toMatch(/\d{1,2}:\d{2}/)
+    expect(html).not.toMatch(/E\d{5}/)
+    for (const word of ['password', 'reset', 'address', 'recipient', 'email', 'yesterday', 'today']) {
+      expect(text.toLowerCase()).not.toContain(word)
+    }
+    expect(text).not.toMatch(/\bnew\b/i)
+  })
+
+  it('does not say who else is being asked or that their contact is unchanged', () => {
+    for (const phrase of ['texted', 'changed', 'all along', 'contact details']) {
+      expect(text.toLowerCase()).not.toContain(phrase)
+    }
   })
 })
 
