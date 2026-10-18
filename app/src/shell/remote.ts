@@ -26,6 +26,7 @@ let snapshot: { id: string | null; status: SessionStatus } = { id, status }
 let timer: ReturnType<typeof setInterval> | undefined
 
 function readId() {
+  if (typeof window === 'undefined') return null
   const v = new URLSearchParams(window.location.search).get('session')?.toUpperCase() ?? ''
   return VALID.test(v) ? v : null
 }
