@@ -37,6 +37,7 @@ describe('design check matrix', () => {
     const page = await renderWith('per-wire-3x')
     expect(page).toContain('cash or wire within 72 h of a contact center call')
     expect(page).toContain('4th growing payment in a row to a payee added < 60 days ago')
+    expect(page).toContain('Every wire to a new payee within 30 days is held for a call')
     expect(page).toContain('Gov’t impersonation (James) 0 / 12 0 / 12 4 / 12 12 / 12 0 / 12')
     expect(page).toContain('Romance (Michael) 0 / 12 0 / 12 0 / 12 0 / 12 12 / 12')
     expect(page).toContain('Honest look-alikes 0 / 20 4 / 20 0 / 20 0 / 20 3 / 20')

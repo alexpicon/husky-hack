@@ -64,7 +64,7 @@ const COLUMNS: Column[] = [
     label: 'Michael’s pattern card',
     tone: 'neutral',
     sub: `${PATTERN_MIN_RUN}th growing payment in a row to a payee added < ${PATTERN_PAYEE_MAX_AGE_DAYS} days ago`,
-    does: `Late: earlier payments are gone. Advice; he decides. A wire to a new payee within ${FOLLOW_UP_WINDOW_DAYS} days is held for a call`,
+    does: `Late: earlier payments are gone. Advice; he decides. Every wire to a new payee within ${FOLLOW_UP_WINDOW_DAYS} days is held for a call`,
   },
 ]
 

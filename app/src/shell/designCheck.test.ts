@@ -12,6 +12,7 @@ import {
   dollars,
   familySplit,
   familyUnder,
+  followUpHolds,
   michael,
   minuteZero,
   scamCash,
@@ -135,6 +136,27 @@ describe('kit lines', () => {
     expect(m.gone).toBe(441)
   })
 
+  it("holds every wire to Michael's platform account for a call: $1,500, $2,400 and $3,840", () => {
+    const { held } = michael()
+    expect(held.map((e) => [e.paymentId, e.rail, e.amount, e.recipientId])).toEqual([
+      ['P1002-010', 'Wire', 1500, 'R1002-09'],
+      ['P1002-011', 'Wire', 2400, 'R1002-09'],
+      ['P1002-012', 'Wire', 3840, 'R1002-09'],
+    ])
+    expect(held.reduce((n, e) => n + e.amount, 0)).toBe(7740)
+  })
+
+  it('holds all 30 romance scam wires and transfers, in 12 of 12 journeys, and no honest member', () => {
+    expect(followUpHolds()).toEqual({
+      scamMoves: 30,
+      scamHeld: 30,
+      journeys: 12,
+      journeysHeld: 12,
+      honest: 70,
+      honestHeld: 0,
+    })
+  })
+
   it('names the 2 family wires under 3x', () => {
     const { ratio, wires } = familyUnder({ sessionRule: false, lindaRule: 'per-wire-3x' })
     expect(ratio).toBe(3)
@@ -197,7 +219,9 @@ describe('the page', () => {
       'Of the 8 asked, 4 gave a coached yes.',
       'Linda’s rule pauses 10 of these 12.',
       'Second Look adds no hold to M1057’s $51,586.52 home-closing wire (payee added 2 days earlier); Sound’s existing wire review is unchanged.',
-      'His first $441.00 is gone before the card: it shows on his 4th growing payment ($306.77), and his first wire ($1,500.00) is held for a call. The card is advice; he decides. In the kit he lost $8,487.77.',
+      'Michael (M1002), a relationship investment scam, caught late',
+      'His first $441.00 is gone before the card: it shows on his 4th growing payment ($306.77), and every wire after it to his platform account is held for a call: $1,500.00, $2,400.00 and $3,840.00. The card is advice; he decides. In the kit he lost $8,487.77.',
+      'The hold reaches all 30 romance scam wires and transfers (12 of 12 journeys) and 0 of 70 honest members.',
       '2 family emergencies under 3x',
       'M1019 wired $6,000.00 at 2.56x and M1035 wired $6,000.00 at 2.59x their 12-month 90th-percentile payment, under the line, so Linda’s rule leaves them alone.',
       'James’s heads-up is not a hold: the teller decides, and a member who insists can still take the cash.',

@@ -2,7 +2,7 @@ import { Banknote, HeartCrack, Scale } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { money } from '../ui/format'
 import { Badge, Card, Eyebrow, Source } from '../ui/primitives'
-import { familyUnder, michael, scamCash } from './designCheck'
+import { familyUnder, followUpHolds, michael, scamCash } from './designCheck'
 
 function Miss({ icon, title, children }: { icon: ReactNode; title: string; children: ReactNode }) {
   return (
@@ -18,9 +18,9 @@ function Miss({ icon, title, children }: { icon: ReactNode; title: string; child
 
 /** Michael's scam payments in order: rose for what was gone before the card, grey for his own call after it. */
 function MichaelBars() {
-  const { payments, card, hold } = michael()
+  const { payments, card, held } = michael()
   const tallest = Math.max(...payments.map((e) => e.amount))
-  const mark = (id: string) => (id === card.id ? 'card' : id === hold.id ? 'held' : '')
+  const mark = (id: string) => (id === card.id ? 'card' : held.some((e) => e.id === id) ? 'held' : '')
   return (
     <div className="mt-3 flex items-end gap-1.5" aria-label="Michael's scam payments over time">
       {payments.map((e) => (
@@ -41,6 +41,7 @@ function MichaelBars() {
 /** The scams Second Look catches late, misses under a threshold, or leaves to the member's choice. */
 export function StillMissed() {
   const m = michael()
+  const holds = followUpHolds()
   const family = familyUnder()
   const cash = scamCash()
   return (
@@ -51,12 +52,32 @@ export function StillMissed() {
       </div>
       <h3 className="mt-2 font-display text-2xl">Late, under the line, or the member’s call</h3>
       <ul className="mt-5 space-y-5 text-sm text-ink-2">
-        <Miss icon={<HeartCrack size={18} aria-hidden />} title="Michael (M1002), a romance scam, caught late">
+        <Miss
+          icon={<HeartCrack size={18} aria-hidden />}
+          title="Michael (M1002), a relationship investment scam, caught late"
+        >
           His first <span className="num">{money(m.gone)}</span> is gone before the card: it shows on his{' '}
-          {m.run}th growing payment (<span className="num">{money(m.card.amount)}</span>), and his first
-          wire (<span className="num">{money(m.hold.amount)}</span>) is held for a call. The card is
-          advice; he decides. In the kit he lost <span className="num">{money(m.lost)}</span>.{' '}
-          <Source ids={[m.card.id, m.hold.id]} />
+          {m.run}th growing payment (<span className="num">{money(m.card.amount)}</span>), and every
+          wire after it to his platform account is held for a call:{' '}
+          {m.held.map((e, i) => (
+            <span key={e.id}>
+              {i > 0 && (i === m.held.length - 1 ? ' and ' : ', ')}
+              <span className="num">{money(e.amount)}</span>
+            </span>
+          ))}
+          . The card is advice; he decides. In the kit he lost <span className="num">{money(m.lost)}</span>.{' '}
+          <Source ids={[m.card.id, ...m.held.map((e) => e.id)]} />
+          <span className="mt-2 block">
+            The hold reaches{' '}
+            <span className="num">
+              {holds.scamHeld === holds.scamMoves ? 'all' : `${holds.scamHeld} of`} {holds.scamMoves}
+            </span>{' '}
+            romance scam wires and transfers ({holds.journeysHeld} of {holds.journeys} journeys) and{' '}
+            <span className="num">
+              {holds.honestHeld} of {holds.honest}
+            </span>{' '}
+            honest members.
+          </span>
           <MichaelBars />
         </Miss>
         {family.wires.length > 0 && (

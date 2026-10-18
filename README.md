@@ -27,7 +27,7 @@ One product, two modes. Rules decide; people release.
 |---|---|---|
 | **Sarah (M1003)** | A member who got a fake "Sound" text | She typed her password and code into a fake site. In **35 minutes** (10:02 to 10:37 PM) the scammer reset her password, changed her email and phone, added a recipient and sent **$3,006.33** in two P2P payments. She reported it 57 hours after the first payment. Nothing was recovered. |
 | **Linda (M1001)** | A retired teacher | A fake grandson and a fake lawyer told her to keep it secret. She went to a branch to wire **$8,500**, her first wire in **6.6 years**, to an account added 7 minutes earlier. Sound held it, offered a trusted contact and called her. She insisted, and it was released. **She lost $8,500.** |
-| **Michael (M1002)** | A member in an online romance | Payments to someone he added on Sep 8 grew for 13 days ($87.95, $132.93, $220.12, $306.77), then turned into wires of $1,500, $2,400 and $3,840 to a second new payee. He confirmed 4 warnings and reported it when the platform blocked withdrawals. **He lost $8,487.77.** |
+| **Michael (M1002)** | A member in a relationship investment scam, met online | Payments to someone he added on Sep 8 grew for 13 days ($87.95, $132.93, $220.12, $306.77), then turned into wires of $1,500, $2,400 and $3,840 to a second new payee. He confirmed 4 warnings and reported it when the platform blocked withdrawals. **He lost $8,487.77.** |
 | **James (M1004)** | A member told his identity was tied to a federal case | On Oct 14 at 2:04 PM he called the contact center about the daily cash limit and how fast a wire arrives. The next day at 4:17 PM he asked a teller for **$7,000** in cash, 4.71x his 12-month 90th-percentile payment. The teller asked, he asked for help, added a trusted contact and cancelled. **He lost $0.** |
 | **M1039** (honest look-alike for Sarah) | A real member who moved | Reset a forgotten password, updated their address after the move, and the next day paid **$4,151.68** in rent to a new landlord. Only the address changed, so Second Look asks for **one tap** and releases the rent when they tap. |
 | **M1057** (honest look-alike for Linda) | A real member buying a home | A **$51,586.52** home-closing wire to a recipient added 2 days earlier. **Second Look adds no hold** to it; **Sound's existing wire review is unchanged.** |
@@ -105,26 +105,29 @@ In the kit's 12 family emergencies, 4 with no hold or question lost $28,500, 4 w
 ### The honest look-alike
 **M1057:** **Second Look adds no hold** to M1057's $51,586.52 closing (payee added 2 days earlier); **Sound's existing wire review is unchanged.**
 
-### Michael: a pattern card, late
+### One case, every department (Michael and James)
+Each part of Sound sees one piece today: the app sees Michael's growing payments and online banking his wires; the contact center sees James's call and the teller his cash. For both, Second Look keeps **one member case open across days and channels** and hands the fact to the person who can act. **Scammers work across days and departments. So does Second Look.**
+
+### Michael: a pattern card, late, then a call on every wire
 - **The card:** the 4th or later payment in a row, each bigger than the last, to one payee added less than 60 days earlier (`recipient_age_days` under 60; a blank age never counts). Send still works; he decides. Someone paying their own account taps "This is my own account" once and isn't asked about that payee again.
-- **The follow-up hold:** within 30 days after a card, a wire or external transfer to a different payee added less than 30 days earlier is held up to 4 hours for a call from Sound. After the call, he decides.
-- **In the kit:** the card shows for romance **12 of 12**, look-alikes 3 of 20 (M1064, M1090 and M1101, funding their own new brokerage accounts) and no one else. The hold reaches romance 12 of 12 and 0 of 70 honest members.
+- **The follow-up hold:** within 30 days after a card, every wire or external transfer to a different payee added less than 30 days earlier is held up to 4 hours for a call from Sound, and never past 8 PM, when calls end. While that case is open, each wire to the account gets a call, not just the first. After each call, he decides.
+- **In the kit:** the card shows for romance **12 of 12**, look-alikes 3 of 20 (M1064, M1090 and M1101, funding their own new brokerage accounts) and no one else. The hold reaches **all 30** romance scam wires and external transfers (12 of 12 journeys), including all 3 of Michael's ($1,500, $2,400 and $3,840: $7,740), and 0 of 70 honest members.
 
-1. **Each payment bigger than the last.** Before his 4th payment ($306.77, Sep 21 at 10:28 AM) the app shows: "This would be your 4th payment in 13 days to someone you added on Sep 8, each bigger than the last: $87.95, $132.93, $220.12, $306.77." Then a silent check: never met in person, an investment or crypto, keep it from family, an emergency or a fee, none of these, or my own account. A romance scam is named only when 2 or more of his taps fit it. His taps stay on his phone unless he shares them.
-2. **His first wire ever, held for a call.** 5 days later he wires $1,500 to an account added 17 minutes earlier. It is held until 11:25 PM for a call from Sound, with a script for romance scams. After the call, he decides.
-3. **One tap when he knows.** In the kit he reported it to the contact center on Oct 10 at 5:16 PM. "I think I've been scammed" opens a case staff see at once.
+1. **Each payment bigger than the last.** Before his 4th payment ($306.77, Sep 21 at 10:28 AM) the app shows: "This would be your 4th payment in 13 days to someone you added on Sep 8, each bigger than the last: $87.95, $132.93, $220.12, $306.77." Then a silent check: never met in person, an investment or crypto, keep it from family, an emergency or a fee, none of these, or my own account. A relationship investment scam is named only when 2 or more of his taps fit it. His taps stay on his phone unless he shares them. Then **one check he can do himself**: "Try taking $100 out of the platform. Real platforms let you. If you can't, or they ask for a fee or tax first, stop and call us." He can send, or tap **Not now**, which sends nothing; later steps show the $306.77 as not sent.
+2. **His first wire ever, held for a call.** 5 days later he wires $1,500 to an account added 17 minutes earlier. It is held until 8:00 PM, when calls end; if Sound can't reach him by then, it isn't sent and the money stays in his account. Before the call he is asked "Did the withdrawal test work?": "Yes, I took money out", "No, or they asked for a fee first" or "I haven't tried". No answer clears the hold, since a fake platform can let a little out early, and staff see his answer only if he shares it. The call script opens with "Have you been able to withdraw from the platform?" He can wait for the call or cancel the wire.
+3. **The case stays open: every wire gets a call.** Staff see one case from the card: the card, each wire to the same account held for a call ($1,500, $2,400 and $3,840), then Oct 10 at 5:16 PM, when the platform blocks withdrawals and he reports it to the contact center. His choices carry forward: "Not now" and a cancelled wire show as not sent. In the kit, $7,740 of his $8,487.77 moved after the turn to wires. The case says: "First $441 gone before the card. He decides at every step." "I think I've been scammed" is on every screen, and its last line names the scam's final squeeze: anyone who asks for a fee to get your money back is a scammer.
 
-**Caught late:** his first $441.00 is gone before the card. The card comes before $8,046.77 of his $8,487.77 moves; it is advice, not money saved.
+**Caught late:** his first $441.00 is gone before the card. The card comes before $8,046.77 of his $8,487.77 moves, and every wire after it gets a call; it is advice, not money saved.
 
 ### James: a heads-up for the teller
 - **The rule:** a cash or wire payment that starts within 72 hours of a call to the contact center. It reads that a call happened (the event type and time), never what was said. Nothing is held.
 - **In the kit:** government impersonation **12 of 12**; takeover, family emergency and romance 0 of 12, look-alikes 0 of 20, routine 0 of 50.
 
-1. **A call the day before.** James calls the contact center about the daily cash limit and how fast a wire arrives. Sound already keeps this record.
-2. **A heads-up for the teller, no hold.** He asks for $7,000 in cash. The teller sees yesterday's call, the amount (4.71x his 12-month 90th-percentile payment) and one question to ask the same way every time: "Has anyone told you to keep this secret or to stay on the phone?" The teller can ask it, offer the private tablet check, escalate to a specialist, or continue the withdrawal: James's decision. On the tablet he taps what is going on without saying it out loud, and everyone sees "Before you hand anyone cash, call the agency on a number you look up yourself."
-3. **He asks for help, and the cash stays.** A specialist joins, he chooses to add a trusted contact and cancels the withdrawal at 4:55 PM, as in the kit.
+1. **A call the day before.** James calls the contact center about the daily cash limit and how fast a wire arrives. Sound already keeps this record. Next to it, a **pilot concept**, labeled on screen: the agent's live-call screen shows the call's reason code and one question, "Is anyone asking you to move or withdraw money?", with **Asked: no concern**, **Asked: he hesitated** and **Transfer to a specialist**. No hold; the answer is logged on his case, and the teller sees it the next day. It uses the call's reason code, never the call itself.
+2. **A heads-up for the teller, no hold.** He asks for $7,000 in cash. The teller sees yesterday's call, the amount (4.71x his 12-month 90th-percentile payment) and asks about the coaching, not the story, the same way every time: "Has anyone told you what to say to us today?" Then: "...or to keep this secret, or to stay on the phone?" The teller can ask it, offer the private tablet check, escalate to a specialist, or **Continue: James's decision**. On the tablet he taps what is going on without saying it out loud, including "Someone told me what to say to the bank", and everyone sees "The government never asks you to move money to keep it safe. Call the agency on a number you look up yourself."
+3. **One case across departments.** Staff see yesterday's contact-center call linked to today's cash at the branch. A specialist joins, he chooses to add a trusted contact and cancels the withdrawal at 4:55 PM, as in the kit, and the cash stays. If the teller chose Continue, the case ends with the cash handed over instead.
 
-In the kit the teller asked James. The heads-up puts that question in front of every teller: it fires on all 7 government-impersonation cash requests, including the 5 that went out ($35,500).
+In the kit, one teller happened to ask James, and he lost $0. 5 other members in the same scam weren't asked, and $35,500 in cash left the branch. The heads-up makes the question happen every time: it fires on all 7 government-impersonation cash requests.
 
 ---
 
@@ -158,6 +161,8 @@ In the kit the teller asked James. The heads-up puts that question in front of e
 | James's heads-up (teller, no hold) | 0/12 | 0/12 | **12/12** | 0/12 | 0/20 | 0/50 |
 | Michael's pattern card (late) | 0/12 | 0/12 | 0/12 | **12/12** | 3/20 | 0/50 |
 
+**Michael's follow-up hold**, which needs a card first, holds all 30 romance scam wires and external transfers for a call (12 of 12 journeys, every wire to Michael's platform account among them) and no payment of any honest member.
+
 **With these rules we act on 46 of 48 kit scam journeys and stop 0 of 70 honest members; 7 of 70 get one tap or a card.** The light check asks the 4 honest members who moved for one tap, and the pattern card shows to 3 look-alikes; 63 of 70 see nothing. The 2 journeys no rule reaches are the family emergencies under 3x, M1019 and M1035.
 
 The kit is about 41% scam victims by design (48 of 118 members), and real life is far lower. These numbers show how the design behaves. **They are not accuracy claims.** The rules read only the events file; the Member Key scores them.
@@ -180,7 +185,7 @@ Each decision has both behaviors built and tested, with matching words on every 
 
 ## Rules we follow
 
-- **Data:** only data Sound already keeps: the kit's fields. No new data source: no device data, no voice or call content (James's rule reads only that a contact center call happened), no texts, email, browser history or social media, and no fraud-consortium feeds.
+- **Data:** only data Sound already keeps: the kit's fields. No new data source: no device data, no voice or call content (James's rule reads only that a contact center call happened; the pilot concept at the call reads only its reason code), no texts, email, browser history or social media, and no fraud-consortium feeds.
 - **No age rules.** No rule reads age.
 - **The member decides** on their own payment. Sound **stops** only takeovers.
 - **Holds** last up to 4 hours, and an unanswered hold ends unsent, with the money still in the account. **P2P** pauses happen before send.
@@ -191,7 +196,7 @@ Each decision has both behaviors built and tested, with matching words on every 
 
 - **Whoever is signed in learns nothing.** The scammer's paused screen and M1039's in-app check carry no times, event IDs or signals. Render tests check both screens in both phone looks.
 - **Facts go only to a contact the attacker didn't set:** the number on file before the change, or a phone that never changed.
-- **Linda's answers stay on the tablet** unless she turns on "Share my answers with staff", which starts off for every case. Staff can't tell skipping from not sharing. Asking to talk privately is the one tap staff always see. Michael's taps stay on his phone the same way; marking a payee as his own account always shows, since it stops the card. James's taps stay on the tablet.
+- **Linda's answers stay on the tablet** unless she turns on "Share my answers with staff", which starts off for every case. Staff can't tell skipping from not sharing. Asking to talk privately is the one tap staff always see. Michael's taps and his withdrawal-test answer stay on his screen the same way; marking a payee as his own account always shows, since it stops the card. James's taps stay on the tablet.
 - **A shared session** holds only the demo's state (the step, the phone look, Linda's case, Michael's check and the report) under a short code. With Upstash Redis it expires after 12 hours; without it, it lives only in the server's memory.
 
 ## Accessibility (what is built)

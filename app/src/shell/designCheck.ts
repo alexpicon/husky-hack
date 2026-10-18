@@ -1,6 +1,6 @@
 import { isTellerHeadsUp } from '../data/jamesRules'
 import { eventsFor, keyFor, memberKeys, type KitEvent, type MemberKey } from '../data/kit'
-import { growingRun, isFollowUpTransfer, isGrowingPattern } from '../data/michaelRules'
+import { FOLLOW_UP_RAILS, growingRun, isFollowUpTransfer, isGrowingPattern } from '../data/michaelRules'
 import { POLICY } from '../data/policy'
 import { takeoverTier } from '../data/takeoverRules'
 import { TRICKED_RULES, trickedRule } from '../data/trickedRules'
@@ -15,6 +15,7 @@ type Trigger = (e: KitEvent) => boolean
 const TAKEOVER = 'Sound Impersonation + ATO'
 export const FAMILY = 'Family Emergency'
 const GOVERNMENT = 'Tech Support / Government Impersonation'
+const ROMANCE = 'Romance / Investment'
 export const HOME_BUYER = 'M1057'
 const MICHAEL = 'M1002'
 
@@ -120,7 +121,7 @@ export function closingWire(policy: RulePolicy = POLICY) {
   return { wire, review, secondLookHolds: all.some(rulesFor(policy).any) }
 }
 
-/** Michael's romance scam: what he lost, the pattern card, what was gone before it, and the held wire. */
+/** Michael's scam: what he lost, the pattern card, what was gone before it, and every wire held for a call. */
 export function michael() {
   const key = keyFor(MICHAEL)
   const card = firstHit(MICHAEL, isGrowingPattern)
@@ -134,8 +135,29 @@ export function michael() {
     card,
     run: growingRun(card).length,
     hold,
+    held: payments.filter(isFollowUpTransfer),
     before,
     gone: Math.round(sum(before.map((e) => e.amount)) * 100) / 100,
+  }
+}
+
+/**
+ * The follow-up hold across the kit: the romance scam wires and external transfers it holds for a
+ * call, the romance journeys it reaches, and the honest members it holds.
+ */
+export function followUpHolds() {
+  const moves = (k: MemberKey) =>
+    eventsFor(k.member).filter((e) => e.type === 'Payment Initiated' && FOLLOW_UP_RAILS.includes(e.rail))
+  const romance = memberKeys.filter((k) => k.scenario === ROMANCE)
+  const scamMoves = romance.flatMap((k) => moves(k).filter(isScamPayment(k)))
+  const honest = memberKeys.filter(isHonest)
+  return {
+    scamMoves: scamMoves.length,
+    scamHeld: scamMoves.filter(isFollowUpTransfer).length,
+    journeys: romance.length,
+    journeysHeld: romance.filter((k) => fires(k, isFollowUpTransfer)).length,
+    honest: honest.length,
+    honestHeld: honest.filter((k) => fires(k, isFollowUpTransfer)).length,
   }
 }
 
