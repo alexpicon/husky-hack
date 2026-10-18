@@ -86,7 +86,13 @@ export default function App() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement) return
+      const t = e.target
+      const typing =
+        t instanceof HTMLInputElement ||
+        t instanceof HTMLTextAreaElement ||
+        t instanceof HTMLSelectElement ||
+        (t instanceof HTMLElement && t.isContentEditable)
+      if (typing) return
       if (e.key === 'ArrowRight') api.next()
       if (e.key === 'ArrowLeft') api.prev()
       const n = Number(e.key)
