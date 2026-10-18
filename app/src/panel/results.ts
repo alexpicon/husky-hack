@@ -27,15 +27,39 @@ export const isPanelResult = (value: unknown): value is string =>
 /** One tap is never enough to name a scam, as in every story's silent check. */
 export const MIN_FITTING_TAPS = 2
 
+/** A tap on the panel list: `group.tap`, under its scam. */
+export type GroupTap = { id: string; group: PanelGroup }
+
 /**
- * The wall's result for the scam group of each tap she confirmed. A group names its scam
- * with 2 or more taps and more than any other group; a tie names none.
+ * Taps that fit more than one story, so they never break a tie: more than one check asks about
+ * secrecy and coaching, and an officer or detective turns up in the government story too.
  */
-export function resultFor(groups: readonly PanelGroup[]): string {
-  const counts = PANEL_GROUPS.map((g) => ({ g, n: groups.filter((x) => x === g).length }))
-  const top = Math.max(...counts.map((c) => c.n))
-  const leaders = counts.filter((c) => c.n === top)
-  return top >= MIN_FITTING_TAPS && leaders.length === 1 ? GROUP_RESULTS[leaders[0].g] : NO_PATTERN
+export const COMMON_TAPS: readonly string[] = ['secret', 'coached', 'official']
+
+export const bareId = (id: string) => id.slice(id.indexOf('.') + 1)
+
+/**
+ * The scams her taps fit best: the most taps, then, among those tied, the most taps no other
+ * story shares. A tie with the grandparent story goes to it, since the phone asks what the
+ * grandson said. More than one group back means a tie that names none.
+ */
+export function leadingGroups(taps: readonly GroupTap[]): PanelGroup[] {
+  const scored = PANEL_GROUPS.map((group) => {
+    const mine = taps.filter((t) => t.group === group)
+    return { group, n: mine.length, own: mine.filter((t) => !COMMON_TAPS.includes(bareId(t.id))).length }
+  })
+  const top = Math.max(...scored.map((s) => s.n))
+  const tied = scored.filter((s) => s.n === top)
+  const best = Math.max(...tied.map((s) => s.own))
+  const leaders = tied.filter((s) => s.own === best).map((s) => s.group)
+  return leaders.includes('grandparent') ? ['grandparent'] : leaders
+}
+
+/** The wall's result for the taps she confirmed: one leading group with 2 or more taps names its scam. */
+export function resultFor(taps: readonly GroupTap[]): string {
+  const [lead, ...tied] = leadingGroups(taps)
+  const n = taps.filter((t) => t.group === lead).length
+  return n >= MIN_FITTING_TAPS && tied.length === 0 ? GROUP_RESULTS[lead] : NO_PATTERN
 }
 
 export const QUOTE_MAX = 40

@@ -2,15 +2,18 @@ import { describe, expect, it } from 'vitest'
 import { MIN_FITTING_TAPS as JAMES_MIN } from '../screens/james/copy'
 import { MIN_FITTING_TAPS as LINDA_MIN } from '../screens/linda/scams'
 import {
+  bareId,
   clipQuote,
   GROUP_RESULTS,
   isPanelResult,
+  leadingGroups,
   MIN_FITTING_TAPS,
   NO_PATTERN,
   PANEL_RESULTS,
   QUOTE_MAX,
   resultFor,
   WALL_CODE,
+  type PanelGroup,
 } from './results'
 
 describe('the result allowlist', () => {
@@ -36,6 +39,8 @@ describe('the result allowlist', () => {
 })
 
 describe('naming a scam from her confirmed taps', () => {
+  const taps = (...ids: string[]) => ids.map((id) => ({ id, group: id.split('.')[0] as PanelGroup }))
+
   it('uses the same 2-tap rule as the stories', () => {
     expect(MIN_FITTING_TAPS).toBe(LINDA_MIN)
     expect(MIN_FITTING_TAPS).toBe(JAMES_MIN)
@@ -43,24 +48,46 @@ describe('naming a scam from her confirmed taps', () => {
 
   it('names nothing with no taps or one tap', () => {
     expect(resultFor([])).toBe(NO_PATTERN)
-    expect(resultFor(['grandparent'])).toBe(NO_PATTERN)
-    expect(resultFor(['grandparent', 'government', 'romance'])).toBe(NO_PATTERN)
+    expect(resultFor(taps('grandparent.family'))).toBe(NO_PATTERN)
+    expect(resultFor(taps('grandparent.family', 'government.waiting', 'romance.investment'))).toBe(NO_PATTERN)
+    expect(resultFor(taps('grandparent.secret', 'government.secret', 'romance.secret'))).toBe(NO_PATTERN)
   })
 
   it('names the group with 2 or more taps', () => {
-    expect(resultFor(['grandparent', 'grandparent'])).toBe(GROUP_RESULTS.grandparent)
-    expect(resultFor(['government', 'government', 'grandparent'])).toBe(GROUP_RESULTS.government)
-    expect(resultFor(['romance', 'romance', 'romance'])).toBe(GROUP_RESULTS.romance)
+    expect(resultFor(taps('grandparent.family', 'grandparent.bail'))).toBe(GROUP_RESULTS.grandparent)
+    expect(resultFor(taps('government.investigation', 'government.waiting', 'grandparent.bail'))).toBe(
+      GROUP_RESULTS.government,
+    )
+    expect(resultFor(taps('romance.never-met', 'romance.investment', 'romance.emergency'))).toBe(GROUP_RESULTS.romance)
   })
 
   it('names the group with the most taps when two pass', () => {
-    expect(resultFor(['romance', 'romance', 'grandparent', 'grandparent', 'grandparent'])).toBe(
-      GROUP_RESULTS.grandparent,
-    )
+    const romance = taps('romance.investment', 'romance.secret')
+    const grandparent = taps('grandparent.family', 'grandparent.bail', 'grandparent.secret')
+    expect(resultFor([...romance, ...grandparent])).toBe(GROUP_RESULTS.grandparent)
   })
 
-  it('names none when two groups tie', () => {
-    expect(resultFor(['government', 'government', 'grandparent', 'grandparent'])).toBe(NO_PATTERN)
+  it('breaks a tie on the taps no other story shares', () => {
+    const officer = taps('grandparent.official', 'grandparent.secret', 'government.investigation', 'government.secret')
+    expect(resultFor(officer)).toBe(GROUP_RESULTS.government)
+    const coached = taps('grandparent.coached', 'grandparent.secret', 'government.coached', 'government.waiting')
+    expect(resultFor(coached)).toBe(GROUP_RESULTS.government)
+    expect(leadingGroups(officer)).toEqual(['government'])
+  })
+
+  it('gives a tie that stays to the grandparent story, which the phone asks about', () => {
+    const arrested = taps('grandparent.family', 'grandparent.secret', 'government.investigation', 'government.secret')
+    expect(resultFor(arrested)).toBe(GROUP_RESULTS.grandparent)
+  })
+
+  it('names none when the other two stories tie', () => {
+    const mixed = taps('government.investigation', 'government.secret', 'romance.investment', 'romance.secret')
+    expect(leadingGroups(mixed)).toEqual(['government', 'romance'])
+    expect(resultFor(mixed)).toBe(NO_PATTERN)
+  })
+
+  it('reads a tap by its own id, after its scam', () => {
+    expect(bareId('romance.never-met')).toBe('never-met')
   })
 })
 

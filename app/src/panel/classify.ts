@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { skipperMode, suggestTaps, type SkipperMode } from '../skipper/client'
 import { SKIPPER_LISTS } from '../skipper/lists'
-import type { PanelGroup } from './results'
+import { bareId, leadingGroups, type PanelGroup } from './results'
 
 /** One warning tap a judge can confirm, from the story whose scam it belongs to. */
 export type PanelTap = { id: string; label: string; group: PanelGroup }
@@ -30,6 +30,20 @@ export function useSkipperMode(): Source {
   return mode
 }
 
+/**
+ * One suggestion per warning sign: a tap more than one scam has stays only under the scam her
+ * words fit best, or under each scam tied for the lead, so one "don't tell" is one card, never three.
+ * The wall's result comes out the same as with every copy.
+ */
+export function oneCopyEach(heard: Heard['taps']): Heard['taps'] {
+  const leaders = leadingGroups(heard.map((h) => h.tap))
+  return heard.filter((h) => {
+    const copies = heard.filter((x) => bareId(x.tap.id) === bareId(h.tap.id))
+    const led = copies.filter((x) => leaders.includes(x.tap.group))
+    return led.length ? led.includes(h) : copies[0] === h
+  })
+}
+
 /** Skipper's suggestions for her words in the mode her privacy line showed. Unknown taps are dropped. */
 export async function hearPanel(text: string, mode: Source): Promise<Heard> {
   const { taps, source } = await suggestTaps('panel', text, mode)
@@ -37,5 +51,5 @@ export async function hearPanel(text: string, mode: Source): Promise<Heard> {
     const tap = PANEL_TAPS.find((t) => t.id === id)
     return tap ? [{ tap, quote }] : []
   })
-  return { taps: heard, source }
+  return { taps: oneCopyEach(heard), source }
 }

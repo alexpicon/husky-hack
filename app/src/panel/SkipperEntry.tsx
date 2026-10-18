@@ -46,7 +46,7 @@ export function SkipperEntry({ code, mode, judge, after, onPosted }: Props) {
 
   const finish = (taps: PanelTap[]) => {
     const mine = ++ticket.current
-    const result = resultFor(taps.map((t) => t.group))
+    const result = resultFor(taps)
     setPhase({ at: 'done', taps, result, post: code ? 'sending' : { ok: false, reason: 'offline' } })
     void send(mine, result)
   }
