@@ -10,7 +10,7 @@ type PhoneProps = {
   children: ReactNode
 }
 
-/** A 390 x 780 phone; screens fill it and scroll inside. */
+/** Screens get a 340 x 652 area under the status bar and scroll inside it. */
 export function Phone({ time, caption, dark = false, statusBar, children }: PhoneProps) {
   const bar = statusBar === 'navy' ? 'bg-[#0b1f5c] text-white' : dark ? 'text-white' : 'text-ink'
   return (
@@ -38,7 +38,6 @@ export function Phone({ time, caption, dark = false, statusBar, children }: Phon
   )
 }
 
-/** Branch tablet, landscape. */
 export function Tablet({ caption, children }: { caption?: string; children: ReactNode }) {
   return (
     <figure className="flex flex-col items-center gap-3">
@@ -52,7 +51,6 @@ export function Tablet({ caption, children }: { caption?: string; children: Reac
   )
 }
 
-/** Sound staff console window. */
 export function StaffWindow({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div className="overflow-hidden rounded-3xl bg-white shadow-device ring-1 ring-line">

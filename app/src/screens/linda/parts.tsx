@@ -28,7 +28,6 @@ export function Stage({ children, note }: { children: ReactNode; note?: ReactNod
   )
 }
 
-/** Small header strip for the branch tablet. */
 export function TabletHeader({ right }: { right: ReactNode }) {
   return (
     <div className="flex items-center justify-between">
