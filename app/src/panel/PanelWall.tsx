@@ -18,7 +18,8 @@ function WallQr({ text }: { text: string }) {
   return <div className="size-[260px] [&>svg]:size-full" role="img" aria-label="QR code for the phone page" dangerouslySetInnerHTML={{ __html: svg }} />
 }
 
-function Row({ entry }: { entry: PanelEntry }) {
+/** One judge's line: who, their words cut to 40 characters, and the result. */
+export function WallRow({ entry }: { entry: PanelEntry }) {
   const named = entry.result !== NO_PATTERN
   return (
     <motion.li
@@ -70,7 +71,7 @@ export function PanelWall({ code }: { code: string }) {
         ) : (
           <ol className="flex max-h-[78vh] flex-col gap-2.5 overflow-y-auto pr-1" aria-live="polite">
             {entries.map((e) => (
-              <Row key={e.n} entry={e} />
+              <WallRow key={e.n} entry={e} />
             ))}
             <li ref={end} aria-hidden />
           </ol>
