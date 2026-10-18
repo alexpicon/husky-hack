@@ -28,7 +28,7 @@ const SERVER_ENV = ['ANTHROPIC_API_KEY', 'SKIPPER_AI', 'SKIPPER_MODEL', 'KV_REST
 
 export default defineConfig(({ mode }) => {
   // Tests never see a real key or store. The shell wins over app/.env.local.
-  const file = mode === 'test' ? {} : loadEnv(mode, fileURLToPath(new URL('.', import.meta.url)), SERVER_ENV)
+  const file: Record<string, string> = mode === 'test' ? {} : loadEnv(mode, fileURLToPath(new URL('.', import.meta.url)), SERVER_ENV)
   for (const name of SERVER_ENV) if (file[name] && !process.env[name]) process.env[name] = file[name]
   return {
     base: './',
