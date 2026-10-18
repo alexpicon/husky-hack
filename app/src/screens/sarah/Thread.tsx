@@ -75,7 +75,8 @@ export function ScrollToLatest({ after = 400 }: { after?: number }) {
     const id = window.setTimeout(() => {
       let el = ref.current?.parentElement ?? null
       while (el && getComputedStyle(el).overflowY !== 'auto') el = el.parentElement
-      el?.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
+      const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      el?.scrollTo({ top: el.scrollHeight, behavior: still ? 'auto' : 'smooth' })
     }, after)
     return () => window.clearTimeout(id)
   }, [after])

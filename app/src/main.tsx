@@ -1,3 +1,4 @@
+import { MotionConfig } from 'motion/react'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
@@ -7,10 +8,12 @@ import { LookProvider } from './ui/look'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <LookProvider>
-      <LindaCaseProvider>
-        <App />
-      </LindaCaseProvider>
-    </LookProvider>
+    <MotionConfig reducedMotion="user">
+      <LookProvider>
+        <LindaCaseProvider>
+          <App />
+        </LindaCaseProvider>
+      </LookProvider>
+    </MotionConfig>
   </StrictMode>,
 )

@@ -50,7 +50,7 @@ export function StatusPill({ tone, live, children }: { tone: Tone; live?: boolea
     >
       <span className="relative flex size-2">
         {live && (
-          <span className={`absolute inline-flex size-full animate-ping rounded-full opacity-60 ${toneDot[tone]}`} />
+          <span className={`absolute inline-flex size-full rounded-full motion-safe:animate-ping opacity-60 ${toneDot[tone]}`} />
         )}
         <span className={`relative inline-flex size-2 rounded-full ${toneDot[tone]}`} />
       </span>
