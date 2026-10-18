@@ -1,13 +1,14 @@
 import { AudioLines, Lock } from 'lucide-react'
 import { SoundMark } from '../ui/brand'
 import { Badge } from '../ui/primitives'
-import { SKIPPER_MODE } from './classify'
+import { useSkipperMode } from './classify'
 import { CONCEPT, PHONE_ASK, PHONE_TITLE, PRIVACY, PRIVATE_PAGE } from './copy'
 import { SkipperEntry } from './SkipperEntry'
 import { panelLink } from './wallClient'
 
 /** A judge's own phone: one column, no presenter controls, nothing shared but the result. */
 export function PanelPhone({ code }: { code: string | null }) {
+  const mode = useSkipperMode()
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-5 px-4 pt-5 pb-10">
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -32,6 +33,7 @@ export function PanelPhone({ code }: { code: string | null }) {
 
       <SkipperEntry
         code={code}
+        mode={mode}
         after={
           <a
             href={panelLink('drill')}
@@ -45,7 +47,7 @@ export function PanelPhone({ code }: { code: string | null }) {
       <div className="mt-auto flex gap-2 rounded-2xl bg-white/70 px-3.5 py-3 text-xs leading-snug text-ink-3 ring-1 ring-line">
         <Lock size={14} className="mt-0.5 shrink-0" aria-hidden />
         <p>
-          {PRIVACY[SKIPPER_MODE]} {PRIVATE_PAGE}
+          {PRIVACY[mode]} {PRIVATE_PAGE}
         </p>
       </div>
     </main>

@@ -2,6 +2,7 @@ import { motion } from 'motion/react'
 import { ArrowRight, Plus } from 'lucide-react'
 import { useEffect, useMemo, useRef } from 'react'
 import { renderSVG } from 'uqr'
+import { useSkipperMode } from './classify'
 import { judgeName, PHONE_ASK, PHONE_TITLE } from './copy'
 import { NO_PATTERN, type PanelEntry } from './results'
 import { SkipperEntry } from './SkipperEntry'
@@ -43,6 +44,7 @@ export function WallRow({ entry }: { entry: PanelEntry }) {
 /** The laptop's live list of every judge's result, with the QR that brings more judges in. */
 export function PanelWall({ code }: { code: string }) {
   const { entries, status, refresh } = useWallEntries(code)
+  const mode = useSkipperMode()
   const phone = panelLink('panel', code)
   const end = useRef<HTMLLIElement>(null)
   const latest = entries.at(-1)?.n
@@ -94,7 +96,7 @@ export function PanelWall({ code }: { code: string }) {
             <Plus size={14} aria-hidden /> Add one yourself
           </summary>
           <div className="mt-3">
-            <SkipperEntry code={code} judge="Presenter" onPosted={() => void refresh()} />
+            <SkipperEntry code={code} mode={mode} judge="Presenter" onPosted={() => void refresh()} />
           </div>
         </details>
       </aside>

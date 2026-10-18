@@ -1,13 +1,17 @@
 /** How the panel hears a judge: Skipper's panel list, and the wall result her words lead to. */
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { JAMES_TAPS } from '../screens/james/copy'
 import { TAP_OPTIONS } from '../screens/linda/taps'
 import { ROMANCE_OPTIONS } from '../screens/michael/check'
-import { hearPanel, PANEL_TAPS, SKIPPER_MODE } from './classify'
+import { hearPanel, PANEL_TAPS } from './classify'
 import { GROUP_RESULTS, NO_PATTERN, PANEL_GROUPS, resultFor } from './results'
 
+afterEach(() => {
+  vi.unstubAllGlobals()
+})
+
 const resultOf = async (text: string) => {
-  const heard = await hearPanel(text)
+  const heard = await hearPanel(text, 'keywords')
   for (const { quote } of heard.taps) expect(text.toLowerCase()).toContain(quote.toLowerCase())
   return resultFor(heard.taps.map((t) => t.tap.group))
 }
@@ -41,24 +45,31 @@ describe("a judge's words", () => {
     expect(await resultOf('')).toBe(NO_PATTERN)
   })
 
-  it('stay on this phone while Skipper matches words to the list', async () => {
-    expect(SKIPPER_MODE).toBe('keywords')
-    expect((await hearPanel('my son needs bail')).source).toBe('keywords')
+  it('stay on this phone while the page says Skipper matches words to the list', async () => {
+    const fetch = vi.fn(async () => new Response('{}'))
+    vi.stubGlobal('fetch', fetch)
+    expect((await hearPanel('my son needs bail', 'keywords')).source).toBe('keywords')
+    expect(fetch).not.toHaveBeenCalled()
   })
 })
 
 describe('what Skipper may suggest', () => {
   it('drops a tap that is not on the panel list', async () => {
     vi.resetModules()
-    vi.doMock('../skipper/keyword', () => ({
-      matchKeywords: () => [
-        { id: 'grandparent.none', quote: 'none' },
-        { id: 'grandparent.bail', quote: 'bail' },
-      ],
+    vi.doMock('../skipper/client', () => ({
+      skipperMode: async () => 'ai',
+      suggestTaps: async () => ({
+        taps: [
+          { id: 'grandparent.none', quote: 'none' },
+          { id: 'grandparent.bail', quote: 'bail' },
+        ],
+        source: 'ai',
+      }),
     }))
     const fresh = await import('./classify')
-    const heard = await fresh.hearPanel('none, bail')
-    expect(heard.taps.map((t) => t.tap.id)).toEqual(['grandparent.bail'])
-    vi.doUnmock('../skipper/keyword')
+    const heard = await fresh.hearPanel('none, bail', 'ai')
+    expect(heard).toMatchObject({ source: 'ai', taps: [{ tap: { id: 'grandparent.bail' }, quote: 'bail' }] })
+    expect(heard.taps).toHaveLength(1)
+    vi.doUnmock('../skipper/client')
   })
 })

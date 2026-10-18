@@ -3,7 +3,7 @@ import { MessageCircle, RotateCcw } from 'lucide-react'
 import { useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
 import { MAX_TEXT } from '../skipper/verify'
 import { Button, Eyebrow } from '../ui/primitives'
-import { hearPanel, PANEL_TAPS, SKIPPER_MODE, type Heard, type PanelTap } from './classify'
+import { hearPanel, PANEL_TAPS, type Heard, type PanelTap, type Source } from './classify'
 import { HEARD, HOW, NO_MATCH, NOT_QUITE, postLine, READING, SOURCE_LINE, TYPE_HINT } from './copy'
 import { clipQuote, resultFor } from './results'
 import { TapPicker } from './TapPicker'
@@ -19,6 +19,8 @@ type Phase =
 type Props = {
   /** The wall to post to; without one, the result stays on this page. */
   code: string | null
+  /** How Skipper hears, as the page's privacy line says. */
+  mode: Source
   judge?: string
   /** Shown under the result, such as the way to the drill. */
   after?: ReactNode
@@ -29,7 +31,7 @@ type Props = {
 const keepKeys = (e: KeyboardEvent) => e.stopPropagation()
 
 /** Her own private Skipper: she types, Skipper suggests taps, she confirms, and code names the result. */
-export function SkipperEntry({ code, judge, after, onPosted }: Props) {
+export function SkipperEntry({ code, mode, judge, after, onPosted }: Props) {
   const [text, setText] = useState('')
   const [phase, setPhase] = useState<Phase>({ at: 'write' })
   const ticket = useRef(0)
@@ -52,7 +54,7 @@ export function SkipperEntry({ code, judge, after, onPosted }: Props) {
   const ask = async () => {
     const mine = ++ticket.current
     setPhase({ at: 'asking' })
-    const heard = await hearPanel(text).catch((): Heard => ({ taps: [], source: SKIPPER_MODE }))
+    const heard = await hearPanel(text, mode).catch((): Heard => ({ taps: [], source: mode }))
     if (ticket.current !== mine) return
     setPhase(heard.taps.length ? { at: 'heard', heard } : { at: 'pick', chosen: [], heard: [], note: NO_MATCH })
   }

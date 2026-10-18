@@ -1,5 +1,6 @@
-import { matchKeywords } from '../skipper/keyword'
-import { SKIPPER_LISTS, type SkipperScreen } from '../skipper/lists'
+import { useEffect, useState } from 'react'
+import { skipperMode, suggestTaps, type SkipperMode } from '../skipper/client'
+import { SKIPPER_LISTS } from '../skipper/lists'
 import type { PanelGroup } from './results'
 
 /** One warning tap a judge can confirm, from the story whose scam it belongs to. */
@@ -10,22 +11,28 @@ export const PANEL_TAPS: PanelTap[] = SKIPPER_LISTS.panel.flatMap((t) =>
   t.group ? [{ id: t.id, label: t.label, group: t.group }] : [],
 )
 
-export type Source = 'ai' | 'keywords'
+export type Source = SkipperMode
 export type Heard = { taps: { tap: PanelTap; quote: string }[]; source: Source }
-type Suggest = (
-  screen: SkipperScreen,
-  text: string,
-) => Promise<{ taps: { id: string; quote: string }[]; source: Source }>
 
-/** Skipper's keyword baseline, which never sends her words anywhere. */
-const suggest: Suggest = async (screen, text) => ({ taps: matchKeywords(screen, text), source: 'keywords' })
+/**
+ * How Skipper hears on this page, asked of the server once. Keywords until it answers, so the
+ * privacy line on screen is always the one that applies to what she sends.
+ */
+export function useSkipperMode(): Source {
+  const [mode, setMode] = useState<Source>('keywords')
+  useEffect(() => {
+    let live = true
+    void skipperMode().then((m) => live && setMode(m))
+    return () => {
+      live = false
+    }
+  }, [])
+  return mode
+}
 
-/** How Skipper hears this page, so the privacy line is true before she types. */
-export const SKIPPER_MODE: Source = 'keywords'
-
-/** Skipper's suggestions for her words, each with her quoted words. Unknown taps are dropped. */
-export async function hearPanel(text: string): Promise<Heard> {
-  const { taps, source } = await suggest('panel', text)
+/** Skipper's suggestions for her words in the mode her privacy line showed. Unknown taps are dropped. */
+export async function hearPanel(text: string, mode: Source): Promise<Heard> {
+  const { taps, source } = await suggestTaps('panel', text, mode)
   const heard = taps.flatMap(({ id, quote }) => {
     const tap = PANEL_TAPS.find((t) => t.id === id)
     return tap ? [{ tap, quote }] : []

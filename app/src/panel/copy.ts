@@ -17,7 +17,7 @@ const REACHES_WALL = `Only the result and the first ${QUOTE_MAX} characters of w
 
 /** Says where her words go, for the way Skipper hears on this page. */
 export const PRIVACY: Record<Source, string> = {
-  keywords: `Skipper matches your words to our list of warning signs. ${REACHES_WALL}`,
+  keywords: `Skipper matches your words to our list of warning signs, on this phone. ${REACHES_WALL}`,
   ai: `Your typed words go to an AI provider to suggest taps. ${REACHES_WALL}`,
 }
 
