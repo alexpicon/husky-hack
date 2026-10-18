@@ -1,11 +1,19 @@
 import { Columns2, Smartphone, UserRound } from 'lucide-react'
 
-/** What this device shows: both panes, one of them at full size, or the phone remote. */
-export type View = 'both' | 'member' | 'staff' | 'remote'
+/**
+ * What this device shows: both panes, one of them at full size, or the phone remote.
+ * The panel pages stand alone: a judge's phone, the wall, and the voice drill.
+ */
+export type View = 'both' | 'member' | 'staff' | 'remote' | PanelView
+export type PanelView = 'panel' | 'wall' | 'drill'
+
+const VIEWS: readonly View[] = ['both', 'member', 'staff', 'remote', 'panel', 'wall', 'drill']
+
+export const isPanelView = (v: View): v is PanelView => v === 'panel' || v === 'wall' || v === 'drill'
 
 export function initialView(): View {
   const v = new URLSearchParams(window.location.search).get('view')
-  return v === 'member' || v === 'staff' || v === 'remote' ? v : 'both'
+  return VIEWS.find((x) => x === v) ?? 'both'
 }
 
 export function writeViewToUrl(view: View) {
@@ -15,7 +23,7 @@ export function writeViewToUrl(view: View) {
   window.history.replaceState(null, '', url)
 }
 
-const OPTIONS: { id: Exclude<View, 'remote'>; label: string; Icon: typeof Columns2 }[] = [
+const OPTIONS: { id: Exclude<View, 'remote' | PanelView>; label: string; Icon: typeof Columns2 }[] = [
   { id: 'both', label: 'Both', Icon: Columns2 },
   { id: 'member', label: 'Member', Icon: Smartphone },
   { id: 'staff', label: 'Staff', Icon: UserRound },

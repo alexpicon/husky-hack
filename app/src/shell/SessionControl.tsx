@@ -1,6 +1,7 @@
-import { Copy, Radio, RotateCcw, X } from 'lucide-react'
+import { Copy, MonitorPlay, Radio, RotateCcw, X } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { renderSVG } from 'uqr'
+import { panelLink } from '../panel/wallClient'
 import { useStory } from '../story/engine'
 import { joinSession, leaveSession, sessionLink, startSession, useSession, type SessionStatus } from './remote'
 import { useRun } from './run'
@@ -43,6 +44,21 @@ function CopyLink({ label, href }: { label: string; href: string }) {
   )
 }
 
+/** Opens the panel wall in a new tab; with a session, the wall reuses its code. */
+function PanelWallLink({ code, className }: { code?: string; className: string }) {
+  return (
+    <a
+      href={panelLink('wall', code)}
+      target="_blank"
+      rel="noreferrer"
+      title="Open the live panel wall that judges join from their phones"
+      className={`flex items-center gap-1.5 rounded-lg font-semibold ${className}`}
+    >
+      <MonitorPlay size={12} aria-hidden /> Panel wall
+    </a>
+  )
+}
+
 /** Clears every story's answers in every window and laptop of the session, and starts this story over. */
 function NewRun({ className }: { className: string }) {
   const { newRun } = useRun()
@@ -72,6 +88,7 @@ export function SessionControl() {
     return (
       <div className="flex items-center gap-1 rounded-xl bg-white p-1 text-xs ring-1 ring-line">
         <NewRun className="px-2 py-1.5 text-ink-3 hover:bg-slate-100 hover:text-ink-2" />
+        <PanelWallLink className="px-2 py-1.5 text-ink-3 hover:bg-slate-100 hover:text-ink-2" />
         <span className="h-4 w-px bg-line" aria-hidden />
         <button
           type="button"
@@ -134,6 +151,10 @@ export function SessionControl() {
             <CopyLink label="Remote (phone)" href={sessionLink('remote')} />
             <CopyLink label="Member screen" href={sessionLink('member')} />
             <CopyLink label="Staff screen" href={sessionLink('staff')} />
+            <PanelWallLink
+              code={id}
+              className="justify-center bg-slate-50 px-2.5 py-1.5 text-xs text-ink-2 ring-1 ring-line hover:bg-slate-100"
+            />
           </div>
           <NewRun className="mt-3 w-full justify-center bg-slate-50 px-2.5 py-1.5 text-xs text-ink-2 ring-1 ring-line hover:bg-slate-100" />
           <div className="mt-3 flex items-center justify-between text-[11px] text-ink-3">

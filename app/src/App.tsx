@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { PanelRoute } from './panel/PanelRoute'
 import { ReportProvider } from './report/ReportProvider'
 import { LINDA } from './screens/linda/facts'
 import { MEMBER as M1039 } from './screens/m1039/facts'
@@ -10,7 +11,7 @@ import { RemoteView } from './shell/RemoteView'
 import { SessionControl } from './shell/SessionControl'
 import { BothStage, MemberStage, StaffStage } from './shell/Stages'
 import { useWindowSync } from './shell/sync'
-import { initialView, ViewToggle, writeViewToUrl, type View } from './shell/view'
+import { initialView, isPanelView, ViewToggle, writeViewToUrl, type View } from './shell/view'
 import { StoryContext, type Scenario, type Zones } from './story/engine'
 import { james } from './story/james'
 import { linda } from './story/linda'
@@ -126,6 +127,7 @@ export default function App() {
       }
     />
   )
+  if (isPanelView(view)) return <PanelRoute view={view} />
   if (view === 'remote') {
     return (
       <StoryContext.Provider value={api}>
