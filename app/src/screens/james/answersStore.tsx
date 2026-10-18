@@ -1,7 +1,7 @@
-import { useEffect, useState, useSyncExternalStore } from 'react'
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { useRun } from '../../shell/run'
 import { useWindowSync } from '../../shell/sync'
-import { answerActions } from './answers'
+import { answerActions, outbound } from './answers'
 import {
   changeAnswers,
   claimSync,
@@ -15,7 +15,8 @@ import {
 
 function Sync() {
   const state = useSyncExternalStore(subscribeAnswers, readAnswers, readAnswers)
-  useWindowSync('james', state, receiveAnswers)
+  const shared = useMemo(() => outbound(state), [state])
+  useWindowSync('james', shared, receiveAnswers)
   return null
 }
 

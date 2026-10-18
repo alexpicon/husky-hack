@@ -1,13 +1,13 @@
-/** James's answers: one copy for every window, a fresh one each run, and step three follows the teller. */
+/** James's answers: one copy for every window but his taps, a fresh one each run, and step three follows the teller. */
 import type { ReactNode } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { events } from '../../data/kit'
 import { birth, change, newPeer, receive, type Peer } from '../../shell/handshake'
 import { james } from '../../story/james'
-import { answerActions, initialAnswers, type JamesAnswers } from './answers'
+import { answerActions, initialAnswers, outbound, type JamesAnswers, type TellerAction } from './answers'
 import { changeAnswers, readAnswers, receiveAnswers, startRun, writeAnswers } from './answersState'
-import { CALL_AGENCY, GOING_AHEAD, HANDED_OVER, JAMES_TAPS, SCAM_NAMED } from './copy'
+import { CALL_AGENCY, GOING_AHEAD, HANDED_OVER, JAMES_TAPS, SCAM_NAMED, type JamesTapId } from './copy'
 import { jamesFacts } from './facts'
 
 const look = vi.hoisted(() => ({ current: 'concept' as 'concept' | 'sound' }))
@@ -82,6 +82,23 @@ describe('the teller buttons', () => {
   })
 })
 
+describe('adding several taps at once', () => {
+  it('turns on each listed tap by the same rules, never turning one off', () => {
+    const add = (taps: JamesTapId[], ids: JamesTapId[]) => answerActions.addTaps({ ...initialAnswers, taps }, ids).taps
+    expect(add([], ['secret', 'investigation'])).toEqual(['investigation', 'secret'])
+    expect(add(['move'], ['move', 'coached'])).toEqual(['move', 'coached'])
+    expect(add(['none', 'private'], ['waiting'])).toEqual(['waiting', 'private'])
+    const tapped = { ...initialAnswers, taps: ['move'] as JamesTapId[] }
+    expect(answerActions.addTaps(tapped, ['move'])).toBe(tapped)
+    expect(answerActions.addTaps(tapped, [])).toBe(tapped)
+  })
+
+  it('adds nothing once the teller goes on with the withdrawal', () => {
+    const over = { ...initialAnswers, teller: ['continue'] as TellerAction[] }
+    expect(answerActions.addTaps(over, ['secret'])).toBe(over)
+  })
+})
+
 describe.each(['concept', 'sound'] as const)('his tablet once the teller continues (%s look)', (variant) => {
   beforeEach(() => {
     look.current = variant
@@ -122,12 +139,12 @@ async function openWindow(): Promise<Win> {
   vi.resetModules()
   const store = await import('./answersState')
   const { james: story } = await import('../../story/james')
-  return { store, steps: story.steps, peer: change(newPeer(birth()), JSON.stringify(store.readAnswers())).peer }
+  return { store, steps: story.steps, peer: change(newPeer(birth()), JSON.stringify(outbound(store.readAnswers()))).peer }
 }
 
-/** What each window's sync does after a render: send its change, and the other applies it. */
+/** What each window's sync does after a render: send its outbound copy, and the other applies it. */
 function relay(from: Win, to: Win) {
-  const sent = change(from.peer, JSON.stringify(from.store.readAnswers()))
+  const sent = change(from.peer, JSON.stringify(outbound(from.store.readAnswers())))
   from.peer = sent.peer
   if (!sent.send) return
   const got = receive(to.peer, sent.send)
@@ -138,19 +155,20 @@ function relay(from: Win, to: Win) {
 const pressed = (node: ReactNode) => html(node).match(/aria-pressed="true"/g)?.length ?? 0
 
 describe('two windows, as on two laptops', () => {
-  it('show his taps and the teller choice in both', async () => {
+  it('keep his taps on his tablet, and show the teller choice in both', async () => {
     const member = await openWindow()
     const staff = await openWindow()
     member.store.changeAnswers((a) => answerActions.tap(a, 'investigation'))
     member.store.changeAnswers((a) => answerActions.tap(a, 'secret'))
-    expect(pressed(staff.steps[1].member)).toBe(0)
+    expect(pressed(member.steps[1].member)).toBe(2)
+    expect(text(member.steps[1].member)).toContain(SCAM_NAMED)
     relay(member, staff)
-    expect(pressed(staff.steps[1].member)).toBe(2)
-    expect(text(staff.steps[1].member)).toContain(SCAM_NAMED)
+    expect(staff.store.readAnswers().taps).toEqual([])
+    expect(pressed(staff.steps[1].member)).toBe(0)
 
     staff.store.changeAnswers((a) => answerActions.teller(a, 'continue'))
     relay(staff, member)
-    expect(member.store.readAnswers()).toEqual(staff.store.readAnswers())
+    expect(member.store.readAnswers()).toEqual({ ...staff.store.readAnswers(), taps: ['investigation', 'secret'] })
     expect(text(member.steps[1].staff)).toContain('Withdrawal continued')
     expect(text(member.steps[2].member)).toContain('The $7,000 was handed over.')
     expect(text(staff.steps[2].staff)).toContain('Cash handed over')
@@ -162,6 +180,19 @@ describe('two windows, as on two laptops', () => {
     const newer = readAnswers()
     receiveAnswers({ ...initialAnswers, v: newer.v - 1, teller: ['escalate'] })
     expect(readAnswers()).toEqual(newer)
+  })
+
+  it('send no taps, and keep his own when a newer copy arrives until a newer run', () => {
+    expect(outbound({ ...initialAnswers, agent: 'transfer', taps: ['secret', 'private'] })).toEqual({
+      ...initialAnswers,
+      agent: 'transfer',
+    })
+    writeAnswers(initialAnswers)
+    changeAnswers((a) => answerActions.tap(a, 'move'))
+    receiveAnswers({ ...initialAnswers, v: 5, teller: ['ask'] })
+    expect(readAnswers()).toEqual({ ...initialAnswers, v: 5, teller: ['ask'], taps: ['move'] })
+    receiveAnswers({ ...initialAnswers, run: 1, v: 6 })
+    expect(readAnswers()).toEqual({ ...initialAnswers, run: 1, v: 6 })
   })
 
   it('start empty on a new run, and an earlier run never comes back', () => {

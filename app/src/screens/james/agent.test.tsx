@@ -6,7 +6,7 @@ import { birth, change, newPeer, receive, type Peer } from '../../shell/handshak
 import { james } from '../../story/james'
 import { clock } from '../../ui/format'
 import type { AgentChoice } from './agent'
-import { answerActions, initialAnswers, type JamesAnswers } from './answers'
+import { answerActions, initialAnswers, outbound, type JamesAnswers } from './answers'
 import { changeAnswers, readAnswers, receiveAnswers, writeAnswers } from './answersState'
 import { jamesFacts } from './facts'
 
@@ -87,12 +87,12 @@ async function openWindow(): Promise<Win> {
   vi.resetModules()
   const store = await import('./answersState')
   const { james: story } = await import('../../story/james')
-  return { store, steps: story.steps, peer: change(newPeer(birth()), JSON.stringify(store.readAnswers())).peer }
+  return { store, steps: story.steps, peer: change(newPeer(birth()), JSON.stringify(outbound(store.readAnswers()))).peer }
 }
 
-/** What each window's sync does after a render: send its change, and the other applies it. */
+/** What each window's sync does after a render: send its outbound copy, and the other applies it. */
 function relay(from: Win, to: Win) {
-  const sent = change(from.peer, JSON.stringify(from.store.readAnswers()))
+  const sent = change(from.peer, JSON.stringify(outbound(from.store.readAnswers())))
   from.peer = sent.peer
   if (!sent.send) return
   const got = receive(to.peer, sent.send)

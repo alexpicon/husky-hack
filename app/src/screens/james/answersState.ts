@@ -1,9 +1,9 @@
 import { useSyncExternalStore } from 'react'
-import { initialAnswers, mergeAnswers, type JamesAnswers } from './answers'
+import { initialAnswers, mergeOutbound, type JamesAnswers } from './answers'
 
 /**
  * James's answers live outside React so his tablet and the teller desk share them inside one
- * window; one mounted <JamesSync /> per window keeps every window the same.
+ * window; one mounted <JamesSync /> per window sends the others everything but his taps.
  */
 let current: JamesAnswers = initialAnswers
 const listeners = new Set<() => void>()
@@ -29,9 +29,12 @@ export function changeAnswers(change: (a: JamesAnswers) => JamesAnswers) {
   if (next !== current) writeAnswers({ ...next, v: current.v + 1 })
 }
 
-/** Another window's copy arrived: keep the winner. A copy saved before a field existed gets its start value. */
+/**
+ * Another window's copy arrived: keep the winner, and this window's own taps. A copy saved before a
+ * field existed gets its start value.
+ */
 export function receiveAnswers(incoming: JamesAnswers) {
-  const merged = mergeAnswers(current, { ...initialAnswers, ...incoming })
+  const merged = mergeOutbound(current, { ...initialAnswers, ...incoming })
   // A fresh object re-sends this window's newer copy to the one that sent a stale one.
   writeAnswers(merged === current ? { ...current } : merged)
 }
