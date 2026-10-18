@@ -126,6 +126,6 @@ describe('a new demo run', () => {
     const fresh = { ...initialCheck, run: 2, v: 1 }
     expect(mergeChecks(answered, fresh)).toBe(fresh)
     expect(mergeChecks(fresh, answered)).toBe(fresh)
-    expect(checkActions.reset(answered)).toEqual({ ...initialCheck, run: 1, v: 7 })
+    expect(checkActions.reset(answered)).toEqual({ ...initialCheck, run: 1, v: 7, mv: 1 })
   })
 })

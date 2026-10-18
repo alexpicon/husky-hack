@@ -77,9 +77,28 @@ describe('his phone and a staff laptop', () => {
   })
 
   it('clear his unshared answers on a reset, a new run, and a newer run from another window', () => {
-    expect(act.reset(answered)).toEqual({ ...initialCheck, v: answered.v })
+    expect(act.reset(answered)).toEqual({ ...initialCheck, v: answered.v, mv: answered.mv + 1 })
     expect(act.forRun(answered, 1)).toEqual({ ...initialCheck, run: 1, v: answered.v })
     const newRun = act.forRun(initialCheck, 2)
     expect(send(newRun, answered)).toEqual(newRun)
+  })
+})
+
+describe('his stop-sharing against choices made in a window that has not heard it', () => {
+  it('stays off in both windows, whichever copy arrives first', () => {
+    const other = send(shared, initialCheck)
+    const phone = edit(shared, (c) => act.share(c, false))
+    const stale = edit(edit(other, (c) => act.card(c, 'send')), (c) => act.wire(c, 'wait'))
+    expect(stale.v).toBeGreaterThan(phone.v)
+    const choices = { card: 'send', wire: 'wait' }
+    expect(send(stale, phone)).toMatchObject({ ...choices, shared: false, taps: ['never-met', 'investment'], test: 'failed' })
+    expect(send(phone, stale)).toMatchObject({ ...choices, shared: false, taps: [], test: null })
+  })
+
+  it('never brings back answers a reset cleared, from a window that still shares them', () => {
+    const other = send(shared, initialCheck)
+    const reset = edit(shared, act.reset)
+    expect(send(other, reset)).toMatchObject({ shared: false, taps: [], test: null })
+    expect(send(reset, other)).toMatchObject({ shared: false, taps: [], test: null })
   })
 })

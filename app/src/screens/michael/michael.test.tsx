@@ -93,8 +93,8 @@ describe('the silent check', () => {
   })
 
   it('settles two windows on the same check', () => {
-    const a = { ...initialCheck, v: 2, taps: toggleTap([], 'secret') }
-    const b = { ...initialCheck, v: 3, shared: true }
+    const a = { ...initialCheck, v: 2, mv: 1, taps: toggleTap([], 'secret') }
+    const b = { ...initialCheck, v: 3, mv: 2, shared: true }
     expect(mergeChecks(a, b)).toBe(b)
     expect(mergeChecks(b, a)).toBe(b)
   })

@@ -37,7 +37,7 @@ describe('answers are final, and a new start clears them', () => {
   })
 
   it('clears them on the first step and on a new run', () => {
-    expect(checkActions.reset({ ...answered, run: 3, v: 9 })).toEqual({ ...initialCheck, run: 3, v: 9 })
+    expect(checkActions.reset({ ...answered, run: 3, v: 9, mv: 4 })).toEqual({ ...initialCheck, run: 3, v: 9, mv: 5 })
     expect(checkActions.forRun(answered, 1)).toEqual({ ...initialCheck, run: 1 })
   })
 
