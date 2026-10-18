@@ -27,7 +27,7 @@ Known gaps found while building, kept here so they are neither fixed in passing 
 - **Shared sessions fall back to function memory** when the Vercel project has no store. Connect Upstash Redis (Vercel Storage) so a cold start cannot drop session state.
 - **A payment-state service.** Idempotent actions and staff roles enforced on a server, so a final outcome can't be undone or sent twice from another window. Today the state lives in the browser and the session relay.
 - **Bundle size.** The build is one 2 MB script because the 1.4 MB events CSV is inlined with `?raw`, and Vite warns past 500 kB. Serve the CSV as its own asset or split the chunk.
-- **oxlint fast-refresh warnings** in `app/src/ui/primitives.tsx`: tone constants are exported next to components.
+- **oxlint fast-refresh warnings** in `app/src/ui/primitives.tsx`, `ui/soundApp.tsx`, `ui/look.tsx` and `shell/view.tsx`: constants and hooks are exported next to components.
 
 ## Repository
 
