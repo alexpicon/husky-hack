@@ -1,4 +1,4 @@
-import { eventsFor, keyFor, type KitEvent } from '../../data/kit'
+import { eventsFor, type KitEvent } from '../../data/kit'
 import { isTakeover, isTakeoverCheck, isTakeoverStop } from '../../data/takeoverRules'
 import { evaluate, firstHit } from '../../data/triggers'
 import { clock, day, minutesBetween } from '../../ui/format'
@@ -21,8 +21,6 @@ function must<T>(value: T | undefined, what: string): T {
 const sameDay = (a: Date, b: Date) => a.toDateString() === b.toDateString()
 
 const all = eventsFor(MEMBER)
-const key = keyFor(MEMBER)
-if (!key.lookalike) throw new Error(`${MEMBER} story: expected an honest look-alike in the member key`)
 
 const payment = must(firstHit(MEMBER, isTakeoverCheck), 'a payment that trips the light check')
 const before = all.filter((e) => e.at <= payment.at)
@@ -100,7 +98,6 @@ export type M1039Facts = {
   completed: KitEvent
   tapAt: Date
   todayMinutes: number
-  outcome: string
   /** Honest look-alikes the light check asks for one tap. */
   lookalikes: { flagged: number; total: number }
   /** Honest members (routine and look-alike) and how each tier treats them. */
@@ -118,7 +115,6 @@ export const facts: M1039Facts = {
   completed,
   tapAt,
   todayMinutes: minutesBetween(payment.at, completed.at),
-  outcome: key.outcome,
   lookalikes: { flagged: lookalikes.flagged, total: lookalikes.total },
   honest: {
     total: honestAny.total,

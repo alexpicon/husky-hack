@@ -13,7 +13,7 @@ function Tile({ label, big, lines, accent = false }: TileProps) {
     <div
       className={`flex-1 rounded-2xl p-4 ring-1 ring-inset ${accent ? 'bg-safe-soft ring-teal-100' : 'bg-slate-50 ring-line'}`}
     >
-      <div className={`text-[12px] font-semibold ${accent ? 'text-safe' : 'text-ink-3'}`}>{label}</div>
+      <div className={`min-h-8 text-[12px] leading-4 font-semibold ${accent ? 'text-safe' : 'text-ink-3'}`}>{label}</div>
       <div className="mt-1 text-[26px] leading-none font-semibold tracking-tight text-ink">{big}</div>
       <div className="mt-2 text-[13px] leading-snug text-ink-2">{lines}</div>
     </div>
@@ -21,7 +21,7 @@ function Tile({ label, big, lines, accent = false }: TileProps) {
 }
 
 export function HonestCard() {
-  const { payment, completed, outcome, lookalikes, honest } = facts
+  const { payment, completed, lookalikes, honest } = facts
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -33,7 +33,7 @@ export function HonestCard() {
         <Eyebrow>The honest cost</Eyebrow>
         <div className="mt-3 flex gap-2.5">
           <Tile
-            label="Today"
+            label="In the kit, without Second Look"
             big="0 taps"
             lines={
               <>
@@ -58,7 +58,6 @@ export function HonestCard() {
             }
           />
         </div>
-        <div className="mt-2 font-mono text-[10px] text-ink-3">Member key outcome: {outcome}</div>
 
         <div className="mt-4 space-y-3 border-t border-line pt-4 text-[14px] leading-snug text-ink-2">
           <p className="flex gap-2.5">

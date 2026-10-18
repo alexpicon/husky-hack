@@ -14,6 +14,7 @@ import {
 import { POLICY } from '../../data/policy'
 import { firstHit } from '../../data/triggers'
 import { clock, minutesBetween } from '../../ui/format'
+import { SARAH, SARAH_NAME } from '../sarah/facts'
 import { need, when } from './helpers'
 
 export type ContactKind = 'email' | 'phone' | 'address'
@@ -59,6 +60,7 @@ export function takeoverFacts(member: string): TakeoverFacts {
   const cached = cache.get(cacheKey)
   if (cached) return cached
   const all = eventsFor(member)
+  /** The Member Key's outcome, shown only as "In the kit, without Second Look". */
   const key = keyFor(member)
   const hit = need(firstHit(member, isTakeover), `${member} payment matching the takeover trigger`)
   const at = all.indexOf(hit)
@@ -79,7 +81,7 @@ export function takeoverFacts(member: string): TakeoverFacts {
   )
   const facts: TakeoverFacts = {
     member,
-    name: key.persona || `Member ${member}`,
+    name: member === SARAH ? SARAH_NAME : `Member ${member}`,
     caseId: `CASE-${member}-${hit.paymentId}`,
     hit,
     signals: takeoverSignals(hit),

@@ -3,6 +3,8 @@ import { firstHit, isTakeover } from '../../data/triggers'
 import { clock, day, minutesBetween } from '../../ui/format'
 
 export const SARAH = 'M1003'
+/** Named in the starter kit, which lists M1001 to M1004 as Linda, Michael, Sarah and James. */
+export const SARAH_NAME = 'Sarah'
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
@@ -35,6 +37,7 @@ const reported = find('Scam Reported', (e) => e.at > completedSecond.at)
 const recoveryFailed = eventsFor(SARAH).filter((e) => e.type === 'Recovery Unsuccessful')
 if (recoveryFailed.length === 0) throw new Error(`${SARAH}: expected "Recovery Unsuccessful" events`)
 
+/** The Member Key's outcome, only for comparisons labeled "In the kit, without Second Look". */
 const key = keyFor(SARAH)
 const lastSent = completedSecond.at > completedFirst.at ? completedSecond : completedFirst
 

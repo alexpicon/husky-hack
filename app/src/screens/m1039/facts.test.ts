@@ -16,7 +16,6 @@ describe('M1039 facts', () => {
     expect(facts.payment.paymentId).toBe('P1039-005')
     expect(facts.payment.amount).toBe(4151.68)
     expect(clock(facts.completed.at)).toBe('1:07 PM')
-    expect(facts.outcome).toBe('Legitimate - No Friction')
   })
 
   it('counts who the light check touches', () => {

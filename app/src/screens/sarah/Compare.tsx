@@ -46,7 +46,7 @@ function Line({ ok, children, ids }: { ok: boolean; children: ReactNode; ids: st
   )
 }
 
-/** Today's real outcome for Sarah from the kit, next to the same night with Second Look. */
+/** Sarah's outcome in the kit, next to the same night with Second Look. */
 export function Compare() {
   const { completed, reported, recoveryFailed, key, paused, second, daysToReport, recovered } = sarah
   return (
@@ -55,7 +55,7 @@ export function Compare() {
         Sarah's night, two ways
       </div>
       <div className="flex flex-col gap-2.5">
-        <Side tone="danger" label="Today" lost={key.netLoss}>
+        <Side tone="danger" label="In the kit, without Second Look" lost={key.netLoss}>
           <Line ok={false} ids={completed.map((e) => e.id)}>
             Both payments sent, at {completed.map((e) => clock(e.at)).join(' and ')}
           </Line>
