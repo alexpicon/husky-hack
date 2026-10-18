@@ -196,8 +196,8 @@ Each decision has both behaviors built and tested, with matching words on every 
 
 - **Whoever is signed in learns nothing.** The scammer's paused screen and M1039's in-app check carry no times, event IDs or signals. Render tests check both screens in both phone looks.
 - **Facts go only to a contact the attacker didn't set:** the number on file before the change, or a phone that never changed.
-- **Linda's answers stay on the tablet** unless she turns on "Share my answers with staff", which starts off for every case. Staff can't tell skipping from not sharing. Asking to talk privately is the one tap staff always see. Michael's taps and his withdrawal-test answer stay on his screen the same way; marking a payee as his own account always shows, since it stops the card. James's taps stay on the tablet.
-- **A shared session** holds only the demo's state (the step, the phone look, the demo run, Sarah's and M1039's answers, Linda's case, Michael's check, James's answers and the report) under a short code. With Upstash Redis it expires after 12 hours; without it, it lives only in the server's memory.
+- **Linda's answers stay on the tablet** unless she turns on "Share my answers with staff", which starts off for every case. Unshared answers never leave the device: no other window, laptop or shared session gets them, and turning sharing off takes them back off the other screens. Staff can't tell skipping from not sharing. Asking to talk privately is the one tap staff always see. Michael's taps and his withdrawal-test answer stay on his device the same way; marking a payee as his own account always shows, since it stops the card. James's taps never leave the tablet.
+- **A shared session** holds only the demo's state (the step, the phone look, the demo run, Sarah's and M1039's answers, Linda's case, Michael's check, James's answers and the report, without any answer not shared) under a short code. With Upstash Redis it expires after 12 hours; without it, it lives only in the server's memory.
 
 ## Accessibility (what is built)
 
