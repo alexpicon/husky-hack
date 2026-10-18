@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { useReport } from './report'
+import { useZoneTone } from '../story/engine'
+import { reportLinkShown, useReport } from './report'
 import { ReportSheet } from './ReportSheet'
 
 /**
@@ -18,4 +19,14 @@ export function useReportSheet() {
     },
     sheet: open ? <ReportSheet onClose={() => setOpen(false)} /> : null,
   }
+}
+
+/**
+ * The report sheet behind "I think I've been scammed" in a Sound app header, and whether this
+ * screen shows the link: POLICY.reportLink decides from the zone, unless `show` overrides it.
+ */
+export function useReportLink(show?: boolean) {
+  const zone = useZoneTone()
+  const sheet = useReportSheet()
+  return { ...sheet, shown: sheet.available && (show ?? reportLinkShown(zone)) }
 }

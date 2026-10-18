@@ -1,5 +1,6 @@
 import { motion } from 'motion/react'
 import { CircleX, Clock, LifeBuoy, MessageCircle } from 'lucide-react'
+import { ReportRow } from '../../report/ReportRow'
 import { Tablet } from '../../ui/devices'
 import { useLook } from '../../ui/look'
 import { AUTONOMY, callBack, checkBackBy, HOLD_PROMISE, readTaps, replies } from './copy'
@@ -108,6 +109,7 @@ function DecideConcept({ at }: { at: Date }) {
             </div>
           </>
         )}
+        <ReportRow edge="-mx-6 -mb-5 px-6" />
       </div>
     </Tablet>
   )

@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react'
 import { ChevronLeft, House } from 'lucide-react'
+import { ReportLink } from '../../report/ReportLink'
+import { useReportLink } from '../../report/useReportSheet'
 import { SoundMark as BrandMark } from '../../ui/brand'
 import { Source } from '../../ui/primitives'
 
@@ -12,16 +14,25 @@ export function SoundMark({ size = 28 }: { size?: number }) {
 }
 
 export function AppBar({ title }: { title: string }) {
+  const link = useReportLink()
   return (
-    <div className="flex items-center gap-2 px-4 pt-1 pb-3">
-      <span className="grid size-9 place-items-center text-ink-2" aria-hidden>
-        <ChevronLeft size={22} />
-      </span>
-      <span className="flex-1 text-center text-[16px] font-semibold text-ink">{title}</span>
-      <span className="grid size-9 place-items-center">
-        <SoundMark size={24} />
-      </span>
-    </div>
+    <>
+      <div className={`flex items-center gap-2 px-4 pt-1 ${link.shown ? 'pb-1' : 'pb-3'}`}>
+        <span className="grid size-9 place-items-center text-ink-2" aria-hidden>
+          <ChevronLeft size={22} />
+        </span>
+        <span className="flex-1 text-center text-[16px] font-semibold text-ink">{title}</span>
+        <span className="grid size-9 place-items-center">
+          <SoundMark size={24} />
+        </span>
+      </div>
+      {link.shown && (
+        <div className="flex justify-center pb-3">
+          <ReportLink onOpen={link.open} />
+        </div>
+      )}
+      {link.sheet}
+    </>
   )
 }
 

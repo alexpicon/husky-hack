@@ -1,5 +1,6 @@
 import { motion } from 'motion/react'
 import { CircleX, Clock, LifeBuoy, MessageCircle } from 'lucide-react'
+import { ReportRow } from '../../report/ReportRow'
 import { SOUND, SoundButton, SoundCard } from '../../ui/soundApp'
 import { AUTONOMY, callBack, checkBackBy, HOLD_PROMISE, readTaps, replies } from './copy'
 import { NavyIcon, SoundKiosk } from './kiosk'
@@ -7,6 +8,8 @@ import { caseActions, useLindaCase } from './lindaCase'
 import { ENDING_ICON, outcomeCopy, SEQUEL } from './outcomes'
 
 const REPLY_GREEN = '#1f7a4d'
+/** Cancels the kiosk body's padding, so the report row spans the tablet's bottom edge. */
+const KIOSK_EDGE = '-mx-5 -mb-4 px-5'
 
 /** Linda's last screen in the Sound look: her three choices, then how it ended. */
 export function DecideSound({ at }: { at: Date }) {
@@ -47,6 +50,7 @@ export function DecideSound({ at }: { at: Date }) {
             <p className="text-[17px] leading-snug font-semibold">{SEQUEL}</p>
           </SoundCard>
         </motion.div>
+        <ReportRow edge={KIOSK_EDGE} />
       </SoundKiosk>
     )
   }
@@ -98,6 +102,7 @@ export function DecideSound({ at }: { at: Date }) {
           </button>
         )}
       </div>
+      <ReportRow edge={KIOSK_EDGE} />
     </SoundKiosk>
   )
 }

@@ -101,19 +101,24 @@ describe('where "I think I\'ve been scammed" appears (D9)', () => {
     return textOf(html.split(`data-zone="${tone}"`)[1].split('data-zone=')[0])
   }
 
-  it("shows on every Sound app screen by default, the scammer's included", () => {
+  // The concept look has an app bar on M1039's first screen only; the Sound look on three.
+  const m1039AppScreens = { sound: [0, 1, 3], concept: [0] }
+
+  it.each(['concept', 'sound'] as const)("shows on every app screen by default, the scammer's included (%s look)", (variant) => {
+    look.current = variant
     expect(sarahZone(0, 'attacker')).toContain(LINK)
     expect(sarahZone(1, 'attacker')).toContain(LINK)
-    for (const i of [0, 1, 3]) {
+    for (const i of m1039AppScreens[variant]) {
       expect(render(<BothStage id="x" step={m1039.steps[i]} zones={m1039Zones} />)).toContain(LINK)
     }
   })
 
-  it("keeps it off the scammer's device when the policy is 'real-member'", () => {
+  it.each(['concept', 'sound'] as const)("keeps it off the scammer's device when the policy is 'real-member' (%s look)", (variant) => {
+    look.current = variant
     POLICY.reportLink = 'real-member'
     expect(sarahZone(0, 'attacker')).not.toContain(LINK)
     expect(sarahZone(1, 'attacker')).not.toContain(LINK)
-    for (const i of [0, 1, 3]) {
+    for (const i of m1039AppScreens[variant]) {
       expect(render(<BothStage id="x" step={m1039.steps[i]} zones={m1039Zones} />)).toContain(LINK)
     }
   })
@@ -129,5 +134,12 @@ describe('where "I think I\'ve been scammed" appears (D9)', () => {
     POLICY.reportLink = 'real-member'
     expect(sarahZone(4, 'member')).toContain(`Report a scam ${LINK}`)
     expect(sarahZone(3, 'member')).not.toContain('Report a scam')
+  })
+
+  it.each(['concept', 'sound'] as const)("puts a Report a scam row on Linda's tablet when she decides (%s look)", (variant) => {
+    look.current = variant
+    const lindaZones = { member: { tone: 'member', label: 'Linda: branch tablet' }, staff: zones.staff } as const
+    const outcome = linda.steps.findIndex((s) => s.id === 'outcome')
+    expect(render(<BothStage id="x" step={linda.steps[outcome]} zones={lindaZones} />)).toContain(`Report a scam ${LINK}`)
   })
 })

@@ -1,8 +1,6 @@
 import type { ReactNode } from 'react'
 import { ArrowRightLeft, Banknote, Camera, ChevronLeft, CircleDollarSign, Ellipsis, ShieldAlert } from 'lucide-react'
-import { reportLinkShown } from '../report/report'
-import { useReportSheet } from '../report/useReportSheet'
-import { useZoneTone } from '../story/engine'
+import { useReportLink } from '../report/useReportSheet'
 
 /** Colors sampled from Sound's current mobile app. */
 export const SOUND = {
@@ -65,9 +63,8 @@ type ScreenProps = {
  * Pair it with <Phone statusBar="navy"> so the status bar matches.
  */
 export function SoundAppScreen({ title, tab, back = false, right, report, children }: ScreenProps) {
-  const zone = useZoneTone()
-  const sheet = useReportSheet()
-  const linked = sheet.available && (report ?? reportLinkShown(zone))
+  const sheet = useReportLink(report)
+  const linked = sheet.shown
   return (
     <div className="flex h-full flex-col" style={{ ...soundFont, background: SOUND.canvas, color: SOUND.text }}>
       <header

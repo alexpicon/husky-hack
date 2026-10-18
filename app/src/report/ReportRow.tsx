@@ -3,14 +3,15 @@ import { useReportSheet } from './useReportSheet'
 
 /**
  * "Report a scam" pinned to the bottom of a text thread from Sound, for a phone with no Sound
- * app open. It stays in view however long the thread above it is.
+ * app open, or of a branch tablet screen. It stays in view however long the screen above it is.
+ * `edge` cancels the parent's side padding (and bottom padding, if any) so the row spans the screen.
  */
-export function ReportRow() {
+export function ReportRow({ edge = '-mx-4 px-4' }: { edge?: string }) {
   const report = useReportSheet()
   if (!report.available) return null
   return (
     <>
-      <div className="sticky bottom-0 z-[5] -mx-4 border-t border-line bg-white/95 px-4 pt-2 pb-3 backdrop-blur">
+      <div className={`sticky bottom-0 z-[5] border-t border-line bg-white/95 pt-2 pb-3 backdrop-blur ${edge}`}>
         <button
           type="button"
           onClick={report.open}

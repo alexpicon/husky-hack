@@ -42,8 +42,9 @@ export function Tablet({ caption, children }: { caption?: string; children: Reac
   return (
     <figure className="flex flex-col items-center gap-3">
       <div className="rounded-[2.2rem] bg-slate-900 p-4 shadow-device ring-1 ring-slate-700">
-        <div className="h-[460px] w-[640px] overflow-y-auto rounded-[1.4rem] bg-white">
-          {children}
+        {/* Positioned but not scrolling, so a sheet opened on the tablet covers its screen. */}
+        <div className="relative h-[460px] w-[640px] overflow-hidden rounded-[1.4rem] bg-white">
+          <div className="h-full overflow-y-auto">{children}</div>
         </div>
       </div>
       {caption && <figcaption className="text-xs font-medium text-ink-3">{caption}</figcaption>}
