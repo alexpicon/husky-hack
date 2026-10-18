@@ -1,6 +1,7 @@
 import { CalendarRange, Gauge, ShieldAlert } from 'lucide-react'
 import { Card, Eyebrow } from '../ui/primitives'
 import { FamilySplit, LeftAlone, MinuteZero } from './DesignLines'
+import { NameAnyMember } from './NameAnyMember'
 import { ResultsMatrix } from './ResultsMatrix'
 import { StillMissed } from './StillMissed'
 
@@ -119,6 +120,7 @@ export function PilotView() {
       </h1>
       <div className="mt-8 grid grid-cols-1 gap-6">
         <ResultsMatrix />
+        <NameAnyMember />
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           <MinuteZero />
           <FamilySplit />
