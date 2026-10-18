@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { linda } from '../../../story/linda'
+import { day } from '../../../ui/format'
 import { TrickedCase } from '../../staff/TrickedCase'
 import { storyTimes } from '../facts'
 import { SilentCheck } from '../SilentCheck'
@@ -86,6 +87,17 @@ describe('what staff see', () => {
     expect(desk()).toContain('Drill completed')
     expect(desk()).toContain('Trusted contact added')
     expect(desk()).toContain(GUESSES_PRIVATE)
+  })
+
+  it("shows the drill's contact on the wire desk's trusted panel as a concept, and still the kit's none on file", () => {
+    const desk = () => textOf(<TrickedCase member="M1001" stage="checked" now={storyTimes().trusted} />)
+    expect(desk()).toContain('None on file')
+    expect(desk()).toContain('Offer to add one after this case closes')
+    updateDrill(drillActions.addTrusted)
+    expect(desk()).toContain(`Added in the Real or AI? drill (concept), ${day(drillDay())}`)
+    expect(desk()).toContain('In the kit: none on file')
+    expect(desk()).not.toContain('None on file')
+    expect(desk()).not.toContain('Offer to add one')
   })
 })
 

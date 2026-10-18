@@ -7,9 +7,11 @@ import {
   ScanFace,
   UserRound,
 } from 'lucide-react'
-import { clock } from '../../ui/format'
+import { clock, day } from '../../ui/format'
 import { Source } from '../../ui/primitives'
 import { Panel, StatusPill } from './parts'
+import { staffView, useDrill } from '../linda/drill/drillState'
+import { drillDay } from '../linda/drill/when'
 import { useLindaCase } from '../linda/lindaCase'
 import { nameScam } from '../linda/scams'
 import { TAP_OPTIONS } from '../linda/taps'
@@ -145,7 +147,13 @@ export function ScriptPanel({ f, stage }: { f: TrickedFacts; stage: TrickedStage
   )
 }
 
+/**
+ * The kit's enrolment flag, or the contact she added in the drill. The drill is a concept, so the
+ * panel says so and still shows what the kit has on file.
+ */
 export function TrustedPanel({ f }: { f: TrickedFacts }) {
+  const { trustedAdded } = staffView(useDrill())
+  const fromDrill = trustedAdded && !f.trustedOnFile
   return (
     <Panel title="Trusted person" icon={<HeartHandshake size={14} />} delay={0.1}>
       <div className="flex items-start gap-3">
@@ -154,14 +162,25 @@ export function TrustedPanel({ f }: { f: TrickedFacts }) {
         </span>
         <div className="min-w-0 text-sm">
           <div className="font-semibold text-ink">
-            {f.trustedOnFile ? 'On file' : 'None on file'} <Source ids={f.hit.id} />
+            {fromDrill ? (
+              `Added in the Real or AI? drill (concept), ${day(drillDay())}`
+            ) : (
+              <>
+                {f.trustedOnFile ? 'On file' : 'None on file'} <Source ids={f.hit.id} />
+              </>
+            )}
           </div>
           <div className="mt-0.5 text-xs leading-relaxed text-ink-3">
-            {f.trustedOnFile
+            {f.trustedOnFile || fromDrill
               ? `One tap asks them to call ${f.name}. They never see amounts or the account.`
               : 'Offer to add one after this case closes: informed only, never sees amounts ' +
                 'or the account.'}
           </div>
+          {fromDrill && (
+            <div className="mt-1.5 text-xs text-ink-3">
+              In the kit: none on file <Source ids={f.hit.id} />
+            </div>
+          )}
         </div>
       </div>
     </Panel>
