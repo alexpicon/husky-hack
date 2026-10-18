@@ -67,7 +67,7 @@ In the Both view, Sarah's story shows three labeled screens side by side, each w
    > If a website or caller told you to expect this text, tap No. Sound will never call you and ask you to tap Yes.
 
    Below it: "Sound will never call or text to ask for a code. If a website or caller asks for one, it's a scam."
-4. She taps **No**. The payment stays stopped and a specialist locks online access.
+4. She taps **No**. The payment stays stopped and a specialist locks online access. Her answer locks both buttons, in every window. If she taps **Yes** instead, a Yes alone sends nothing: her phone says a specialist will call that number first, staff see "specialist callback required before release" with **Callback done: confirmed** before Release, and the scammer's screen stays at Pending review. Going on from there, the callback hears it wasn't her and the story ends as below.
 5. The scammer's screen ends at "Signed out: account locked". Her phone says **"We stopped the payment and locked online access"**, how to get back in (the number on her card, or any branch) and offers "Report a scam". The second payment never starts. In the kit, without Second Look, a second $1,432.15 followed 8 minutes later and she lost $3,006.33.
 
 **Sound staff** see a case naming the tier ("Full stop") and why ("Email and phone changed 10:14-10:15 PM, not confirmed on the prior contact"), the three signals, tonight's timeline with event IDs, the paused payment, which contacts changed and which didn't, and three buttons: **Release (after verifying)**, **Keep stopped and lock account**, **Start recovery**. P2P recalls usually fail (6 of 8 in the kit), so the pause comes before send.
@@ -166,11 +166,11 @@ The kit is about 41% scam victims by design (48 of 118 members), and real life i
 
 ## Open decisions (`app/src/data/policy.ts`)
 
-Each decision has both behaviors built and tested, with matching words on every screen. The defaults are in effect.
+Each decision has both behaviors built and tested, with matching words on every screen. The brief's defaults are in effect, except `fullStopRelease`.
 
 | Setting | In effect | Alternative |
 |---|---|---|
-| `fullStopRelease` | `'yes'`: a Yes from the number on file before the change releases a full stop | `'callback'`: a specialist calls that number first. Yes still releases the light check |
+| `fullStopRelease` | `'callback'`: a Yes from the number on file before the change never releases a full stop; a specialist calls that number first. Yes still releases the light check | `'yes'` (the brief's): that Yes releases a full stop |
 | `caseHold` | `'all'`: every outgoing payment waits while a full-stop case is open | `'risky'`: new payees, payee edits and profile changes wait; scheduled payments to existing payees continue |
 | `sessionRule` | off | The 2-hour rule: a payment to a payee added today, within 2 hours of a reset, a one-time code or a failed sign-in, is also a full stop. Alone it catches 12 of 12 takeovers and 0 of the other 106 members, and it keeps the full stop when an attacker skips the reset or changes only the address |
 | `lindaRule` | `'per-wire-3x'` (above) | `'same-day-2.5x'`: that day's wires to one recipient added less than 1 day earlier, added together, at 2.5x. Family **12 of 12**, gov't 4 of 12, romance 0, look-alikes 0 of 20, routine 0 of 50: with the other rules, 48 of 48 overall. It also holds the second half of a split wire |

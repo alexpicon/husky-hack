@@ -5,7 +5,7 @@ import { BRIEF_POLICY } from '../../data/briefPolicy'
 import { POLICY } from '../../data/policy'
 import { TakeoverCase, type TakeoverStage } from './TakeoverCase'
 import { takeoverFacts } from './takeoverFacts'
-import { caseHold, releaseHint, stageHint, yesReleases, yesReply } from './takeoverStages'
+import { actionsFor, caseHold, pillFor, releaseHint, stageHint, yesReleases, yesReply } from './takeoverStages'
 
 const defaults = { ...POLICY }
 
@@ -36,7 +36,9 @@ describe('releasing a full stop (D1)', () => {
 
   it('needs a callback to the prior number when the policy is "callback"', () => {
     expect(yesReleases(true, 'callback')).toBe(false)
-    expect(yesReply(false)).toBe("Thanks. We'll call you at this number to confirm before we send it.")
+    expect(yesReply(false)).toBe(
+      'Thanks. A specialist will call you at this number before anything is sent. If someone told you to tap Yes, call the number on your card.',
+    )
     expect(releaseHint('asked', false)).toBe('Needs a callback to the number on file before the change')
     expect(releaseHint('its-me', false)).toBe('Call the number on file before the change first')
     expect(stageHint('asked', false)).toMatch(/A YES alone does not release it/)
@@ -46,6 +48,30 @@ describe('releasing a full stop (D1)', () => {
   it('always releases the light check on a YES', () => {
     expect(yesReleases(false, 'yes')).toBe(true)
     expect(yesReleases(false, 'callback')).toBe(true)
+  })
+
+  it('keeps Release off after a YES until the callback, with the callback and lock open', () => {
+    expect(pillFor('its-me', false)).toEqual({ label: 'Callback required', tone: 'warn', live: true })
+    expect(pillFor('its-me', true)).toEqual({ label: 'Member confirmed', tone: 'safe' })
+    expect(actionsFor('its-me', false)).toEqual({ release: 'off', lock: 'on', recover: 'off' })
+    expect(actionsFor('its-me', true)).toEqual({ release: 'recommended', lock: 'off', recover: 'off' })
+    POLICY.fullStopRelease = 'callback'
+    const text = staffText('M1003', 'its-me')
+    expect(text).toContain(
+      'Member said YES on the number on file before the change: specialist callback required before release',
+    )
+    expect(text).toContain('Callback done: confirmed')
+    expect(text).toContain('Callback required')
+    expect(text).toContain('Paused until the callback')
+    expect(text).not.toContain('member confirmed')
+    expect(staffText('M1003', 'released')).not.toContain('Released after one tap.')
+  })
+
+  it('releases a YES in one step on the light check, and on the full stop when the policy is "yes"', () => {
+    expect(staffText('M1003', 'its-me')).not.toContain('Callback done: confirmed')
+    expect(staffText('M1003', 'released')).toContain('Released after one tap.')
+    POLICY.fullStopRelease = 'callback'
+    expect(staffText('M1039', 'its-me')).not.toContain('Callback done: confirmed')
   })
 
   it('shows the matching release rule on the staff case', () => {

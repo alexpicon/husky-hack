@@ -2,19 +2,47 @@ import { MessageSquareText, ThumbsDown, ThumbsUp } from 'lucide-react'
 import { Source } from '../../ui/primitives'
 import { Panel, StatusPill } from './parts'
 import { HOLD_HOURS } from './trickedFacts'
-import { heardNo, heardYes } from './takeoverStages'
+import { heardNo, heardYes, yesReleases } from './takeoverStages'
 import { priorContact, type TakeoverFacts } from './takeoverFacts'
 import type { TakeoverStage } from './TakeoverCase'
 
-export function ResponsePanel({ f, stage }: { f: TakeoverFacts; stage: TakeoverStage }) {
+/** What the member said, and how Sound heard it: one text reply, or a text YES and a specialist's callback. */
+function heard(f: TakeoverFacts, stage: TakeoverStage, saidYesFirst: boolean, phone: string) {
+  const no = heardNo(stage)
+  if (no && saidYesFirst) {
+    return {
+      pill: 'Callback: NO',
+      said: `${f.name} texted "Yes, this was me.", then told the specialist "No, this wasn't me."`,
+      from: `The text and the callback both used the ${phone}.`,
+    }
+  }
+  if (no) return { pill: 'Replied NO', said: `${f.name} said "No, this wasn't me."`, from: `Reply came from the ${phone}.` }
+  const said = `${f.name} said "Yes, this was me."`
+  if (yesReleases(f.fullStop)) return { pill: 'Replied YES', said, from: `Reply came from the ${phone}.` }
+  return stage === 'released'
+    ? { pill: 'Callback: confirmed', said, from: `Reply came from the ${phone}; a specialist's callback to it confirmed.` }
+    : { pill: 'Replied YES', said, from: `Reply came from the ${phone}. A specialist calls it back before release.` }
+}
+
+export function ResponsePanel({
+  f,
+  stage,
+  saidYesFirst = false,
+}: {
+  f: TakeoverFacts
+  stage: TakeoverStage
+  saidYesFirst?: boolean
+}) {
   if (stage === 'watching') return null
   const phone = priorContact(f, 'phone', 'phone number')
   const no = heardNo(stage)
   const yes = heardYes(stage)
+  const reply = heard(f, stage, saidYesFirst, phone.label)
+  const waiting = stage === 'its-me' && !yesReleases(f.fullStop)
   const pill = no ? (
-    <StatusPill tone="danger">Replied NO</StatusPill>
+    <StatusPill tone="danger">{reply.pill}</StatusPill>
   ) : yes ? (
-    <StatusPill tone="safe">Replied YES</StatusPill>
+    <StatusPill tone={waiting ? 'warn' : 'safe'}>{reply.pill}</StatusPill>
   ) : stage === 'asked' ? (
     <StatusPill tone="warn" live>
       Waiting
@@ -26,16 +54,12 @@ export function ResponsePanel({ f, stage }: { f: TakeoverFacts; stage: TakeoverS
     <Panel title='"Was this you?"' icon={<MessageSquareText size={14} />} aside={pill} delay={0.1}>
       {(no || yes) && (
         <div
-          className={`mb-3 flex items-center gap-3 rounded-xl px-3.5 py-3 ${no ? 'bg-danger-soft text-danger' : 'bg-safe-soft text-safe'}`}
+          className={`mb-3 flex items-center gap-3 rounded-xl px-3.5 py-3 ${no ? 'bg-danger-soft text-danger' : waiting ? 'bg-warn-soft text-warn' : 'bg-safe-soft text-safe'}`}
         >
-          {no ? <ThumbsDown size={20} /> : <ThumbsUp size={20} />}
+          {no ? <ThumbsDown size={20} className="shrink-0" /> : <ThumbsUp size={20} className="shrink-0" />}
           <div>
-            <div className="text-[15px] font-semibold">
-              {f.name} said {no ? '"No, this wasn\'t me."' : '"Yes, this was me."'}
-            </div>
-            <div className="text-xs opacity-80">
-              Reply came from the {phone.label}.
-            </div>
+            <div className="text-[15px] font-semibold">{reply.said}</div>
+            <div className="text-xs opacity-80">{reply.from}</div>
           </div>
         </div>
       )}

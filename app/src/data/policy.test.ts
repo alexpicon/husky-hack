@@ -3,6 +3,6 @@ import { expect, it } from 'vitest'
 import { BRIEF_POLICY } from './briefPolicy'
 import { POLICY } from './policy'
 
-it("keeps the brief's answer to every open decision", () => {
-  expect(POLICY).toEqual(BRIEF_POLICY)
+it("keeps the answers chosen on Sunday: fullStopRelease", () => {
+  expect(POLICY).toEqual({ ...BRIEF_POLICY, fullStopRelease: 'callback' })
 })

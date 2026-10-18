@@ -5,7 +5,7 @@ import { Source, type Tone } from '../../ui/primitives'
 import { when } from './helpers'
 import { FactRow, Panel } from './parts'
 import type { TakeoverFacts } from './takeoverFacts'
-import { caseHold } from './takeoverStages'
+import { caseHold, yesReleases } from './takeoverStages'
 import { HOLD_HOURS } from './trickedFacts'
 import type { TakeoverStage } from './TakeoverCase'
 
@@ -19,7 +19,7 @@ const railRule: Record<string, string> = {
 const holdWords = (rail: string) =>
   rail === 'P2P' ? { before: 'Paused before send', yes: 'Paused' } : { before: 'Held before release', yes: 'Held' }
 
-function moneyState(stage: TakeoverStage, rail: string): { label: string; tone: Tone } {
+function moneyState(stage: TakeoverStage, rail: string, yesOk: boolean): { label: string; tone: Tone } {
   const words = holdWords(rail)
   const states: Record<TakeoverStage, { label: string; tone: Tone }> = {
     watching: { label: 'No payment yet', tone: 'neutral' },
@@ -27,7 +27,9 @@ function moneyState(stage: TakeoverStage, rail: string): { label: string; tone: 
     asked: { label: words.before, tone: 'warn' },
     'not-me': { label: words.before, tone: 'warn' },
     secured: { label: 'Stopped. Never sent.', tone: 'safe' },
-    'its-me': { label: `${words.yes}, member said yes`, tone: 'safe' },
+    'its-me': yesOk
+      ? { label: `${words.yes}, member said yes`, tone: 'safe' }
+      : { label: `${words.yes} until the callback`, tone: 'warn' },
     released: { label: 'Released to recipient', tone: 'safe' },
   }
   return states[stage]
@@ -50,7 +52,7 @@ const chip: Record<Tone, string> = {
 export function MoneyPanel({ f, stage }: { f: TakeoverFacts; stage: TakeoverStage }) {
   const { hit, recipientAdded, followUp } = f
   const rail = stage === 'watching' ? recipientAdded.rail : hit.rail
-  const state = moneyState(stage, hit.rail)
+  const state = moneyState(stage, hit.rail, yesReleases(f.fullStop))
   const rule = railRule[rail] ?? 'Paused before send while Sound checks with the member.'
   const hold = caseHold(stage, f.fullStop)
   return (

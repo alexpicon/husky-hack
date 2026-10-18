@@ -5,7 +5,7 @@
  */
 export const POLICY = {
   /** Can a "Yes" on the prior contact release a full-stop takeover payment? */
-  fullStopRelease: 'yes' as 'yes' | 'callback',
+  fullStopRelease: 'callback' as 'yes' | 'callback',
   /** While a takeover case is open, hold every outgoing payment or only the risky ones. */
   caseHold: 'all' as 'all' | 'risky',
   /** Also stop a payment to a payee added today within 2 hours of a reset, code or failed login. */

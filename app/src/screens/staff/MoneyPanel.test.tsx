@@ -1,10 +1,14 @@
 /** The staff money card: the rail's note and the payment's status in each rail's words. */
 import { renderToStaticMarkup } from 'react-dom/server'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
+import { POLICY } from '../../data/policy'
 import { p2pRecalls } from '../../report/kitFacts'
 import { MoneyPanel } from './MoneyPanel'
 import type { TakeoverStage } from './TakeoverCase'
 import { takeoverFacts } from './takeoverFacts'
+
+const defaults = { ...POLICY }
+afterEach(() => Object.assign(POLICY, defaults))
 
 const panelText = (member: 'M1003' | 'M1039', stage: TakeoverStage) =>
   renderToStaticMarkup(<MoneyPanel f={takeoverFacts(member)} stage={stage} />)
@@ -30,7 +34,10 @@ describe('the payment status', () => {
     for (const stage of ['paused', 'asked', 'not-me'] as const) {
       expect(panelText('M1003', stage)).toContain('Paused before send')
     }
+    POLICY.fullStopRelease = 'yes'
     expect(panelText('M1003', 'its-me')).toContain('Paused, member said yes')
+    POLICY.fullStopRelease = 'callback'
+    expect(panelText('M1003', 'its-me')).toContain('Paused until the callback')
   })
 
   it('says held before release on ACH', () => {

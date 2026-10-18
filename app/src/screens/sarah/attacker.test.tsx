@@ -17,6 +17,7 @@ const look = vi.hoisted(() => ({ current: 'concept' as 'concept' | 'sound' }))
 
 // The real look switch syncs across windows, which needs a browser; these tests pick the look.
 vi.mock('../../ui/look', () => ({ useLook: () => look.current }))
+vi.mock('../../shell/sync', () => ({ useWindowSync: () => {} }))
 
 const STATUS_BAR_CLOCK = /<span class="num">[^<]*<\/span>/g
 

@@ -13,6 +13,10 @@ export const stagePill: Record<TakeoverStage, { label: string; tone: Tone; live?
   released: { label: 'Released', tone: 'safe' },
 }
 
+/** The case's status pill. A YES that cannot release the payment on its own still waits on a callback. */
+export const pillFor = (stage: TakeoverStage, yesOk: boolean) =>
+  stage === 'its-me' && !yesOk ? { label: 'Callback required', tone: 'warn' as Tone, live: true } : stagePill[stage]
+
 export type TakeoverAction = 'release' | 'lock' | 'recover'
 
 export const actionPlan: Record<TakeoverStage, Record<TakeoverAction, ActionLook>> = {
@@ -24,6 +28,10 @@ export const actionPlan: Record<TakeoverStage, Record<TakeoverAction, ActionLook
   'its-me': { release: 'recommended', lock: 'off', recover: 'off' },
   released: { release: 'done', lock: 'off', recover: 'off' },
 }
+
+/** Under a callback, a YES leaves Release off until the specialist reaches the member, and lock stays open. */
+export const actionsFor = (stage: TakeoverStage, yesOk: boolean): Record<TakeoverAction, ActionLook> =>
+  stage === 'its-me' && !yesOk ? { release: 'off', lock: 'on', recover: 'off' } : actionPlan[stage]
 
 export const isOpen = (s: TakeoverStage) => s !== 'watching'
 export const heardNo = (s: TakeoverStage) => s === 'not-me' || s === 'secured'
@@ -68,7 +76,7 @@ export function releaseHint(stage: TakeoverStage, yesOk: boolean) {
 export const yesReply = (yesOk: boolean) =>
   yesOk
     ? "Thanks. We've released the payment for processing."
-    : "Thanks. We'll call you at this number to confirm before we send it."
+    : 'Thanks. A specialist will call you at this number before anything is sent. If someone told you to tap Yes, call the number on your card.'
 
 const holdLine = {
   all: 'All outgoing payments held while this case is open.',
