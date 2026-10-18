@@ -77,6 +77,7 @@ export function SilentCheckPanel({ f, stage, now }: CaseProps) {
                     <Check size={10} strokeWidth={3} />
                   </span>
                   {o.label}
+                  {fits && <span className="ml-auto shrink-0 text-xs font-semibold text-danger">Fits</span>}
                 </li>
               )
             })}
