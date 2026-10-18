@@ -17,6 +17,10 @@ describe('M1039 facts', () => {
     expect(facts.payment.amount).toBe(4151.68)
     expect(clock(facts.completed.at)).toBe('1:07 PM')
     expect(facts.outcome).toBe('Legitimate - No Friction')
-    expect(facts.lookalikes).toEqual({ flagged: 4, total: 20, moved: 4, samePhone: 4 })
+  })
+
+  it('counts who the light check touches', () => {
+    expect(facts.lookalikes).toEqual({ flagged: 4, total: 20 })
+    expect(facts.honest).toEqual({ total: 70, untouched: 66, stopped: 0 })
   })
 })

@@ -9,7 +9,7 @@ import { TakeoverCase } from '../screens/staff/TakeoverCase'
 import { clock, day, money } from '../ui/format'
 import type { Scenario } from './engine'
 
-const { payment, reset, address, tapAt, lookalikes } = facts
+const { payment, reset, address, tapAt, todayMinutes, lookalikes, honest } = facts
 const paidAt = `${day(payment.at)} · ${clock(payment.at)}`
 const tappedAt = `${day(tapAt)} · ${clock(tapAt)}`
 
@@ -22,7 +22,7 @@ export const m1039: Scenario = {
     {
       id: 'signals',
       title: 'Same signals, honest member',
-      caption: `Yesterday this member reset a forgotten password at ${clock(reset.at)} and updated their address after a move at ${clock(address.at)}. Now they pay ${money(payment.amount)} to a new landlord. When they press Send, every takeover flag lights up.`,
+      caption: `Yesterday this member reset a forgotten password at ${clock(reset.at)} and updated their address after a move at ${clock(address.at)}. Now they pay ${money(payment.amount)} to a new landlord. When they press Send, the light check fires: only the address changed.`,
       clock: paidAt,
       member: (
         <MemberPhone time={clock(payment.at)} caption="Sound app: paying the new landlord">
@@ -60,7 +60,7 @@ export const m1039: Scenario = {
     {
       id: 'released',
       title: 'One tap. Rent goes today.',
-      caption: `Today this payment went through with no friction. With Second Look it costs one tap and about a minute, and the rent still arrives the same day. The trigger catches ${lookalikes.flagged} of ${lookalikes.total} honest look-alikes, and ${lookalikes.samePhone === lookalikes.flagged ? 'every one' : lookalikes.samePhone} kept the same phone, so they get this fast path.`,
+      caption: `In the kit, without Second Look, this payment went in ${todayMinutes} minutes with no check. With Second Look it is released when they tap. We add one tap for the ${lookalikes.flagged} movers; ${honest.untouched} of ${honest.total} honest members see nothing.`,
       clock: tappedAt,
       member: (
         <div className="flex flex-col items-center gap-5">

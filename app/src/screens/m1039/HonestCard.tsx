@@ -3,6 +3,7 @@ import { Phone, Users } from 'lucide-react'
 import { motion } from 'motion/react'
 import { Card, Eyebrow, Source } from '../../ui/primitives'
 import { clock } from '../../ui/format'
+import { yesReleases } from '../staff/takeoverStages'
 import { facts } from './facts'
 
 type TileProps = { label: string; big: string; lines: ReactNode; accent?: boolean }
@@ -20,8 +21,7 @@ function Tile({ label, big, lines, accent = false }: TileProps) {
 }
 
 export function HonestCard() {
-  const { payment, completed, outcome, lookalikes } = facts
-  const allMoved = lookalikes.moved === lookalikes.flagged
+  const { payment, completed, outcome, lookalikes, honest } = facts
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -64,19 +64,27 @@ export function HonestCard() {
           <p className="flex gap-2.5">
             <Users size={16} className="mt-0.5 shrink-0 text-ink-3" />
             <span>
-              The trigger caught{' '}
+              The light check asks{' '}
               <span className="num font-semibold text-ink">
                 {lookalikes.flagged} of {lookalikes.total}
               </span>{' '}
-              honest <span className="whitespace-nowrap">look-alikes</span> in the kit.{' '}
-              {allMoved
-                ? `All ${lookalikes.flagged} had just moved.`
-                : `${lookalikes.moved} had just moved.`}
+              honest <span className="whitespace-nowrap">look-alikes</span> for one tap: only their
+              address changed.{' '}
+              <span className="num font-semibold text-ink">
+                {honest.untouched} of {honest.total}
+              </span>{' '}
+              honest members see nothing
+              {honest.stopped === 0 ? ', and none gets the full stop.' : '.'}
             </span>
           </p>
           <p className="flex gap-2.5">
             <Phone size={16} className="mt-0.5 shrink-0 text-ink-3" />
-            <span>If their phone had changed too, they'd confirm by calling the number on their card or at a branch.</span>
+            <span>
+              Had their phone or email changed too, it would be a full stop,{' '}
+              {yesReleases(true)
+                ? 'released by a YES from the contact they had before.'
+                : 'released only after a specialist calls the number they had before the change.'}
+            </span>
           </p>
         </div>
       </Card>

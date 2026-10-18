@@ -1,5 +1,6 @@
-import { eventsFor, keyFor, memberKeys, type KitEvent } from '../../data/kit'
-import { evaluate, firstHit, isTakeover } from '../../data/triggers'
+import { eventsFor, keyFor, type KitEvent } from '../../data/kit'
+import { isTakeover, isTakeoverCheck, isTakeoverStop } from '../../data/takeoverRules'
+import { evaluate, firstHit } from '../../data/triggers'
 import { clock, day, minutesBetween } from '../../ui/format'
 
 export const MEMBER = 'M1039'
@@ -23,7 +24,7 @@ const all = eventsFor(MEMBER)
 const key = keyFor(MEMBER)
 if (!key.lookalike) throw new Error(`${MEMBER} story: expected an honest look-alike in the member key`)
 
-const payment = must(firstHit(MEMBER, isTakeover), 'a payment that trips the takeover trigger')
+const payment = must(firstHit(MEMBER, isTakeoverCheck), 'a payment that trips the light check')
 const before = all.filter((e) => e.at <= payment.at)
 const lastBefore = (type: string) =>
   must(before.findLast((e) => e.type === type), `a ${type} event before ${payment.id}`)
@@ -70,17 +71,23 @@ if (!sameDay(payment.at, releasedCompletion)) {
   throw new Error(`${MEMBER} story claims same-day delivery, but ${completed.id} would slip a day`)
 }
 
+const HONEST = ['Routine', 'Look-alike']
+
+/** Members in the honest groups that a rule flags, out of all honest members. */
+function honest(rule: (e: KitEvent) => boolean) {
+  const groups = evaluate(rule).filter((g) => HONEST.includes(g.group))
+  if (groups.length !== HONEST.length) throw new Error(`${MEMBER} story: expected ${HONEST.join(' and ')} groups`)
+  return {
+    flagged: groups.reduce((n, g) => n + g.flagged, 0),
+    total: groups.reduce((n, g) => n + g.total, 0),
+  }
+}
+
 const lookalikes = must(
-  evaluate(isTakeover).find((g) => g.group === 'Look-alike'),
-  'a Look-alike group in the takeover design check',
+  evaluate(isTakeoverCheck).find((g) => g.group === 'Look-alike'),
+  'a Look-alike group in the light-check design check',
 )
-const flaggedLookalikes = memberKeys.filter((k) => k.lookalike && firstHit(k.member, isTakeover))
-const movedLookalikes = flaggedLookalikes.filter((k) =>
-  eventsFor(k.member).some((e) => e.type === 'Address Change'),
-)
-const samePhoneLookalikes = flaggedLookalikes.filter(
-  (k) => !eventsFor(k.member).some(isContactChange),
-)
+const honestAny = honest(isTakeover)
 
 export type M1039Facts = {
   payment: KitEvent
@@ -94,7 +101,10 @@ export type M1039Facts = {
   tapAt: Date
   todayMinutes: number
   outcome: string
-  lookalikes: { flagged: number; total: number; moved: number; samePhone: number }
+  /** Honest look-alikes the light check asks for one tap. */
+  lookalikes: { flagged: number; total: number }
+  /** Honest members (routine and look-alike) and how each tier treats them. */
+  honest: { total: number; untouched: number; stopped: number }
 }
 
 export const facts: M1039Facts = {
@@ -109,11 +119,11 @@ export const facts: M1039Facts = {
   tapAt,
   todayMinutes: minutesBetween(payment.at, completed.at),
   outcome: key.outcome,
-  lookalikes: {
-    flagged: lookalikes.flagged,
-    total: lookalikes.total,
-    moved: movedLookalikes.length,
-    samePhone: samePhoneLookalikes.length,
+  lookalikes: { flagged: lookalikes.flagged, total: lookalikes.total },
+  honest: {
+    total: honestAny.total,
+    untouched: honestAny.total - honestAny.flagged,
+    stopped: honest(isTakeoverStop).flagged,
   },
 }
 

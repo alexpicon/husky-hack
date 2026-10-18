@@ -8,7 +8,7 @@ import { CaseHeader, StatusPill } from './parts'
 import { ResponsePanel } from './ResponsePanel'
 import { SignalsPanel } from './SignalsPanel'
 import { TakeoverActions } from './TakeoverActions'
-import { takeoverFacts } from './takeoverFacts'
+import { takeoverFacts, tierName } from './takeoverFacts'
 import { heardYes, isOpen, stagePill, wasAsked } from './takeoverStages'
 
 /**
@@ -35,7 +35,7 @@ export function TakeoverCase({ member, stage }: { member: 'M1003' | 'M1039'; sta
         <CaseHeader
           name={f.name}
           member={member}
-          kind={`Account takeover check · ${day(f.hit.at)}`}
+          kind={`${open ? `Account takeover · ${tierName(f).toLowerCase()}` : 'Account takeover watch'} · ${day(f.hit.at)}`}
           caseId={open ? f.caseId : undefined}
           pill={
             <StatusPill tone={pill.tone} live={pill.live}>

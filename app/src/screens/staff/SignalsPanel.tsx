@@ -5,10 +5,13 @@ import { Source } from '../../ui/primitives'
 import { when } from './helpers'
 import { Panel } from './parts'
 import type { ContactKind, TakeoverFacts } from './takeoverFacts'
+import { yesReleases } from './takeoverStages'
+import { TakeoverTier } from './TakeoverTier'
 
 const kindLabel: Record<ContactKind, string> = { email: 'Email', phone: 'Phone', address: 'Address' }
 
 const lookAlert = { bar: 'bg-rose-500', row: 'bg-danger-soft/70', icon: 'text-danger', check: 'bg-rose-500 text-white' }
+const lookCheck = { bar: 'bg-amber-500', row: 'bg-warn-soft/70', icon: 'text-warn', check: 'bg-amber-500 text-white' }
 const lookConfirmed = { bar: 'bg-teal-500', row: 'bg-safe-soft/70', icon: 'text-safe', check: 'bg-teal-500 text-white' }
 
 type Signal = {
@@ -54,7 +57,7 @@ export function SignalsPanel({
       ids: watching ? [recipientAdded.id] : [recipientAdded.id, hit.id],
     },
   ]
-  const on = confirmed ? lookConfirmed : lookAlert
+  const on = confirmed ? lookConfirmed : f.fullStop ? lookAlert : lookCheck
   const lit = list.filter((s) => s.on).length
   const all = lit === list.length
   return (
@@ -62,11 +65,12 @@ export function SignalsPanel({
       title="Takeover signals"
       icon={<Radar size={14} />}
       aside={
-        <span className={`text-xs font-semibold ${confirmed ? 'text-safe' : all ? 'text-danger' : 'text-ink-3'}`}>
+        <span className={`text-xs font-semibold ${confirmed ? 'text-safe' : !all ? 'text-ink-3' : f.fullStop ? 'text-danger' : 'text-warn'}`}>
           {lit} of {list.length} signals{confirmed && ' · member confirmed'}
         </span>
       }
     >
+      {!watching && <TakeoverTier f={f} />}
       <div className="mb-3 flex gap-1" aria-hidden>
         {list.map((s) => (
           <span key={s.label} className={`h-1.5 flex-1 rounded-full ${s.on ? on.bar : 'bg-slate-200'}`} />
@@ -96,9 +100,13 @@ export function SignalsPanel({
         ))}
       </ul>
       <p className="mt-3 text-xs leading-relaxed text-ink-3">
-        <span className="font-semibold text-ink-2">Rule:</span> a recent password reset, a recent
-        change to email, phone or address, and a payment to a new recipient. When all three line
-        up, the payment pauses before it is sent.
+        <span className="font-semibold text-ink-2">Rule:</span> a recent password reset, a contact
+        change in the 30 days before, and a payment to a new recipient pause the payment before it
+        is sent. Email or phone changed and not confirmed on the prior contact: a full stop,{' '}
+        {yesReleases(true)
+          ? 'released by a YES on the prior contact.'
+          : 'released only after a specialist calls the number on file before the change.'}{' '}
+        Only the address changed: one tap on the unchanged phone.
       </p>
     </Panel>
   )
