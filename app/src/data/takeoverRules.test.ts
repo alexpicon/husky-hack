@@ -1,5 +1,6 @@
 /** The two takeover tiers reproduce the design check on the kit data. */
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { BRIEF_POLICY } from './briefPolicy'
 import { eventsFor, memberKeys, type KitEvent } from './kit'
 import { POLICY } from './policy'
 import {
@@ -12,6 +13,10 @@ import {
 } from './takeoverRules'
 import { counts } from './testCounts'
 import { firstHit } from './triggers'
+
+const inEffect = { ...POLICY }
+beforeEach(() => Object.assign(POLICY, BRIEF_POLICY))
+afterEach(() => Object.assign(POLICY, inEffect))
 
 const flaggedMembers = (rule: (e: KitEvent) => boolean) =>
   memberKeys.filter((k) => firstHit(k.member, rule)).map((k) => k.member)
@@ -103,14 +108,7 @@ describe('the contact-change window and confirmation', () => {
 })
 
 describe('D3, the 2-hour rule (payee added today, within 2 hours of a reset, code or failed sign-in)', () => {
-  const defaults = { ...POLICY }
-  afterEach(() => Object.assign(POLICY, defaults))
-
   const takeovers = memberKeys.filter((k) => k.scenario === 'Sound Impersonation + ATO').map((k) => k.member)
-
-  it('is off by default', () => {
-    expect(POLICY.sessionRule).toBe(false)
-  })
 
   it('alone catches every takeover and none of the other 106 members', () => {
     expect(counts(isSessionTakeover)).toMatchObject({

@@ -3,6 +3,7 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { eventsFor } from '../data/kit'
+import { BRIEF_POLICY } from '../data/briefPolicy'
 import type { POLICY } from '../data/policy'
 import {
   closingWire,
@@ -136,7 +137,7 @@ async function renderWith(policy: Partial<Policy> = {}) {
   vi.resetModules()
   vi.doMock('../data/policy', async (load) => {
     const real = await load<{ POLICY: Policy }>()
-    return { POLICY: { ...real.POLICY, ...policy } }
+    return { POLICY: { ...real.POLICY, ...BRIEF_POLICY, ...policy } }
   })
   const { PilotView } = await import('./PilotView')
   return text(renderToStaticMarkup(createElement(PilotView)))
@@ -147,7 +148,7 @@ afterEach(() => {
 })
 
 describe('the page', () => {
-  it('shows every Design check line under the default policy', async () => {
+  it("shows every Design check line under the brief's policy", async () => {
     const page = await renderWith()
     for (const line of [
       'With these rules we act on 26 of 48 kit scam journeys and stop 0 of 70 honest members.',

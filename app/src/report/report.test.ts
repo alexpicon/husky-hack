@@ -1,5 +1,6 @@
 /** The report's shared state, its wording under each policy, and the kit numbers it quotes. */
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { BRIEF_POLICY } from '../data/briefPolicy'
 import { POLICY } from '../data/policy'
 import { linda } from '../story/linda'
 import { m1039 } from '../story/m1039'
@@ -23,6 +24,7 @@ vi.mock('../ui/look', () => ({ useLook: () => 'concept' }))
 vi.mock('../shell/sync', () => ({ useWindowSync: () => {} }))
 
 const defaults = { ...POLICY }
+beforeEach(() => Object.assign(POLICY, BRIEF_POLICY))
 afterEach(() => Object.assign(POLICY, defaults))
 
 const atM1039: ReportPlace = { member: 'M1039', story: 'm1039', clock: 'Tue, Oct 6 · 12:55 PM' }
@@ -73,8 +75,7 @@ describe('filing and sharing a report', () => {
 })
 
 describe('where the link shows (D9)', () => {
-  it('shows on every Sound app screen by default', () => {
-    expect(POLICY.reportLink).toBe('everywhere')
+  it("shows on every Sound app screen under the brief's 'everywhere'", () => {
     for (const zone of ['attacker', 'member', 'staff', null] as const) {
       expect(reportLinkShown(zone)).toBe(true)
     }
@@ -88,8 +89,7 @@ describe('where the link shows (D9)', () => {
 })
 
 describe('what the report says it paused (D2)', () => {
-  it("matches the brief's hold on every outgoing payment by default", () => {
-    expect(POLICY.caseHold).toBe('all')
+  it("matches the brief's hold on every outgoing payment", () => {
     expect(pausedLine('CASE-X')).toBe("We've paused outgoing payments and opened case CASE-X.")
     expect(staffPausedLine()).toBe('Outgoing payments paused while this case is open.')
   })

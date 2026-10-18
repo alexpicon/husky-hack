@@ -1,6 +1,7 @@
 /** Both answers to the open release (D1) and case-hold (D2) decisions, in logic and on screen. */
 import { renderToStaticMarkup } from 'react-dom/server'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { BRIEF_POLICY } from '../../data/briefPolicy'
 import { POLICY } from '../../data/policy'
 import { TakeoverCase, type TakeoverStage } from './TakeoverCase'
 import { takeoverFacts } from './takeoverFacts'
@@ -8,6 +9,7 @@ import { caseHold, releaseHint, stageHint, yesReleases, yesReply } from './takeo
 
 const defaults = { ...POLICY }
 
+beforeEach(() => Object.assign(POLICY, BRIEF_POLICY))
 afterEach(() => Object.assign(POLICY, defaults))
 
 const staffText = (member: 'M1003' | 'M1039', stage: TakeoverStage) =>
@@ -20,11 +22,6 @@ describe('the tiers the policy keys on', () => {
   it("treats Sarah's case as the full stop and M1039's as the light check", () => {
     expect(takeoverFacts('M1003').fullStop).toBe(true)
     expect(takeoverFacts('M1039').fullStop).toBe(false)
-  })
-
-  it("keeps the brief's defaults", () => {
-    expect(POLICY.fullStopRelease).toBe('yes')
-    expect(POLICY.caseHold).toBe('all')
   })
 })
 

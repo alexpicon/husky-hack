@@ -2,6 +2,7 @@
 import type { ReactNode } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { BRIEF_POLICY } from '../data/briefPolicy'
 import { POLICY } from '../data/policy'
 import { BothStage } from '../shell/Stages'
 import { linda } from '../story/linda'
@@ -20,6 +21,7 @@ vi.mock('../shell/sync', () => ({ useWindowSync: () => {} }))
 const defaults = { ...POLICY }
 beforeEach(() => {
   look.current = 'sound'
+  Object.assign(POLICY, BRIEF_POLICY)
 })
 afterEach(() => Object.assign(POLICY, defaults))
 

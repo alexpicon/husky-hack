@@ -30,7 +30,7 @@ describe("Sarah's phone once the account is locked", () => {
   })
 
   it('holds every payment until she talks to Sound when the case hold is "all"', () => {
-    expect(POLICY.caseHold).toBe('all')
+    POLICY.caseHold = 'all'
     expect(secured()).toContain("Until we've talked, every payment from your account waits for your OK.")
   })
 

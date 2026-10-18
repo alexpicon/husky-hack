@@ -1,10 +1,15 @@
 /** The staff case names the takeover tier that fired and why. */
 import { renderToStaticMarkup } from 'react-dom/server'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { BRIEF_POLICY } from '../../data/briefPolicy'
 import { POLICY } from '../../data/policy'
 import { TakeoverCase, type TakeoverStage } from './TakeoverCase'
 import { takeoverFacts, tierReasons } from './takeoverFacts'
 import { TakeoverTier } from './TakeoverTier'
+
+const inEffect = { ...POLICY }
+beforeEach(() => Object.assign(POLICY, BRIEF_POLICY))
+afterEach(() => Object.assign(POLICY, inEffect))
 
 const textOf = (html: string) =>
   html
@@ -16,9 +21,8 @@ const staffText = (member: 'M1003' | 'M1039', stage: TakeoverStage) =>
   textOf(renderToStaticMarkup(<TakeoverCase member={member} stage={stage} />))
 
 describe("Sarah's case: the full stop", () => {
-  const f = takeoverFacts('M1003')
-
   it('is the full stop because her email and phone changed and nobody confirmed it', () => {
+    const f = takeoverFacts('M1003')
     expect(f.tier).toBe('stop')
     expect(f.changeConfirmed).toBe(false)
     expect(tierReasons(f)).toHaveLength(1)
@@ -71,8 +75,6 @@ describe('a contact change confirmed on the prior number', () => {
 })
 
 describe('D3, the 2-hour rule, on the staff case', () => {
-  const defaults = { ...POLICY }
-  afterEach(() => Object.assign(POLICY, defaults))
   const rule = /2-hour rule: a payee added today, paid 13 min after a password reset/
 
   it('adds its reason to Sarah\'s full stop only when the rule is on', () => {
