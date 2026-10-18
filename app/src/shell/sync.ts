@@ -37,7 +37,7 @@ export function useWindowSync<T>(kind: string, state: T, apply: (state: T) => vo
     if (channel) channel.onmessage = (e: MessageEvent<Message>) => onMessage(e.data)
     const hot = import.meta.hot
     hot?.on(CHANNEL, onMessage)
-    const offRemote = subscribeRemote((k, json) => onMessage({ kind: k, json }))
+    const offRemote = subscribeRemote(kind, (json) => onMessage({ kind, json }))
     const offAnnounce = onAnnounce(() => {
       if (peer.current.json !== null) void sendRemote(kind, peer.current.json)
     })

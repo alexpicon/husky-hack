@@ -8,7 +8,7 @@ import { useSyncExternalStore } from 'react'
 export type SessionStatus = 'off' | 'connecting' | 'live' | 'offline'
 
 type Entry = { json: string; rev: number } | null
-type Listener = (kind: string, json: string) => void
+type Listener = (json: string) => void
 
 const POLL_MS = 700
 const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'
@@ -16,7 +16,7 @@ const VALID = /^[A-Z0-9]{4,8}$/
 
 const revs: Record<string, number> = {}
 const pending: Record<string, number> = {}
-const listeners = new Set<Listener>()
+const listeners = new Map<string, Set<Listener>>()
 const announcers = new Set<() => void>()
 const watchers = new Set<() => void>()
 
@@ -59,9 +59,11 @@ async function poll() {
     if (asked !== id) return
     setStatus('live')
     for (const [kind, entry] of Object.entries(state)) {
-      if (!entry || pending[kind] || entry.rev <= (revs[kind] ?? 0)) continue
+      const heard = listeners.get(kind)
+      // A kind no store listens to yet stays unread, so a store that mounts later still gets it.
+      if (!entry || !heard?.size || pending[kind] || entry.rev <= (revs[kind] ?? 0)) continue
       revs[kind] = entry.rev
-      listeners.forEach((l) => l(kind, entry.json))
+      heard.forEach((l) => l(entry.json))
     }
   } catch {
     if (asked === id) setStatus('offline')
@@ -94,9 +96,10 @@ export async function sendRemote(kind: string, json: string) {
   }
 }
 
-export function subscribeRemote(listener: Listener) {
-  listeners.add(listener)
-  return () => void listeners.delete(listener)
+export function subscribeRemote(kind: string, listener: Listener) {
+  const heard = listeners.get(kind) ?? new Set<Listener>()
+  listeners.set(kind, heard.add(listener))
+  return () => void heard.delete(listener)
 }
 
 /** Called when this device starts a session, so it seeds the shared state. */
