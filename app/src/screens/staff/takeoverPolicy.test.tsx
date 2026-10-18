@@ -41,6 +41,9 @@ describe('releasing a full stop (D1)', () => {
     )
     expect(releaseHint('asked', false)).toBe('Needs a callback to the number on file before the change')
     expect(releaseHint('its-me', false)).toBe('Call the number on file before the change first')
+    for (const stage of ['not-me', 'secured'] as const) {
+      expect(releaseHint(stage, false, true)).toBe('Callback done: the member said NO')
+    }
     expect(stageHint('asked', false)).toMatch(/A YES alone does not release it/)
     expect(stageHint('not-me', false)).toBe(stageHint('not-me', true))
   })

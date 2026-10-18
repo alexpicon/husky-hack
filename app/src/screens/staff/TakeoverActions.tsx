@@ -9,11 +9,14 @@ export function TakeoverActions({
   name,
   stage,
   fullStop,
+  saidYesFirst = false,
   onCallbackDone,
 }: {
   name: string
   stage: TakeoverStage
   fullStop: boolean
+  /** The member texted YES before the specialist's callback heard NO. */
+  saidYesFirst?: boolean
   /** The specialist reached the member on the number on file before the change, and they confirmed. */
   onCallbackDone?: () => void
 }) {
@@ -51,7 +54,7 @@ export function TakeoverActions({
           accent="safe"
           icon={<Send size={18} />}
           label="Release (after verifying)"
-          hint={releaseHint(stage, yesOk)}
+          hint={releaseHint(stage, yesOk, saidYesFirst)}
           doneLabel="Released"
           onClick={stage === 'its-me' ? next : undefined}
         />

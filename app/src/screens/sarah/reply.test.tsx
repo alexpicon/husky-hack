@@ -162,6 +162,10 @@ describe.each(['concept', 'sound'] as const)('every device after her answer (%s 
     expect(secured.phone).toContain('We stopped the payment and locked online access')
     expect(secured.staff).toContain('Callback: NO')
     expect(secured.scammer).toContain('Signed out: account locked')
+    for (const later of [notMe, secured]) {
+      expect(later.staff).not.toContain('Needs a callback')
+      expect(later.staff).toContain('Callback done: the member said NO')
+    }
   })
 
   it('Yes and a confirmed callback, under "callback": released on every device, and later steps say so', () => {

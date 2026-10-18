@@ -63,7 +63,13 @@ export function TakeoverCase({
         />
         <ReportBanner member={member} />
         {(stage === 'secured' || (stage === 'released' && yesOk)) && <OutcomeBanner f={f} stage={stage} />}
-        <TakeoverActions name={f.name} stage={stage} fullStop={f.fullStop} onCallbackDone={onCallbackDone} />
+        <TakeoverActions
+          name={f.name}
+          stage={stage}
+          fullStop={f.fullStop}
+          saidYesFirst={saidYesFirst}
+          onCallbackDone={onCallbackDone}
+        />
         <div className="grid items-start gap-4 @2xl:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
           <div className="space-y-4">
             <SignalsPanel f={f} watching={watching} confirmed={confirmed} />

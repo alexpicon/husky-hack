@@ -63,7 +63,9 @@ const callbackHint: Partial<Record<TakeoverStage, string>> = {
 export const stageHint = (stage: TakeoverStage, yesOk: boolean) =>
   (yesOk ? undefined : callbackHint[stage]) ?? hint[stage]
 
-export function releaseHint(stage: TakeoverStage, yesOk: boolean) {
+/** `saidYesFirst`: the member texted YES, so a NO at this stage came from the specialist's callback. */
+export function releaseHint(stage: TakeoverStage, yesOk: boolean, saidYesFirst = false) {
+  if (saidYesFirst && heardNo(stage)) return 'Callback done: the member said NO'
   if (yesOk) {
     return stage === 'its-me' ? 'YES came from an unchanged contact' : 'Needs a YES on an unchanged contact'
   }
