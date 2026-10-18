@@ -62,7 +62,7 @@ describe('suggestTaps', () => {
       taps: [{ id: 'official', quote: 'lawyer' }],
       source: 'ai',
     })
-    const body = JSON.parse((posts(fetch)[0][1] as { body: string }).body)
+    const body = JSON.parse((posts(fetch)[0][1] as unknown as { body: string }).body)
     expect(body).toEqual({ mode: 'taps', screen: 'linda', text: TEXT })
   })
 
@@ -83,7 +83,7 @@ describe('suggestTaps', () => {
   it('sends at most 500 characters', async () => {
     const fetch = server('ai', () => Response.json({ taps: [] }))
     await suggestTaps('linda', 'x'.repeat(900), 'ai')
-    expect(JSON.parse((posts(fetch)[0][1] as { body: string }).body).text).toHaveLength(500)
+    expect(JSON.parse((posts(fetch)[0][1] as unknown as { body: string }).body).text).toHaveLength(500)
   })
 })
 
