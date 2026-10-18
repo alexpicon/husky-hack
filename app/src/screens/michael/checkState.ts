@@ -3,7 +3,7 @@ import { initialCheck, type MichaelCheck } from './check'
 
 /**
  * Michael's check lives outside React so his phone and the staff console share it inside one
- * window; one mounted <MichaelCheckSync /> per window keeps every window the same.
+ * window; one mounted <MichaelCheckSync /> per window sends the others only what he shares.
  */
 let current: MichaelCheck = initialCheck
 const listeners = new Set<() => void>()

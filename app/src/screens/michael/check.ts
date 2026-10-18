@@ -59,8 +59,9 @@ export const TEST_OPTIONS: { id: TestAnswer; label: string; reply: string }[] = 
 ]
 
 /**
- * Michael's answers on the pattern card and the held wire, shared by every window. `run` is the
- * demo run they belong to and `v` counts edits; a newer run wins, then the newer copy.
+ * Michael's answers on the pattern card and the held wire. Every window has the same check, except
+ * what he hasn't shared (see `outbound`). `run` is the demo run they belong to and `v` counts edits;
+ * a newer run wins, then the newer copy.
  */
 export type MichaelCheck = {
   run: number
@@ -76,6 +77,11 @@ export const initialCheck: MichaelCheck = { run: 0, v: 0, taps: [], shared: fals
 
 export const checkActions = {
   tap: (c: MichaelCheck, id: MichaelTap): MichaelCheck => ({ ...c, taps: toggleTap(c.taps, id) }),
+  /** Taps each listed answer that is off, in order, by the same rules; one already on stays on. */
+  addTaps: (c: MichaelCheck, ids: readonly MichaelTap[]): MichaelCheck => {
+    const taps = ids.reduce((on, id) => (on.includes(id) ? on : toggleTap(on, id)), c.taps)
+    return taps === c.taps ? c : { ...c, taps }
+  },
   share: (c: MichaelCheck, shared: boolean): MichaelCheck => ({ ...c, shared }),
   /** Each choice is final once given: a second window's late tap never changes it. */
   card: (c: MichaelCheck, card: CardChoice): MichaelCheck => (c.card ? c : { ...c, card }),
@@ -92,6 +98,26 @@ export function mergeChecks(local: MichaelCheck, incoming: MichaelCheck): Michae
   if (local.run !== incoming.run) return local.run > incoming.run ? local : incoming
   if (local.v !== incoming.v) return local.v > incoming.v ? local : incoming
   return JSON.stringify(local) >= JSON.stringify(incoming) ? local : incoming
+}
+
+/**
+ * The only copy that leaves this window: his taps and his withdrawal-test answer only while he
+ * shares them. Marking his own account always goes, since staff always see it.
+ */
+export function outbound(c: MichaelCheck): MichaelCheck {
+  return c.shared ? c : { ...c, taps: c.taps.filter((t) => t === 'own'), test: null }
+}
+
+/**
+ * Takes another window's outbound copy. Every window settles on the same shared check, and his
+ * unshared answers stay in the window where he gave them. A new run clears them, and so does a
+ * copy that stops sharing: the taps it shared before leave every other window.
+ */
+export function receiveCheck(local: MichaelCheck, incoming: MichaelCheck): MichaelCheck {
+  if (mergeChecks(outbound(local), incoming) !== incoming) return local
+  if (incoming.run !== local.run || incoming.shared || local.shared) return incoming
+  const taps = incoming.taps.includes('own') ? incoming.taps : local.taps.filter((t) => t !== 'own')
+  return { ...incoming, taps, test: local.test }
 }
 
 /**

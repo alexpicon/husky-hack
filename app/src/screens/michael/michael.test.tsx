@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { eventsFor } from '../../data/kit'
 import { michael } from '../../story/michael'
 import { clock } from '../../ui/format'
-import { initialCheck, mergeChecks, romanceFit, staffView, toggleTap } from './check'
+import { checkActions, initialCheck, mergeChecks, romanceFit, staffView, toggleTap, type MichaelTap } from './check'
 import { writeCheck } from './checkState'
 import { MICHAEL, michaelFacts, patternFact, ROMANCE_LINE, wireFact } from './facts'
 
@@ -66,6 +66,17 @@ describe('the silent check', () => {
     expect(toggleTap(['none'], 'own')).toEqual(['own'])
     expect(toggleTap(['own'], 'secret')).toEqual(['secret'])
     expect(toggleTap(['secret'], 'secret')).toEqual([])
+  })
+
+  it('adds several taps at once by the same rules, never turning one off', () => {
+    const add = (taps: MichaelTap[], ids: MichaelTap[]) => checkActions.addTaps({ ...initialCheck, taps }, ids).taps
+    expect(add([], ['investment', 'never-met'])).toEqual(['never-met', 'investment'])
+    expect(add(['never-met', 'secret'], ['never-met', 'investment'])).toEqual(['never-met', 'investment', 'secret'])
+    expect(add(['none'], ['secret'])).toEqual(['secret'])
+    expect(add(['own'], ['emergency'])).toEqual(['emergency'])
+    const tapped = { ...initialCheck, taps: ['secret'] as MichaelTap[] }
+    expect(checkActions.addTaps(tapped, ['secret'])).toBe(tapped)
+    expect(checkActions.addTaps(tapped, [])).toBe(tapped)
   })
 
   it('names the scam only on 2 or more fitting taps', () => {
