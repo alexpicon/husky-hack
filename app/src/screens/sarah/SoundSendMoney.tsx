@@ -14,11 +14,7 @@ export function SoundSendMoney() {
   const { next } = useStory()
   const { paused, recipientAdded } = sarah
   return (
-    <Phone
-      time={clock(paused.at)}
-      statusBar="navy"
-      caption="Sarah's account, but it's the scammer holding the phone"
-    >
+    <Phone time={clock(paused.at)} statusBar="navy">
       <SoundAppScreen title="Pay Anyone" tab="move" back>
         <div className="flex min-h-full flex-col gap-3">
           <SoundCard className="flex items-center gap-3.5">

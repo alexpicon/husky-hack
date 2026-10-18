@@ -32,7 +32,7 @@ function ConceptSendMoney() {
   const { next } = useStory()
   const { paused, recipientAdded } = sarah
   return (
-    <Phone time={clock(paused.at)} caption="Sarah's account, but it's the scammer holding the phone">
+    <Phone time={clock(paused.at)}>
       <div className="flex min-h-full flex-col bg-white">
         <SoundBar channel={paused.channel} />
         <ScreenTitle>Send money</ScreenTitle>

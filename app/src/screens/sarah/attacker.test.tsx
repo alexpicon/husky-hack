@@ -11,6 +11,7 @@ import { TakeoverCase } from '../staff/TakeoverCase'
 import { Ask } from './Ask'
 import { sarah } from './facts'
 import { Paused } from './Paused'
+import { SendMoney } from './SendMoney'
 
 const look = vi.hoisted(() => ({ current: 'concept' as 'concept' | 'sound' }))
 
@@ -56,6 +57,17 @@ describe.each(['concept', 'sound'] as const)("the attacker's paused screen (%s l
 
   it('does not say who else is being asked', () => {
     expect(text).not.toMatch(/contact details/i)
+  })
+})
+
+describe.each(['concept', 'sound'] as const)("the captions under the scammer's phone (%s look)", (variant) => {
+  look.current = variant
+  const send = textOf(renderToStaticMarkup(<SendMoney />))
+  const paused = textOf(renderToStaticMarkup(<Paused />))
+
+  it("leaves whose phone it is to the zone label, and keeps the pause's caption", () => {
+    expect(send).not.toContain("Sarah's account, but it's the scammer holding the phone")
+    expect(paused).toContain('There is no button to get around the pause')
   })
 })
 
