@@ -1,6 +1,7 @@
 import { MessageSquareText, ThumbsDown, ThumbsUp } from 'lucide-react'
 import { Source } from '../../ui/primitives'
 import { Panel, StatusPill } from './parts'
+import { HOLD_HOURS } from './trickedFacts'
 import { heardNo, heardYes } from './takeoverStages'
 import { priorContact, type TakeoverFacts } from './takeoverFacts'
 import type { TakeoverStage } from './TakeoverCase'
@@ -51,7 +52,9 @@ export function ResponsePanel({ f, stage }: { f: TakeoverFacts; stage: TakeoverS
       </p>
       {stage === 'asked' && (
         <p className="mt-1.5 text-xs text-ink-3">
-          No reply? The member can call the number on their card or visit a branch.
+          No reply within {HOLD_HOURS} hours: it isn't sent, Sound texts and calls the number on file,
+          and the member can send it again. They can also call the number on their card or visit a
+          branch.
         </p>
       )}
     </Panel>

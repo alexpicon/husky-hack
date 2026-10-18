@@ -14,13 +14,9 @@ export function SoundMark({ size = 28 }: { size?: number }) {
 export function AppBar({ title }: { title: string }) {
   return (
     <div className="flex items-center gap-2 px-4 pt-1 pb-3">
-      <button
-        type="button"
-        aria-label="Back"
-        className="grid size-9 place-items-center rounded-full text-ink-2 hover:bg-slate-100"
-      >
+      <span className="grid size-9 place-items-center text-ink-2" aria-hidden>
         <ChevronLeft size={22} />
-      </button>
+      </span>
       <span className="flex-1 text-center text-[16px] font-semibold text-ink">{title}</span>
       <span className="grid size-9 place-items-center">
         <SoundMark size={24} />

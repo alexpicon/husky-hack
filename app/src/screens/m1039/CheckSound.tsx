@@ -1,14 +1,17 @@
-import { MessageSquareText } from 'lucide-react'
+import { useState } from 'react'
+import { Building2, MessageSquareText } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useStory } from '../../story/engine'
 import { money } from '../../ui/format'
 import { SOUND, SoundAppScreen, SoundButton, SoundCard, SoundRow } from '../../ui/soundApp'
-import { facts, HOLD_HOURS } from './facts'
+import { LOST_PHONE, lostPhone, noAnswerInApp } from './answers'
+import { facts } from './facts'
 import { SoundChip } from './soundParts'
 import { muted } from './soundTokens'
 
-export function CheckSound() {
+export function CheckSound({ phoneLost = false }: { phoneLost?: boolean }) {
   const { next } = useStory()
+  const [lost, setLost] = useState(phoneLost)
   const { payment } = facts
   return (
     <SoundAppScreen title="Bill Pay" tab="payments" back>
@@ -39,15 +42,33 @@ export function CheckSound() {
           </SoundCard>
         </motion.div>
 
-        <SoundButton onClick={next}>
-          <MessageSquareText size={19} />
-          Check your messages
-        </SoundButton>
+        {lost ? (
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} role="status">
+            <SoundCard className="flex gap-3">
+              <Building2 size={40} strokeWidth={1.5} color={SOUND.navy} className="shrink-0" aria-hidden />
+              <div className="min-w-0">
+                <div className="text-[17px] leading-tight font-bold">{lostPhone.title}</div>
+                <p className="mt-1 text-[15px] leading-snug" style={muted}>
+                  {lostPhone.body}
+                </p>
+              </div>
+            </SoundCard>
+          </motion.div>
+        ) : (
+          <>
+            <SoundButton onClick={next}>
+              <MessageSquareText size={19} />
+              Check your messages
+            </SoundButton>
+            <SoundButton variant="outline" onClick={() => setLost(true)}>
+              {LOST_PHONE}
+            </SoundButton>
+          </>
+        )}
 
-        <div className="space-y-1 pt-0.5 text-center text-[13px] leading-snug text-balance" style={muted}>
-          <p>Your payment is saved. It can wait up to {HOLD_HOURS} hours.</p>
-          <p>No phone handy? Call the number on your card.</p>
-        </div>
+        <p className="pt-0.5 text-center text-[13px] leading-snug text-balance" style={muted}>
+          {noAnswerInApp}
+        </p>
       </div>
     </SoundAppScreen>
   )
