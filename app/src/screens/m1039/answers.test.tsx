@@ -42,12 +42,14 @@ describe.each(['concept', 'sound'] as const)("the text to M1039's phone (%s look
     expect(notSure).not.toContain('Yes, it was me')
   })
 
-  it('says what happens if nobody answers in 4 hours', () => {
-    for (const text of [textOf(unanswered), no, notSure]) {
-      expect(text).toContain(
-        "No answer within 4 hours? It isn't sent. We'll text and call this number, and you can send it again.",
-      )
-    }
+  it('says what happens if nobody answers in 4 hours, until an answer comes', () => {
+    expect(textOf(unanswered)).toContain(
+      "No answer within 4 hours? It isn't sent. We'll text and call this number, and you can send it again.",
+    )
+    const answered = (['yes', 'no', 'not-sure', 'lost-phone'] as const).map((a) =>
+      textOf(renderToStaticMarkup(<TapScreen answered={a} />)),
+    )
+    for (const text of answered) expect(text).not.toContain('No answer within')
   })
 })
 

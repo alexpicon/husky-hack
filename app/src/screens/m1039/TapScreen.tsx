@@ -98,8 +98,8 @@ export function TapScreen({ answered = null }: { answered?: M1039Answer | null }
           </div>
         </motion.div>
       )}
-      {/* Yes and a lost phone close the request, so the 4-hour line no longer applies. */}
-      {answer !== 'yes' && answer !== 'lost-phone' && (
+      {/* Every answer has its own outcome in the reply above, so the 4-hour line is for no answer only. */}
+      {!answer && (
         <p className="flex gap-2 px-5 pt-3 pb-6 text-[14px] leading-snug text-ink-3">
           <Clock size={15} className="mt-0.5 shrink-0" aria-hidden />
           {noAnswerOnText}
