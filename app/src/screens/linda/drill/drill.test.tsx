@@ -100,6 +100,21 @@ describe('a round', () => {
     expect(round(scripted).match(/"Grandma, it's me\."/g)).toHaveLength(2)
   })
 
+  it('describes each play button by its status, which its label would otherwise hide', () => {
+    const statuses = (game: Game) => {
+      const html = markupOf(game)
+      return [...html.matchAll(/aria-label="(?:Play|Pause) (Recording [AB])" aria-describedby="([^"]+)"/g)].map(
+        ([, name, id]) => {
+          const at = html.indexOf(`id="${id}"`)
+          return `${name}: ${at < 0 ? '' : html.slice(html.indexOf('>', at) + 1, html.indexOf('<', at))}`
+        },
+      )
+    }
+    expect(statuses(start())).toEqual(['Recording A: Not played yet', 'Recording B: Not played yet'])
+    expect(statuses(markHeard(start(), 'a'))).toEqual(['Recording A: Played', 'Recording B: Not played yet'])
+    expect(statuses(markMissing(start(), 'b'))).toEqual(['Recording A: Not played yet', `Recording B: ${NOT_ADDED}`])
+  })
+
   it('says a recording is not added yet, keeps the words, and offers to skip', () => {
     const scripted = newGame([{ ...PAIRS[0], transcript: "Grandma, it's me." }], 1)
     const text = round(markMissing(scripted, 'b'))

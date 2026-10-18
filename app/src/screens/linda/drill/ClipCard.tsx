@@ -1,3 +1,4 @@
+import { useId } from 'react'
 import { Bot, Pause, Play, UserRound, VolumeX } from 'lucide-react'
 import { SOUND } from '../../../ui/soundApp'
 import { letter, NOT_ADDED } from './copy'
@@ -46,6 +47,7 @@ function Reveal({ clip, credit, sound }: Skin & { clip: Clip; credit?: string })
 export function ClipCard(p: Props) {
   const muted = mutedText(p)
   const name = `Recording ${letter(p.side)}`
+  const statusId = useId()
   const status = p.missing ? NOT_ADDED : p.playing ? 'Playing' : p.heard ? 'Played' : 'Not played yet'
   const Icon = p.missing ? VolumeX : p.playing ? Pause : Play
   const fill = p.sound ? SOUND.action : 'var(--color-ink)'
@@ -65,6 +67,7 @@ export function ClipCard(p: Props) {
         onClick={p.onToggle}
         disabled={p.missing}
         aria-label={`${p.playing ? 'Pause' : 'Play'} ${name}`}
+        aria-describedby={statusId}
         className="flex min-h-12 w-full items-center gap-3 rounded-xl text-left transition active:scale-[0.99] disabled:cursor-not-allowed"
       >
         <span
@@ -74,7 +77,7 @@ export function ClipCard(p: Props) {
           <Icon size={20} aria-hidden />
         </span>
         <span className="text-[17px] font-semibold">{name}</span>
-        <span className={`ml-auto text-[13px] ${muted.className}`} style={muted.style}>
+        <span id={statusId} className={`ml-auto text-[13px] ${muted.className}`} style={muted.style}>
           {status}
         </span>
       </button>
