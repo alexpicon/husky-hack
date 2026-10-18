@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { createContext, useContext, type ReactNode } from 'react'
 
 export type Tone = 'neutral' | 'brand' | 'safe' | 'warn' | 'danger'
 
@@ -90,8 +90,17 @@ export function Eyebrow({ children }: { children: ReactNode }) {
   )
 }
 
-/** Cites the kit row a fact on screen comes from. */
+const OnDevice = createContext(false)
+
+/** Marks a member's device screen: a kit row ID there would read as an internal code. */
+export function DeviceScreen({ children }: { children: ReactNode }) {
+  return <OnDevice.Provider value>{children}</OnDevice.Provider>
+}
+
+/** Cites the kit row a fact on screen comes from, on staff screens and kit cards only. */
 export function Source({ ids }: { ids: string | string[] }) {
+  const onDevice = useContext(OnDevice)
+  if (onDevice) return null
   const list = Array.isArray(ids) ? ids : [ids]
   return (
     <span

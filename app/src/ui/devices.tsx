@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { BatteryFull, ShieldCheck, Signal, Wifi } from 'lucide-react'
+import { DeviceScreen } from './primitives'
 
 type PhoneProps = {
   time: string
@@ -30,7 +31,9 @@ export function Phone({ time, caption, dark = false, statusBar, children }: Phon
               <BatteryFull size={16} />
             </span>
           </div>
-          <div className="h-[652px] overflow-y-auto">{children}</div>
+          <div className="h-[652px] overflow-y-auto">
+            <DeviceScreen>{children}</DeviceScreen>
+          </div>
         </div>
       </div>
       {caption && <figcaption className="text-xs font-medium text-ink-3">{caption}</figcaption>}
@@ -44,7 +47,9 @@ export function Tablet({ caption, children }: { caption?: string; children: Reac
       <div className="rounded-[2.2rem] bg-slate-900 p-4 shadow-device ring-1 ring-slate-700">
         {/* Positioned but not scrolling, so a sheet opened on the tablet covers its screen. */}
         <div className="relative h-[460px] w-[640px] overflow-hidden rounded-[1.4rem] bg-white">
-          <div className="h-full overflow-y-auto">{children}</div>
+          <div className="h-full overflow-y-auto">
+            <DeviceScreen>{children}</DeviceScreen>
+          </div>
         </div>
       </div>
       {caption && <figcaption className="text-xs font-medium text-ink-3">{caption}</figcaption>}
