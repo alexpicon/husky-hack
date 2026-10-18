@@ -9,6 +9,7 @@ import { TakeoverCase } from '../screens/staff/TakeoverCase'
 import { IdleDevice } from '../shell/Zone'
 import { clock, money } from '../ui/format'
 import type { Scenario } from './engine'
+import { OPENINGS } from './openings'
 
 const { paused, phoneChange, second, key, minutesResetToPause, minutesRecipientToPause } = facts
 
@@ -32,6 +33,7 @@ export const sarah: Scenario = {
     {
       id: 'signals',
       title: `Someone is about to send ${money(paused.amount)} from Sarah's account`,
+      opening: OPENINGS.sarah,
       caption: `${minutesResetToPause} minutes after a password reset, someone signed in as Sarah is paying a recipient added ${minutesRecipientToPause} minutes ago.`,
       clock: storyClock(paused.at),
       attacker: <SendMoney />,

@@ -9,6 +9,7 @@ import { PatternCase } from '../screens/staff/PatternCase'
 import { HOLD_HOURS, shortDate } from '../screens/linda/facts'
 import { clock, day, money } from '../ui/format'
 import type { Scenario } from './engine'
+import { OPENINGS } from './openings'
 
 const f = michaelFacts()
 const at = (d: Date) => `${day(d)} · ${clock(d)}`
@@ -22,6 +23,7 @@ export const michael: Scenario = {
     {
       id: 'pattern',
       title: 'Each payment bigger than the last',
+      opening: OPENINGS.michael,
       caption: `No single payment looks risky: ${amounts(f.run)} to someone he added on ${shortDate(f.cardPayeeAdded.at)}. Before the ${ordinal(f.run.length)} sends, Sound shows him the pattern, a silent check, and one check he can do himself: try taking $100 out of the platform. Send still works. He decides.`,
       clock: at(f.card.at),
       member: (

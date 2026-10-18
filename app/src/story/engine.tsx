@@ -7,6 +7,8 @@ export type Step = {
   title: string
   /** One plain sentence the presenter can read aloud. */
   caption: string
+  /** A short human line that opens the story, in words the kit supports. */
+  opening?: string
   /** Story clock shown above the stage, e.g. "Thu, Oct 15 · 10:22 PM". */
   clock: string
   member: ReactNode

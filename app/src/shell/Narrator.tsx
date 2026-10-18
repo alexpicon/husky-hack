@@ -3,6 +3,7 @@ import { motion } from 'motion/react'
 import type { ReactNode } from 'react'
 import type { Step } from '../story/engine'
 import { Button } from '../ui/primitives'
+import { Opening } from './Opening'
 
 type Props = {
   steps: Step[]
@@ -34,6 +35,7 @@ export function Narrator({ steps, index, onPrev, onNext, onGo, extra }: Props) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.2 }}
         >
+          {step.opening && <Opening line={step.opening} className="mt-3 text-[22px]" />}
           <h1 className="mt-2 font-display text-[40px] leading-[1.05] tracking-tight">
             {step.title}
           </h1>

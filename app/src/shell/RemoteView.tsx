@@ -3,6 +3,7 @@ import type { Scenario } from '../story/engine'
 import { LookToggle } from '../ui/look'
 import { toneDot } from '../ui/primitives'
 import type { Tab } from './Header'
+import { Opening } from './Opening'
 import { SessionControl } from './SessionControl'
 
 type Props = {
@@ -54,6 +55,7 @@ export function RemoteView({ tabs, active, scenario, index, onSelect, onPrev, on
               <Clock size={12} /> {step.clock}
             </span>
           </div>
+          {step.opening && <Opening line={step.opening} className="mt-3 text-[19px]" />}
           <h1 className="mt-3 font-display text-[30px] leading-tight">{step.title}</h1>
           <p className="mt-3 text-[17px] leading-relaxed text-ink-2">{step.caption}</p>
           <div className="mt-auto flex justify-center gap-2 pt-5" role="group" aria-label="Steps">

@@ -10,6 +10,7 @@ import { TrustedPhone } from '../screens/linda/TrustedPhone'
 import { TrustedRules } from '../screens/linda/TrustedRules'
 import { clock, day } from '../ui/format'
 import type { Scenario } from './engine'
+import { OPENINGS } from './openings'
 
 const f = lindaFacts()
 const t = storyTimes()
@@ -27,6 +28,7 @@ export const linda: Scenario = {
       id: 'today',
       memberLabel: 'What happened, from the kit',
       title: 'Sound already tried. Secrecy won.',
+      opening: OPENINGS.linda,
       caption: `Linda's ${amount} wire was held, a trusted contact was offered, and Sound called her. She had been told to keep it secret, so it went anyway.`,
       clock: at(t.caught),
       member: (

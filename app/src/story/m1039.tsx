@@ -11,6 +11,7 @@ import { TapScreen } from '../screens/m1039/TapScreen'
 import { TakeoverCase } from '../screens/staff/TakeoverCase'
 import { clock, day, money } from '../ui/format'
 import type { Scenario } from './engine'
+import { OPENINGS } from './openings'
 
 const { payment, reset, address, tapAt } = facts
 const paidAt = `${day(payment.at)} · ${clock(payment.at)}`
@@ -26,6 +27,7 @@ export const m1039: Scenario = {
     {
       id: 'signals',
       title: 'Same signals, honest member',
+      opening: OPENINGS.m1039,
       caption: `Yesterday this member reset a forgotten password at ${clock(reset.at)} and updated their address after a move at ${clock(address.at)}. Now they pay ${money(payment.amount)} to a new landlord. When they press Send, the light check fires: only the address changed.`,
       clock: paidAt,
       member: (

@@ -22,3 +22,20 @@ describe('the step dots', () => {
     expect(html).toMatch(/aria-label="Step 2: Title b" aria-current="step"/)
   })
 })
+
+describe('the opening line', () => {
+  const render = (opening?: string) =>
+    renderToStaticMarkup(
+      <Narrator steps={[{ ...step('a'), opening }]} index={0} onPrev={noop} onNext={noop} onGo={noop} />,
+    )
+
+  it('shows as a quote above the headline when the step has one', () => {
+    const html = render('A line someone said.')
+    expect(html).toMatch(/<blockquote[^>]*>A line someone said\.<\/blockquote>/)
+    expect(html.indexOf('<blockquote')).toBeLessThan(html.indexOf('<h1'))
+  })
+
+  it('is left out when the step has none', () => {
+    expect(render()).not.toContain('<blockquote')
+  })
+})

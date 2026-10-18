@@ -12,6 +12,7 @@ import { TellerHeadsUp } from '../screens/staff/TellerHeadsUp'
 import { TellerOutcome } from '../screens/staff/TellerOutcome'
 import { clock, day } from '../ui/format'
 import type { Scenario } from './engine'
+import { OPENINGS } from './openings'
 
 const f = jamesFacts()
 const at = (d: Date) => `${day(d)} · ${clock(d)}`
@@ -27,6 +28,7 @@ export const james: Scenario = {
       id: 'call',
       memberLabel: 'What happened, from the kit',
       title: 'A call the day before',
+      opening: OPENINGS.james,
       caption: `${JAMES_NAME} calls the contact center about the daily cash limit and how fast a wire arrives. Sound already keeps this record; Second Look connects it to tomorrow's branch visit. As a pilot concept, the agent also gets one question to ask on the call, from its reason code alone.`,
       clock: at(f.call.at),
       member: (
