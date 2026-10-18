@@ -4,7 +4,7 @@ import { useStory } from '../../story/engine'
 import { yesReleases, yesReply } from '../staff/takeoverStages'
 import { afterPause } from './facts'
 import { Bubble } from './SoundChrome'
-import { AskMessages, NeverACode, SarahsPhone, ScrollToLatest } from './Thread'
+import { AskMessages, SarahsPhone, ScrollToLatest } from './Thread'
 
 const reply =
   'flex h-12 w-full items-center justify-center rounded-2xl text-[17px] font-semibold transition active:scale-[0.98]'
@@ -24,9 +24,6 @@ export function Ask() {
             <ScrollToLatest after={350} />
           </>
         )}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
-          <NeverACode />
-        </motion.div>
       </div>
 
       <motion.div
