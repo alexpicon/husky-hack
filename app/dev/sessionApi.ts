@@ -4,7 +4,7 @@ import type { Plugin } from 'vite'
 /** In-memory twin of api/session.ts so sessions work under `npm run dev` and `npm run demo`. */
 export function devSessionApi(): Plugin {
   const store = new Map<string, { json: string; rev: number }>()
-  const kinds = ['position', 'look', 'linda', 'report']
+  const kinds = ['position', 'look', 'linda', 'report', 'michael']
   const valid = /^[A-Z0-9]{4,8}$/
 
   const readBody = (req: IncomingMessage) =>
