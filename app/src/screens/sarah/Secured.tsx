@@ -30,7 +30,7 @@ export function Secured() {
   const { paused } = sarah
   return (
     <div className="flex flex-col items-center">
-      <SarahsPhone at={afterPause(2)} caption={false}>
+      <SarahsPhone at={afterPause(2)}>
         <div className="flex flex-col gap-2 px-4 pt-4">
           <motion.div
             initial={{ opacity: 0, y: 12, scale: 0.98 }}

@@ -6,25 +6,10 @@ import { sarah } from './facts'
 import { Bubble, ThreadHeader } from './SoundChrome'
 
 /** The real Sarah's phone: the number on file before tonight's change. */
-export function SarahsPhone({
-  at,
-  caption = true,
-  children,
-}: {
-  at: Date
-  caption?: boolean
-  children: ReactNode
-}) {
+export function SarahsPhone({ at, children }: { at: Date; children: ReactNode }) {
   return (
     <div className="flex flex-col items-center gap-3">
-      <Phone
-        time={clock(at)}
-        caption={
-          caption
-            ? `Sarah's phone - the number on file before ${clock(sarah.phoneChange.at)}`
-            : undefined
-        }
-      >
+      <Phone time={clock(at)}>
         <div className="flex min-h-full flex-col bg-white">
           <ThreadHeader when={`Today ${clock(at)}`} />
           {children}
