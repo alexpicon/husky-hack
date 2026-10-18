@@ -74,7 +74,7 @@ export function ClipCard(p: Props) {
           <Icon size={20} aria-hidden />
         </span>
         <span className="text-[17px] font-semibold">{name}</span>
-        <span className={`ml-auto text-[13px] ${muted.className}`} style={muted.style} aria-live="polite">
+        <span className={`ml-auto text-[13px] ${muted.className}`} style={muted.style}>
           {status}
         </span>
       </button>

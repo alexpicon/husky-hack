@@ -56,7 +56,7 @@ export function loadVoiceCheck(fetcher: typeof fetch = fetch): Promise<DrillPair
   loading ??= Promise.all([
     get<CheckPair[]>('data/pairs.json'),
     get<CatalogClip[]>('data/catalog.json'),
-    get<Record<string, CheckPortrait>>('data/portraits.json').catch(() => ({})),
+    get<Record<string, CheckPortrait>>('data/portraits.json').catch((): Record<string, CheckPortrait> => ({})),
   ]).then(
     ([pairs, clips, portraits]) => toDrillPairs(pairs, clips, portraits, VOICE_CHECK),
     (error: unknown) => {

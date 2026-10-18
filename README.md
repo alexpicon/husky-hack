@@ -90,6 +90,13 @@ M1039 reset a forgotten password at 11:51 AM and updated their address at 12:07 
 
 In the kit: family emergency **10 of 12**, government impersonation 4 of 12, romance 0 of 12, takeover 0 of 12, look-alikes 0 of 20, routine 0 of 50. It fires first on Linda's $8,500 wire (P1001-003), 2,411 days after her last wire, at 4.77x.
 
+### Before her bad day: "Real or AI?" (a concept)
+Linda's story opens three weeks before her wire, on her phone in the Sound app, with an opt-in 2-minute drill. The kit has no drill, and the screen says it is a concept. Each round plays two recordings of one voice, one real and one AI. She plays both, picks the AI, and the answer comes with "Even when you're right, you can't be sure by ear." It ends on two habits, "Make a family safe word" and "Call back on the number YOU saved", and an offer to add a trusted contact (optional, removable, informed only). When her wire is held, the tablet leads with "Remember your drill: call back on the number you saved, or ask for your family safe word."
+- **It plays voices and never analyzes anyone's.** No voice analysis or clone detection: each answer is the pair's own label.
+- **No member data.** Her answers and score stay on her phone. Staff see only "Drill completed" and "Trusted contact added", and a shared session holds only those two facts.
+- **The recordings:** real and synthetic pairs of public figures from the In-the-Wild research dataset, bundled in `app/public/voice-check/` with photos and [their credits](app/public/voice-check/CREDITS.md). Every synthetic clip is labeled synthetic once the answer shows. The drill plays any list of pairs, so our own recordings (one scam line read by a teammate and by an AI voice) can join or replace them.
+- **On a judge's phone,** `?view=drill` opens the same drill on its own page.
+
 ### Linda: five steps
 Two labeled screens: **Linda: branch tablet** and **Sound staff: wire desk**.
 1. **What happened, from the kit.** Sound held her wire, offered a trusted contact and called her. She had been told to keep it secret, so it went anyway. The next day, $4,250 in cash "for bail" was stopped at the branch.
@@ -199,7 +206,7 @@ Each decision has both behaviors built and tested, with matching words on every 
 - **Whoever is signed in learns nothing.** The scammer's paused screen and M1039's in-app check carry no times, event IDs or signals. Render tests check both screens in both phone looks.
 - **Facts go only to a contact the attacker didn't set:** the number on file before the change, or a phone that never changed.
 - **Linda's answers stay on the tablet** unless she turns on "Share my answers with staff", which starts off for every case. Unshared answers never leave the device: no other window, laptop or shared session gets them, and turning sharing off takes them back off the other screens. Staff can't tell skipping from not sharing. Asking to talk privately is the one tap staff always see. Michael's taps and his withdrawal-test answer stay on his device the same way; marking a payee as his own account always shows, since it stops the card. James's taps never leave the tablet.
-- **A shared session** holds only the demo's state (the step, the phone look, the demo run, Sarah's and M1039's answers, Linda's case, Michael's check, James's answers and the report, without any answer not shared) under a short code. With Upstash Redis it expires after 12 hours; without it, it lives only in the server's memory.
+- **A shared session** holds only the demo's state (the step, the phone look, the demo run, Sarah's and M1039's answers, Linda's case, whether she finished the drill and added a trusted contact, Michael's check, James's answers and the report, without any answer not shared) under a short code. With Upstash Redis it expires after 12 hours; without it, it lives only in the server's memory.
 
 ## Accessibility (what is built)
 
