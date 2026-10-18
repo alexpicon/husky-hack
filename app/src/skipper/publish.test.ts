@@ -1,7 +1,7 @@
-/** When her Skipper words leave a window, and that the window settles with each member's words. */
+/** When her Skipper words leave a window, and that every window holding them settles on one copy. */
 import { describe, expect, it } from 'vitest'
 import { firstSeen, publishStep, type Now, type Seen } from './publish'
-import { editWords, initialWords, sharedFor, type SharedWords, type SkipperStory } from './shareState'
+import { editWords, initialWords, mergeWords, sharedFor, type SharedWords, type SkipperStory } from './shareState'
 
 const STORIES: SkipperStory[] = ['linda', 'michael']
 const LIMIT = 50
@@ -37,6 +37,20 @@ function settle(w: Win): number {
   return LIMIT
 }
 
+/** Both windows send their copy at once and merge the other's, until neither copy changes. */
+function exchange(a: Win, b: Win): number {
+  for (let trips = 1; trips <= LIMIT; trips++) {
+    const before = JSON.stringify([a.state, b.state])
+    const [fromA, fromB] = [a.state, b.state]
+    a.state = mergeWords(a.state, fromB)
+    b.state = mergeWords(b.state, fromA)
+    settle(a)
+    settle(b)
+    if (JSON.stringify([a.state, b.state]) === before) return trips
+  }
+  return LIMIT
+}
+
 const words = (w: Win, story: SkipperStory) => sharedFor(w.state, story, 0, 0)?.words ?? null
 
 describe('one window', () => {
@@ -60,5 +74,43 @@ describe('one window', () => {
     expect(settle(w)).toBeLessThan(4)
     expect(words(w, 'linda')).toBeNull()
     expect(words(w, 'michael')).toBe('we met online')
+  })
+})
+
+describe('two windows that heard different words for her', () => {
+  it.each([
+    ['at once', true],
+    ['one after the other', false],
+  ])('settle on one copy after one send each, when she shares %s', (_, together) => {
+    const a = win()
+    const c = win()
+    a.now.linda = sharing('AAAA my grandson is in jail')
+    settle(a)
+    if (!together) exchange(a, c)
+    c.now.linda = sharing('CCCC my grandson needs bail')
+    settle(c)
+    expect(exchange(a, c)).toBeLessThan(4)
+    expect(a.sent + c.sent).toBe(2)
+    expect(words(a, 'linda')).toBe(words(c, 'linda'))
+    expect(words(a, 'linda')).not.toBeNull()
+  })
+
+  it('still send new words typed in either window, and clear both when she stops sharing', () => {
+    const a = win()
+    const c = win()
+    a.now.linda = sharing('AAAA my grandson is in jail')
+    c.now.linda = sharing('CCCC my grandson needs bail')
+    settle(a)
+    settle(c)
+    exchange(a, c)
+    a.now.linda = sharing('AAAA his lawyer says keep it secret')
+    settle(a)
+    expect(exchange(a, c)).toBeLessThan(4)
+    expect(words(c, 'linda')).toBe('AAAA his lawyer says keep it secret')
+    a.now.linda = { ...a.now.linda, shared: false }
+    c.now.linda = { ...c.now.linda, shared: false }
+    settle(a)
+    expect(exchange(a, c)).toBeLessThan(4)
+    expect([words(a, 'linda'), words(c, 'linda')]).toEqual([null, null])
   })
 })
