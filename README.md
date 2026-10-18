@@ -102,7 +102,6 @@ What she tapped (only if she chooses to share it), the facts, a short script for
 
 **Michael (M1002), a romance scam.** His P2P payments grew slowly for weeks, then turned into wires. Neither trigger flags him. Across the kit's 12 romance cases, the tricked trigger catches only 1, and late. P2P money can't be recalled.
 - **What still helps:** the "I think I was scammed" report path starts recovery faster, and the pilot measures this gap.
-- We say it out loud because the judges asked for it, and it builds trust.
 
 ---
 
@@ -129,44 +128,12 @@ The kit is about 41% scam victims by design, and real life is far lower. So thes
 
 ---
 
-## Why it wins (by judging criteria)
-
-| Criterion | Why |
-|---|---|
-| **Member safety (30%)** | Stops takeovers before P2P money is gone, and fixes the exact spot where Linda's case failed today (secrecy). Includes a recovery path. |
-| **UX & trust (25%)** | Invisible to most members. Real members get a fast path. No blame. The member decides. |
-| **Feasibility (20%)** | Uses only fields Sound already has, plus a hold Sound can already do. No new vendor. |
-| **Innovation (15%)** | Not a warning or a score: a **true fact** from Sound's records plus a **silent check** that gets around "don't tell anyone". |
-| **Prototype (10%)** | Member screen and staff screen, live, on the kit's real personas. |
-
----
-
 ## 90-day pilot (all numbers are assumptions)
 
 - **Days 1–30:** run the triggers in the background only (shadow mode). Count how many honest members would be paused.
 - **Days 31–90:** turn on takeover mode for everyone, and tricked mode at 2 branches plus the wire desk.
 - **We measure:** dollars of harm prevented, time from hold to release for honest members (target: same day), how many members finish the silent check, staff time per case, and holds waiting after hours.
 - **Stop rule:** if honest members are bothered too often, raise the thresholds before expanding.
-
----
-
-## Demo
-
-**Today (2-minute pitch + 3 minutes of questions)**
-1. **0:00–1:00:** Sarah, live. The scammer's payment is stopped, the timeline card shows, and the staff case opens.
-2. **1:00–1:20:** M1039, who really moved: one tap, and the rent goes.
-3. **1:20–1:50:** "Tomorrow, the harder case. Linda lost $8,500 even after Sound held her wire. Here's how we beat the secrecy." (static screens)
-4. **1:50–2:00:** the pilot in one line.
-
-**Sunday (5-minute live demo + 3 minutes of questions, up to 10 slides)**
-Both modes live, both look-alikes, Michael as the honest miss, the trusted person, and the pilot.
-
----
-
-## Build plan
-
-**Today (due 3:00 PM):** takeover mode on Sarah + the M1039 look-alike + the staff case + 2–3 static screens for Linda. Submit at 2:50.
-**Sunday (due 3:00 PM):** Linda's mode working + M1057 + the trusted person + the Michael miss + slides + rehearsal.
 
 ---
 
