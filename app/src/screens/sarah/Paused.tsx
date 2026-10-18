@@ -1,10 +1,10 @@
-import { Hand } from 'lucide-react'
+import { Hourglass } from 'lucide-react'
 import { motion } from 'motion/react'
 import { Phone } from '../../ui/devices'
 import { clock, money } from '../../ui/format'
 import { useLook } from '../../ui/look'
-import { Badge, Source } from '../../ui/primitives'
-import { changesTonight, sarah } from './facts'
+import { Badge } from '../../ui/primitives'
+import { sarah } from './facts'
 import { SoundBar } from './SoundChrome'
 import { SoundPaused } from './SoundPaused'
 
@@ -26,57 +26,34 @@ function ConceptPaused() {
       <div className="flex min-h-full flex-col bg-white">
         <SoundBar channel={paused.channel} />
 
-        <div className="px-5 pt-4 pb-4">
+        <div className="px-5 pt-8 pb-4">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 260, damping: 18 }}
-            className="inline-flex items-center gap-1.5 rounded-full bg-warn-soft py-1 pr-3 pl-1.5 text-[13px] font-semibold text-warn ring-1 ring-amber-200"
+            className="grid size-14 place-items-center rounded-2xl bg-warn-soft text-warn ring-1 ring-amber-200"
           >
-            <span className="grid size-5 place-items-center rounded-full bg-white">
-              <Hand size={12} aria-hidden />
-            </span>
-            Payment paused
+            <Hourglass size={26} aria-hidden />
           </motion.div>
-          <h2 className="mt-3 font-display text-[29px] leading-[1.08] tracking-tight">
-            We've paused this payment to keep your account safe.
+          <h2 className="mt-5 font-display text-[29px] leading-[1.08] tracking-tight">
+            This payment is being reviewed.
           </h2>
-
-          <div className="mt-4 flex items-center justify-between rounded-2xl bg-warn-soft px-4 py-2 ring-1 ring-amber-200/80">
-            <div>
-              <div className="num text-[18px] font-semibold">{money(paused.amount)}</div>
-              <div className="text-[13px] text-ink-2">
-                {paused.rail} to a new recipient <Source ids={paused.id} />
-              </div>
-            </div>
-            <span className="rounded-full bg-white px-2.5 py-1 text-[12px] font-semibold text-warn ring-1 ring-amber-200">
-              Not sent
-            </span>
-          </div>
-
-          <p className="mt-4 text-[16px] font-semibold">Here's what changed on your account tonight:</p>
-          <ul className="mt-2 divide-y divide-line rounded-2xl ring-1 ring-line">
-            {changesTonight.map(({ label, event }, i) => (
-              <motion.li
-                key={event.id}
-                initial={{ opacity: 0, x: -6 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.15 + i * 0.08 }}
-                className="flex items-center gap-2.5 px-3.5 py-2"
-              >
-                <span className="flex w-[60px] shrink-0 flex-col leading-tight">
-                  <span className="num font-mono text-[12px] text-ink-2">{clock(event.at)}</span>
-                  <Source ids={event.id} />
-                </span>
-                <span className="text-[16px] font-medium">{label}</span>
-              </motion.li>
-            ))}
-          </ul>
-
-          <p className="mt-4 text-[16px] leading-relaxed text-ink-2">
-            If this was you, we'll confirm it with you using contact details you've had with us
-            for a while, or you can call the number on your card.
+          <p className="mt-2 text-[17px] leading-relaxed text-ink-2">
+            We'll let you know when it's done.
           </p>
+
+          <dl className="mt-6 divide-y divide-line rounded-2xl ring-1 ring-line">
+            <div className="flex items-center justify-between gap-3 px-4 py-3">
+              <dt className="text-[15px] text-ink-2">Payment</dt>
+              <dd className="num text-[18px] font-semibold">{money(paused.amount)}</dd>
+            </div>
+            <div className="flex items-center justify-between gap-3 px-4 py-3">
+              <dt className="text-[15px] text-ink-2">Status</dt>
+              <dd className="rounded-full bg-warn-soft px-2.5 py-1 text-[13px] font-semibold text-warn ring-1 ring-amber-200">
+                Pending review
+              </dd>
+            </div>
+          </dl>
         </div>
       </div>
     </Phone>

@@ -2,17 +2,26 @@ import { LifeBuoy, Lock, Send } from 'lucide-react'
 import { useState } from 'react'
 import { useStory } from '../../story/engine'
 import { ActionButton, Panel } from './parts'
-import { actionPlan, stageHint } from './takeoverStages'
+import { actionPlan, releaseHint, stageHint, yesReleases } from './takeoverStages'
 import type { TakeoverStage } from './TakeoverCase'
 
-export function TakeoverActions({ name, stage }: { name: string; stage: TakeoverStage }) {
+export function TakeoverActions({
+  name,
+  stage,
+  fullStop,
+}: {
+  name: string
+  stage: TakeoverStage
+  fullStop: boolean
+}) {
   const { next } = useStory()
   const [recovering, setRecovering] = useState(false)
   const plan = actionPlan[stage]
+  const yesOk = yesReleases(fullStop)
   return (
     <Panel
       title="Actions"
-      aside={<span className="text-xs font-medium text-ink-2">{stageHint[stage]}</span>}
+      aside={<span className="text-xs font-medium text-ink-2">{stageHint(stage, yesOk)}</span>}
       delay={0.05}
     >
       <div className="grid gap-2.5 pt-1 @2xl:grid-cols-3">
@@ -21,7 +30,7 @@ export function TakeoverActions({ name, stage }: { name: string; stage: Takeover
           accent="safe"
           icon={<Send size={18} />}
           label="Release (after verifying)"
-          hint={stage === 'its-me' ? 'YES came from a safe contact' : 'Needs a YES on a safe contact'}
+          hint={releaseHint(stage, yesOk)}
           doneLabel="Released"
           onClick={stage === 'its-me' ? next : undefined}
         />

@@ -36,21 +36,25 @@ export function SarahsPhone({
   )
 }
 
-/** Sound's question, sent only to contact details that did not just change. */
+/**
+ * Sound's text, sent only to contact details that did not just change. The facts go here,
+ * to the real member, never to whoever is signed in.
+ */
 export function AskMessages({ instant = false }: { instant?: boolean }) {
-  const { paused, emailChange, phoneChange } = sarah
+  const { paused, reset, emailChange, phoneChange, recipientAdded } = sarah
   return (
     <>
       <Bubble instant={instant} delay={0.1}>
-        Sound here. We paused a {money(paused.amount)} payment to a new recipient on your account
-        at {clock(paused.at)}.
+        Sound here. Tonight your password was reset at {clock(reset.at)}, and your email and
+        phone number were changed at {clock(emailChange.at)} and {clock(phoneChange.at)}.
       </Bubble>
       <Bubble instant={instant} delay={0.4}>
-        The email and phone number on your account were also changed tonight, at{' '}
-        {clock(emailChange.at)} and {clock(phoneChange.at)}.
+        We paused a payment from your account at {clock(paused.at)}. Are you sending{' '}
+        {money(paused.amount)} to a recipient added at {clock(recipientAdded.at)}?
       </Bubble>
       <Bubble instant={instant} delay={0.7}>
-        Was this you?
+        If a website or caller told you to expect this text, tap No. Sound will never call you
+        and ask you to tap Yes.
       </Bubble>
     </>
   )

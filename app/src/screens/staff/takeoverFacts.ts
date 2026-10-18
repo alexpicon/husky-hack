@@ -22,6 +22,8 @@ export type TakeoverFacts = {
   signals: TakeoverSignals
   reset: KitEvent
   changes: ContactChange[]
+  /** Email or phone changed: the full stop. An address change alone is the light check. */
+  fullStop: boolean
   recipientAdded: KitEvent
   trail: KitEvent[]
   followUp?: KitEvent
@@ -63,6 +65,7 @@ export function takeoverFacts(member: string): TakeoverFacts {
     signals: takeoverSignals(hit),
     reset,
     changes,
+    fullStop: changes.some((c) => c.kind !== 'address'),
     recipientAdded,
     trail: [...window.filter((e) => trailCategories.includes(e.category)), hit],
     followUp: all

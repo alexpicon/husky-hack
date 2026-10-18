@@ -66,11 +66,3 @@ export const storyClock = (d: Date) => `${day(d)} · ${clock(d)}`
 
 /** Narrative minutes after the pause; not a kit timestamp. */
 export const afterPause = (minutes: number) => new Date(paused.at.getTime() + minutes * 60_000)
-
-/** What changed on the account tonight, in the order the member sees it. */
-export const changesTonight = [
-  { label: 'Password reset', event: reset },
-  { label: 'Email changed', event: emailChange },
-  { label: 'Phone number changed', event: phoneChange },
-  { label: 'New recipient added', event: recipientAdded },
-]

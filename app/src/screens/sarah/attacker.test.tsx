@@ -1,0 +1,98 @@
+/** What the person signed in as Sarah can learn from the pause, and what only the real Sarah and staff see. */
+import { renderToStaticMarkup } from 'react-dom/server'
+import { describe, expect, it, vi } from 'vitest'
+import { clock, money } from '../../ui/format'
+import { TakeoverCase } from '../staff/TakeoverCase'
+import { Ask } from './Ask'
+import { sarah } from './facts'
+import { Paused } from './Paused'
+
+const look = vi.hoisted(() => ({ current: 'concept' as 'concept' | 'sound' }))
+
+// The real look switch syncs across windows, which needs a browser; these tests pick the look.
+vi.mock('../../ui/look', () => ({ useLook: () => look.current }))
+
+const STATUS_BAR_CLOCK = /<span class="num">[^<]*<\/span>/g
+
+const entities: Record<string, string> = { '&#x27;': "'", '&quot;': '"', '&amp;': '&', '&lt;': '<', '&gt;': '>' }
+
+/** The words a reader sees: tags dropped, entities decoded, whitespace collapsed. */
+const textOf = (html: string) =>
+  html
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&#x27;|&quot;|&amp;|&lt;|&gt;/g, (m) => entities[m])
+    .replace(/\s+/g, ' ')
+
+describe.each(['concept', 'sound'] as const)("the attacker's paused screen (%s look)", (variant) => {
+  look.current = variant
+  const raw = renderToStaticMarkup(<Paused />)
+  const html = raw.replace(STATUS_BAR_CLOCK, '')
+  const text = textOf(html)
+
+  it('renders the variant for its look, with one status-bar clock', () => {
+    expect(html.includes('Pay Anyone')).toBe(variant === 'sound')
+    expect(raw.match(STATUS_BAR_CLOCK)).toHaveLength(1)
+  })
+
+  it('shows only the neutral review message and the amount', () => {
+    expect(text).toContain('This payment is being reviewed.')
+    expect(text).toContain("We'll let you know when it's done.")
+    expect(text).toContain(`Payment ${money(sarah.paused.amount)} Status Pending review`)
+    expect(money(sarah.paused.amount)).toBe('$1,574.18')
+  })
+
+  it('carries no time, event ID or signal', () => {
+    expect(html).not.toMatch(/\d{1,2}:\d{2}/)
+    expect(html).not.toMatch(/E\d{5}/)
+    for (const word of ['reset', 'email', 'phone', 'recipient added']) {
+      expect(html.toLowerCase()).not.toContain(word)
+    }
+  })
+
+  it('does not say who else is being asked', () => {
+    expect(text).not.toMatch(/contact details/i)
+  })
+})
+
+describe("the real Sarah's text", () => {
+  const text = textOf(renderToStaticMarkup(<Ask />))
+  const { reset, emailChange, phoneChange, recipientAdded, paused } = sarah
+
+  it('keeps the timeline of tonight', () => {
+    for (const e of [reset, emailChange, phoneChange, recipientAdded, paused]) {
+      expect(text).toContain(clock(e.at))
+    }
+  })
+
+  it('asks about the money and warns about coaching', () => {
+    expect(text).toContain(
+      `Are you sending ${money(paused.amount)} to a recipient added at ${clock(recipientAdded.at)}?`,
+    )
+    expect(clock(recipientAdded.at)).toMatch(/^10:19\sPM$/)
+    expect(text).toContain('If a website or caller told you to expect this text, tap No.')
+    expect(text).toContain('Sound will never call you and ask you to tap Yes.')
+  })
+})
+
+describe("the staff case for Sarah's pause", () => {
+  const html = renderToStaticMarkup(<TakeoverCase member="M1003" stage="paused" />)
+  const text = textOf(html)
+
+  it('still shows the full timeline with its sources', () => {
+    const { reset, emailChange, phoneChange, recipientAdded, paused } = sarah
+    for (const e of [reset, emailChange, phoneChange, recipientAdded, paused]) {
+      expect(text).toContain(clock(e.at))
+      expect(html).toContain(e.id)
+    }
+  })
+
+  it('shows the later kit payment only as what happened without Second Look', () => {
+    const { second } = sarah
+    const label = text.indexOf('In the kit, without Second Look:')
+    const amount = text.indexOf(money(second.amount))
+    expect(label).toBeGreaterThan(-1)
+    expect(amount).toBeGreaterThan(label)
+    expect(text.split(money(second.amount))).toHaveLength(2)
+    expect(text).not.toContain(clock(second.at))
+  })
+})

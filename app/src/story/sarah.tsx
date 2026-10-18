@@ -28,7 +28,7 @@ export const sarah: Scenario = {
       id: 'pause',
       title: 'Paused before it leaves',
       caption:
-        "All three signals line up, so Sound stops the payment before it's sent and shows only true facts from its own records.",
+        `All three signals line up, so the payment pauses before it's sent. The screen says only "being reviewed". Facts go to the real member, never to whoever is logged in.`,
       clock: storyClock(paused.at),
       member: <Paused />,
       staff: <TakeoverCase member="M1003" stage="paused" />,
@@ -36,7 +36,7 @@ export const sarah: Scenario = {
     {
       id: 'ask',
       title: 'Ask the real Sarah',
-      caption: `Sound texts the number it had before ${clock(phoneChange.at)}, never the new one the scammer just added.`,
+      caption: `Sound texts the facts and one question to the number it had before ${clock(phoneChange.at)}, never to the new one the scammer just added.`,
       clock: storyClock(afterPause(1)),
       member: <Ask />,
       staff: <TakeoverCase member="M1003" stage="asked" />,

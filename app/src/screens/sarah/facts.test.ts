@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { clock } from '../../ui/format'
-import { changesTonight, sarah } from './facts'
+import { sarah } from './facts'
 
 describe("Sarah's takeover facts", () => {
   it('pauses the first fraudulent payment before it is sent', () => {
@@ -11,7 +11,8 @@ describe("Sarah's takeover facts", () => {
   })
 
   it('lists what changed tonight in order', () => {
-    expect(changesTonight.map(({ event }) => clock(event.at))).toEqual([
+    const { reset, emailChange, phoneChange, recipientAdded } = sarah
+    expect([reset, emailChange, phoneChange, recipientAdded].map((e) => clock(e.at))).toEqual([
       '10:09 PM',
       '10:14 PM',
       '10:15 PM',

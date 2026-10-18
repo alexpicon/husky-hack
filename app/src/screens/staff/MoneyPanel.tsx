@@ -1,9 +1,10 @@
-import { Banknote, PauseCircle } from 'lucide-react'
+import { Banknote, Lock, PauseCircle } from 'lucide-react'
 import { minutesBetween, money } from '../../ui/format'
 import { Source, type Tone } from '../../ui/primitives'
 import { when } from './helpers'
 import { FactRow, Panel } from './parts'
 import type { TakeoverFacts } from './takeoverFacts'
+import { caseHold } from './takeoverStages'
 import { HOLD_HOURS } from './trickedFacts'
 import type { TakeoverStage } from './TakeoverCase'
 
@@ -42,6 +43,7 @@ export function MoneyPanel({ f, stage }: { f: TakeoverFacts; stage: TakeoverStag
   const state = moneyState[stage]
   const rail = stage === 'watching' ? recipientAdded.rail : hit.rail
   const rule = railRule[rail] ?? 'Paused before send while Sound checks with the member.'
+  const hold = caseHold(stage, f.fullStop)
   return (
     <Panel title={panelTitle[stage] ?? 'Paused payment'} icon={<Banknote size={14} />}>
       {stage === 'watching' ? (
@@ -83,13 +85,18 @@ export function MoneyPanel({ f, stage }: { f: TakeoverFacts; stage: TakeoverStag
         </>
       )}
       <p className="mt-3 rounded-xl bg-brand-soft/60 px-3 py-2 text-xs leading-relaxed text-brand">{rule}</p>
+      {hold && (
+        <p className="mt-2 flex items-start gap-2 rounded-xl bg-warn-soft/70 px-3 py-2 text-xs leading-relaxed font-medium text-warn">
+          <Lock size={13} className="mt-0.5 shrink-0" aria-hidden />
+          {hold}
+        </p>
+      )}
       {followUp && stage !== 'watching' && stage !== 'released' && (
         <p className="mt-2 text-xs leading-relaxed text-ink-3">
-          Without a lock, the kit shows a second {followUp.rail} payment of{' '}
-          {money(followUp.amount)} to the same recipient{' '}
-          {minutesBetween(hit.at, followUp.at)} minutes later.{' '}
-          {stage === 'secured' ? 'The lock stops it.' : 'Locking the account stops it.'}{' '}
-          <Source ids={followUp.id} />
+          <span className="font-semibold text-ink-2">In the kit, without Second Look:</span> a
+          second {followUp.rail} payment of {money(followUp.amount)} to the same recipient started{' '}
+          {minutesBetween(hit.at, followUp.at)} minutes later.
+          {hold && ' The case hold stops it.'} <Source ids={followUp.id} />
         </p>
       )}
     </Panel>
