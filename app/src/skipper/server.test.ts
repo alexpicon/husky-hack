@@ -37,9 +37,9 @@ describe('what the function may read', () => {
     expect(sources[file]).not.toMatch(/data\/kit|@kit|memberKeys|keyFor|Member_Key|console\./)
   })
 
-  it.each(['lists', 'verify', 'note', 'ai'])('%s.ts imports nothing at run time', (name) => {
+  it.each(['lists', 'verify', 'note', 'ai'])('%s.ts reads nothing from React or the screens', (name) => {
     expect(sources[`./${name}.ts`]).toMatch(/\S/)
-    expect(sources[`./${name}.ts`]).not.toMatch(/^import (?!type )/m)
+    expect(sources[`./${name}.ts`]).not.toMatch(/from '(?:react|lucide-react|\.\.\/)/)
   })
 
   it('imports nothing, so it deploys as one file', () => {

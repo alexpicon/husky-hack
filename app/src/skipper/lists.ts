@@ -1,8 +1,9 @@
 /**
  * What Skipper may suggest on each screen: only taps that point to a scam or ask for a private
  * talk, never one that clears ("None of these", "Something else", "This is my own account").
- * Plain data with no imports, so the server function can read it without the kit or React.
+ * Plain data, free of the kit and React; api/skipper.ts keeps a tested copy of the ids and words.
  */
+import { COACHED, DONT_TELL, KEEP_SECRET, NO_DIGAS, PRIVATE, SECRET_WORD } from './patterns.ts'
 
 export type SkipperScreen = 'linda' | 'michael' | 'james' | 'sarah' | 'panel'
 
@@ -24,28 +25,6 @@ export type SkipperTap = {
   needs?: RegExp
   group?: SkipperGroup
 }
-
-const DONT_TELL =
-  /\b(?:don['’]?t|dont|do not|not to|never) (?:tell|mention|say anything to)\b/i
-const KEEP_SECRET = /\bkeep (?:it|this|that|everything|quiet|it quiet)? ?(?:a )?(?:secret|quiet|between us)\b/i
-const SECRET_WORD = /\b(?:secret|secreto|secreta)\b/i
-const NO_DIGAS = /\bno (?:le |les )?(?:digas|diga|cuentes|cuente)\b/i
-
-const COACHED: RegExp[] = [
-  /\bwhat to (?:say|tell)\b/i,
-  /\b(?:told|tells|asked|wants) me to (?:say|tell|lie)\b/i,
-  /\bif (?:the bank|the teller|anyone|someone|they) asks?\b/i,
-  /\blie to the (?:bank|teller)\b/i,
-  /\bqu[eé] decir\b/i,
-]
-
-const PRIVATE: RegExp[] = [
-  /\b(?:listening|can['’]?t talk|cannot talk|can['’]?t speak|on speaker(?:phone)?)\b/i,
-  /\b(?:talk|speak) (?:in )?private(?:ly)?\b/i,
-  /\b(?:somewhere|in) private\b/i,
-  /\b(?:right )?(?:here )?(?:next to|behind|beside) me\b/i,
-  /\ben privado\b/i,
-]
 
 const LINDA: SkipperTap[] = [
   {

@@ -35,7 +35,7 @@ describe("Skipper's wording", () => {
   )
 
   it.each(lines)('never calls anything safe, verified or free of risk: %s', (line) => {
-    expect(line).not.toMatch(/\bsafe\b|verified|no risk|[–—]/i)
+    expect(line).not.toMatch(/\bsafe\b|verified|no risk|[\u2013\u2014]/i)
   })
 
   it('tells her honestly where her words go in each mode', () => {
