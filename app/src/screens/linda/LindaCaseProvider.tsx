@@ -5,18 +5,23 @@ import {
   caseActions,
   initialCase,
   LindaCaseContext,
-  mergeCases,
+  outbound,
+  receiveCase,
   useLindaCase,
   type LindaCase,
 } from './lindaCase'
 
-/** Keeps Linda's case the same in every window, on every laptop in a shared session. */
+/**
+ * Keeps Linda's case the same in every window, on every laptop in a shared session, except the
+ * answers she hasn't shared: those stay in this window.
+ */
 export function LindaCaseProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState(initialCase)
-  useWindowSync('linda', state, (incoming) =>
+  const shared = useMemo(() => outbound(state), [state])
+  useWindowSync('linda', shared, (incoming) =>
     setState((local) => {
       // A case saved before demo runs existed has no run.
-      const merged = mergeCases(local, { ...initialCase, ...incoming })
+      const merged = receiveCase(local, { ...initialCase, ...incoming })
       // A fresh object re-sends this window's newer case to the one that sent a stale copy.
       return merged === local ? { ...local } : merged
     }),

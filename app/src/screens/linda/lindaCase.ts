@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import { toggleTap, type TapId } from './taps'
+import { TAP_OPTIONS, toggleTap, type TapId } from './taps'
 
 /** How the held wire ends. Once set it never changes, whoever clicks what afterwards. */
 export type OutcomeKind = 'cancelled' | 'sent' | 'help' | 'no-response'
@@ -7,9 +7,9 @@ export type Outcome = { kind: OutcomeKind; at: number; reason?: string }
 export type StaffAction = 'holding' | 'escalated' | 'case-opened'
 
 /**
- * One wire hold, shared by every window showing Linda's story. `run` is the demo run it belongs
- * to and `round` grows on each reset, so a fresh case beats an old one; `v` counts edits so the
- * newer copy of a field wins.
+ * One wire hold. Every window showing Linda's story has the same case, except what she hasn't
+ * shared (see `outbound`). `run` is the demo run it belongs to and `round` grows on each reset, so
+ * a fresh case beats an old one; `v` counts edits so the newer copy of a field wins.
  */
 export type LindaCase = {
   run: number
@@ -48,6 +48,11 @@ export const caseActions = {
     taps: toggleTap(c.taps, id),
     skipped: false,
   }),
+  /** Taps each listed answer that is off, in order, by the same rules; one already on stays on. */
+  addTaps: (c: LindaCase, ids: readonly TapId[]): LindaCase => {
+    const taps = ids.reduce((on, id) => (on.includes(id) ? on : toggleTap(on, id)), c.taps)
+    return taps === c.taps ? c : { ...c, taps, skipped: false }
+  },
   finishCheck: (c: LindaCase): LindaCase => ({ ...c, skipped: c.taps.length === 0 }),
   share: (c: LindaCase, shared: boolean): LindaCase => ({ ...c, shared }),
   askToSend: (c: LindaCase): LindaCase => (final(c) ? c : { ...c, wantsToSend: true }),
@@ -94,6 +99,30 @@ export function mergeCases(local: LindaCase, incoming: LindaCase): LindaCase {
       (a) => local.staffActions.includes(a) || incoming.staffActions.includes(a),
     ),
   }
+}
+
+/**
+ * The only copy that leaves this window: her taps, and whether she skipped them, only while she
+ * shares. Staff can't tell skipping from not sharing. Asking to talk privately always goes, since
+ * staff always see it.
+ */
+export function outbound(c: LindaCase): LindaCase {
+  return c.shared ? c : { ...c, taps: c.taps.filter((t) => t === 'private'), skipped: false }
+}
+
+/**
+ * Takes another window's outbound copy. Every window settles on the same shared case, and her
+ * unshared answers stay in the window where she gave them. A new run or round clears them, and so
+ * does a copy that stops sharing: the taps it shared before leave every other window.
+ */
+export function receiveCase(local: LindaCase, incoming: LindaCase): LindaCase {
+  const merged = mergeCases(outbound(local), incoming)
+  const sameCase = merged.run === local.run && merged.round === local.round
+  if (!sameCase || merged.shared || local.shared) return merged
+  const taps = TAP_OPTIONS.map((o) => o.id).filter((t) =>
+    (t === 'private' ? merged : local).taps.includes(t),
+  )
+  return { ...merged, taps, skipped: local.skipped }
 }
 
 type Api = {

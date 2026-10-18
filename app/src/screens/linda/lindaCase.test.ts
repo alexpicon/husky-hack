@@ -1,6 +1,7 @@
 /** Linda's shared case: final outcomes, resets, and windows that agree after any exchange. */
 import { describe, expect, it } from 'vitest'
 import { caseActions as act, initialCase, mergeCases, type LindaCase } from './lindaCase'
+import type { TapId } from './taps'
 
 const at = new Date(2026, 9, 20, 14, 16)
 const edit = (c: LindaCase, change: (c: LindaCase) => LindaCase) => {
@@ -17,6 +18,18 @@ describe('the case', () => {
     const c = act.tap(act.tap(initialCase, 'bail'), 'family')
     expect(c.taps).toEqual(['family', 'bail'])
     expect(act.tap(c, 'bail').taps).toEqual(['family'])
+  })
+
+  it('adds several taps at once by the same rules, never turning one off', () => {
+    const add = (taps: TapId[], ids: TapId[]) => act.addTaps({ ...initialCase, taps }, ids).taps
+    expect(add([], ['secret', 'family'])).toEqual(['family', 'secret'])
+    expect(add(['family', 'bail'], ['family', 'official'])).toEqual(['family', 'official', 'bail'])
+    expect(add(['none', 'private'], ['secret'])).toEqual(['secret', 'private'])
+    expect(add(['family'], ['private'])).toEqual(['family', 'private'])
+    const tapped = { ...initialCase, taps: ['bail'] as TapId[] }
+    expect(act.addTaps(tapped, ['bail'])).toBe(tapped)
+    expect(act.addTaps(tapped, [])).toBe(tapped)
+    expect(act.addTaps({ ...initialCase, skipped: true }, ['family']).skipped).toBe(false)
   })
 
   it('records a skip only when she continues without tapping', () => {
