@@ -75,6 +75,26 @@ describe.each(['concept', 'sound'] as const)("the captions under the scammer's p
   })
 })
 
+describe.each(['concept', 'sound'] as const)("the scammer's send screen (%s look)", (variant) => {
+  look.current = variant
+  const raw = renderToStaticMarkup(<SendMoney />)
+  const html = raw.replace(STATUS_BAR_CLOCK, '')
+
+  it('renders the variant for its look, with one status-bar clock', () => {
+    expect(html.includes('Pay Anyone')).toBe(variant === 'sound')
+    expect(raw.match(STATUS_BAR_CLOCK)).toHaveLength(1)
+  })
+
+  it('says the recipient is new without a clock time', () => {
+    expect(textOf(html)).toContain('Added tonight')
+    expect(html).not.toMatch(/\d{1,2}:\d{2}/)
+  })
+
+  it('carries no kit event ID', () => {
+    expect(html).not.toMatch(/E\d{5}/)
+  })
+})
+
 describe.each(['concept', 'sound'] as const)("M1039's in-app check (%s look)", (variant) => {
   look.current = variant
   const html = renderToStaticMarkup(<CheckScreen />)

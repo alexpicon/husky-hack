@@ -2,7 +2,6 @@ import { ArrowUpRight, UserPlus } from 'lucide-react'
 import { useStory } from '../../story/engine'
 import { Phone } from '../../ui/devices'
 import { clock, money } from '../../ui/format'
-import { Source } from '../../ui/primitives'
 import { SOUND, SoundAppScreen, SoundButton, SoundCard, SoundRow } from '../../ui/soundApp'
 import { sarah } from './facts'
 import { CardIcon } from './soundIcon'
@@ -12,7 +11,7 @@ const muted = { color: SOUND.muted }
 /** Sound's P2P "Pay Anyone" screen, with the scammer signed in as Sarah. */
 export function SoundSendMoney() {
   const { next } = useStory()
-  const { paused, recipientAdded } = sarah
+  const { paused } = sarah
   return (
     <Phone time={clock(paused.at)} statusBar="navy">
       <SoundAppScreen title="Pay Anyone" tab="move" back>
@@ -28,13 +27,9 @@ export function SoundSendMoney() {
                 {paused.recipientId}
               </div>
             </div>
-            <div className="flex flex-col items-end">
-              <span className="text-[13px]" style={muted}>
-                Added
-              </span>
-              <span className="num text-[15px] font-semibold">{clock(recipientAdded.at)}</span>
-              <Source ids={recipientAdded.id} />
-            </div>
+            <span className="text-[13px]" style={muted}>
+              Added tonight
+            </span>
           </SoundCard>
 
           <SoundCard className="pb-1.5">
@@ -44,9 +39,6 @@ export function SoundSendMoney() {
               </div>
               <div className="num mt-1 text-[38px] leading-none font-semibold tracking-tight">
                 {money(paused.amount)}
-              </div>
-              <div className="mt-1">
-                <Source ids={paused.id} />
               </div>
             </div>
             <div className="mt-2 border-t border-black/[0.07]">

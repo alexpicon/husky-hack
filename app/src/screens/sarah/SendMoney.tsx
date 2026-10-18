@@ -4,7 +4,6 @@ import { useStory } from '../../story/engine'
 import { Phone } from '../../ui/devices'
 import { clock, money } from '../../ui/format'
 import { useLook } from '../../ui/look'
-import { Source } from '../../ui/primitives'
 import { sarah } from './facts'
 import { ScreenTitle, SoundBar } from './SoundChrome'
 import { SoundSendMoney } from './SoundSendMoney'
@@ -30,7 +29,7 @@ export function SendMoney() {
 
 function ConceptSendMoney() {
   const { next } = useStory()
-  const { paused, recipientAdded } = sarah
+  const { paused } = sarah
   return (
     <Phone time={clock(paused.at)}>
       <div className="flex min-h-full flex-col bg-white">
@@ -47,13 +46,7 @@ function ConceptSendMoney() {
               <div className="text-[16px] font-semibold">New recipient</div>
               <div className="font-mono text-[12px] text-ink-3">{paused.recipientId}</div>
             </div>
-            <div className="text-right">
-              <div className="text-[12px] text-ink-3">Added</div>
-              <div className="num font-mono text-[13px] font-semibold">{clock(recipientAdded.at)}</div>
-            </div>
-          </div>
-          <div className="mt-1 text-right">
-            <Source ids={recipientAdded.id} />
+            <div className="text-right text-[12px] text-ink-3">Added tonight</div>
           </div>
         </div>
 
@@ -61,9 +54,6 @@ function ConceptSendMoney() {
           <div className="text-[13px] font-semibold text-ink-3">Amount</div>
           <div className="num mt-1 text-[46px] leading-none font-semibold tracking-tight">
             {money(paused.amount)}
-          </div>
-          <div className="mt-2">
-            <Source ids={paused.id} />
           </div>
         </div>
 
