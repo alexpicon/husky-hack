@@ -54,7 +54,7 @@ export function SilentCheckSound() {
   }
 
   return (
-    <SoundKiosk caption="Branch tablet - Linda taps privately">
+    <SoundKiosk caption="Branch tablet - Linda taps privately" tall>
       <DrillReminder sound />
       <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
         <SoundCard className="flex items-start gap-3 py-2.5">
@@ -83,7 +83,11 @@ export function SilentCheckSound() {
       </div>
       <LindaSkipper look="sound" />
 
-      <div className="grid grid-cols-[1fr_1.45fr_150px] gap-2">
+      {/* Pinned, so the way on stays in view however long Skipper's chat grows above it. */}
+      <div
+        className="sticky bottom-0 z-[5] -mx-5 mt-auto -mb-4 grid grid-cols-[1fr_1.45fr_150px] gap-2 border-t border-black/10 px-5 pt-2 pb-4"
+        style={{ background: SOUND.canvas }}
+      >
         <Option option={none} short />
         <Option option={talk} short />
         <SoundButton onClick={finish}>

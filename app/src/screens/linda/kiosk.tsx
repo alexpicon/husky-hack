@@ -13,15 +13,17 @@ import { dollars, lindaFacts } from './facts'
 export function SoundKiosk({
   caption,
   status,
+  tall,
   children,
 }: {
   caption: string
   status?: ReactNode
+  tall?: boolean
   children: ReactNode
 }) {
   const f = lindaFacts()
   return (
-    <Tablet caption={caption}>
+    <Tablet caption={caption} tall={tall}>
       <div
         className="flex min-h-full flex-col"
         style={{ ...soundFont, background: SOUND.canvas, color: SOUND.text }}

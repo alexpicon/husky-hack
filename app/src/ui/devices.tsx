@@ -41,13 +41,23 @@ export function Phone({ time, caption, dark = false, statusBar, children }: Phon
   )
 }
 
-export function Tablet({ caption, children }: { caption?: string; children: ReactNode }) {
+type TabletProps = {
+  caption?: string
+  /** A 600px-high screen instead of 460px, for a screen with more to show at once. */
+  tall?: boolean
+  children: ReactNode
+}
+
+export function Tablet({ caption, tall = false, children }: TabletProps) {
   return (
     <figure className="flex flex-col items-center gap-3">
       <div className="rounded-[2.2rem] bg-slate-900 p-4 shadow-device ring-1 ring-slate-700">
         {/* Positioned but not scrolling, so a sheet opened on the tablet covers its screen. */}
-        <div className="relative h-[460px] w-[640px] overflow-hidden rounded-[1.4rem] bg-white">
-          <div className="h-full overflow-y-auto">
+        <div
+          className={`relative w-[640px] overflow-hidden rounded-[1.4rem] bg-white ${tall ? 'h-[600px]' : 'h-[460px]'}`}
+        >
+          {/* A row pinned to the screen's bottom covers up to 80px: focus and scrolling stop above it. */}
+          <div className="h-full scroll-pb-20 overflow-y-auto">
             <DeviceScreen>{children}</DeviceScreen>
           </div>
         </div>

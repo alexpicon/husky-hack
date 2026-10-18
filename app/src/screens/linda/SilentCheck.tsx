@@ -51,7 +51,7 @@ function SilentCheckConcept() {
   }
 
   return (
-    <Tablet caption="Branch tablet - Linda taps privately">
+    <Tablet caption="Branch tablet - Linda taps privately" tall>
       <div className="flex min-h-full flex-col gap-3 px-6 py-5">
         <TabletHeader right={<PausedStatus />} />
         <DrillReminder sound={false} />
@@ -85,7 +85,8 @@ function SilentCheckConcept() {
         </div>
         <LindaSkipper look="concept" />
 
-        <div className="grid grid-cols-[1fr_1.45fr_auto] gap-2">
+        {/* Pinned, so the way on stays in view however long Skipper's chat grows above it. */}
+        <div className="sticky bottom-0 z-[5] -mx-6 mt-auto -mb-5 grid grid-cols-[1fr_1.45fr_auto] gap-2 border-t border-line bg-white/95 px-6 pt-2 pb-5 backdrop-blur">
           <Toggle option={none} short />
           <Toggle option={talk} short />
           <Button size="lg" onClick={finish}>

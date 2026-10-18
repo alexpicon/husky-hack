@@ -106,6 +106,19 @@ describe.each(['concept', 'sound'] as const)('the member tablet (%s look)', (var
     expect(html(tapped(['family']))).toContain('aria-checked="false"')
     expect(html(tapped([], { shared: true }))).toMatch(/role="switch" aria-checked="true"/)
   })
+
+  it('pins "None of these", talking privately and Continue under the taps and Skipper, on a taller screen', () => {
+    const html = renderToStaticMarkup(
+      <LindaCaseContext.Provider value={{ state: initialCase, update: () => {} }}>
+        <SilentCheck />
+      </LindaCaseContext.Provider>,
+    )
+    const [above, pinned] = html.split('sticky bottom-0')
+    expect(textOf(above)).toContain("Tell Skipper what's happening")
+    expect(textOf(pinned ?? '')).toMatch(/None of these .*I'd rather talk privately .*Continue/)
+    expect(html).toContain('h-[600px]')
+    expect(renderToStaticMarkup(<MatchResult />)).toContain('h-[460px]')
+  })
 })
 
 describe('tapping', () => {
