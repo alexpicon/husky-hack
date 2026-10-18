@@ -21,7 +21,7 @@ function timelineItems(): TimelineItem[] {
     {
       time: clock(f.wire.at),
       label: `Wire started: ${amount}`,
-      detail: `First wire in ${f.yearsSinceLastWire} years · ${f.ratio}x her usual`,
+      detail: `First wire in ${f.yearsSinceLastWire} years · ${f.ratio}x her 12-month 90th-percentile payment`,
       tone: 'warn',
       source: f.wire.id,
     },

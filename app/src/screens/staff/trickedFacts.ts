@@ -2,6 +2,7 @@ import eventsCsv from '@kit/HuskyHack_Synthetic_Events_v2.csv?raw'
 import { parseCsv, type Row } from '../../data/csv'
 import { eventsFor, keyFor, type KitEvent } from '../../data/kit'
 import { firstHit, isTricked } from '../../data/triggers'
+import { trickedRatio } from '../../data/trickedRules'
 import { minutesBetween } from '../../ui/format'
 import { need } from './helpers'
 
@@ -42,7 +43,7 @@ export function trickedFacts(member: string): TrickedFacts {
     `${member} Recipient Added for ${hit.recipientId}`,
   )
   const days = need(hit.daysSinceLastSameRail, `${hit.id} days_since_last_same_rail`)
-  const ratio = need(hit.baselineRatio, `${hit.id} amount_to_baseline_ratio`)
+  const ratio = need(trickedRatio(hit), `${hit.id} amount_to_baseline_ratio`)
   return {
     member,
     name: keyFor(member).persona || `Member ${member}`,

@@ -5,7 +5,7 @@
  * clients only ever move forward, even across function instances.
  */
 const TTL_SECONDS = 12 * 60 * 60
-const KINDS = ['position', 'look'] as const
+const KINDS = ['position', 'look', 'linda', 'report'] as const
 const ID = /^[A-Z0-9]{4,8}$/
 
 type Entry = { json: string; rev: number }
