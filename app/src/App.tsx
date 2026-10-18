@@ -12,11 +12,13 @@ import { BothStage, MemberStage, StaffStage } from './shell/Stages'
 import { useWindowSync } from './shell/sync'
 import { initialView, ViewToggle, writeViewToUrl, type View } from './shell/view'
 import { StoryContext, type Scenario, type Zones } from './story/engine'
+import { james } from './story/james'
 import { linda } from './story/linda'
 import { m1039 } from './story/m1039'
+import { michael } from './story/michael'
 import { sarah } from './story/sarah'
 
-const scenarios: Scenario[] = [sarah, m1039, linda]
+const scenarios: Scenario[] = [sarah, m1039, linda, michael, james]
 
 const SOUND_STAFF = { tone: 'staff', label: 'Sound staff', who: 'Sound Member Protection' } as const
 
@@ -37,7 +39,13 @@ const zonesById: Record<string, Zones> = Object.fromEntries(
 )
 
 /** The member each story follows: who a report from its screens is for. */
-const MEMBER_OF: Record<string, string> = { [sarah.id]: SARAH, [m1039.id]: M1039, [linda.id]: LINDA }
+const MEMBER_OF: Record<string, string> = {
+  [sarah.id]: SARAH,
+  [m1039.id]: M1039,
+  [linda.id]: LINDA,
+  [michael.id]: 'M1002',
+  [james.id]: 'M1004',
+}
 
 const PILOT: Tab = { id: 'pilot', label: 'Design check', sublabel: 'Kit data + pilot', tone: 'brand' }
 const tabs: Tab[] = [...scenarios, PILOT]

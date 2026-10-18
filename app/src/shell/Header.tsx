@@ -29,7 +29,7 @@ type HeaderProps = { tabs: Tab[]; active: string; onSelect: (id: string) => void
 export function Header({ tabs, active, onSelect }: HeaderProps) {
   return (
     <header className="sticky top-0 z-30 border-b border-white/60 bg-white/70 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-[1440px] flex-wrap items-center gap-x-6 gap-y-3 px-6 py-3.5 lg:px-8">
+      <div className="mx-auto flex max-w-[1680px] flex-wrap items-center gap-x-4 gap-y-3 px-6 py-3.5 lg:px-8 2xl:gap-x-6">
         <Logo />
         <nav className="mx-auto flex rounded-2xl bg-slate-100/80 p-1 ring-1 ring-line" aria-label="Stories">
           {tabs.map((t) => (
@@ -38,12 +38,12 @@ export function Header({ tabs, active, onSelect }: HeaderProps) {
               type="button"
               onClick={() => onSelect(t.id)}
               aria-current={t.id === active}
-              className={`flex items-center gap-2 rounded-xl px-4 py-2 text-left transition ${t.id === active ? 'bg-white shadow-sm ring-1 ring-line' : 'hover:bg-white/60'}`}
+              className={`flex items-center gap-2 rounded-xl px-2.5 py-2 text-left transition 2xl:px-4 ${t.id === active ? 'bg-white shadow-sm ring-1 ring-line' : 'hover:bg-white/60'}`}
             >
               <span className={`size-2 rounded-full ${toneDot[t.tone]}`} />
               <span className="leading-tight">
                 <span className="block text-sm font-semibold">{t.label}</span>
-                <span className="hidden text-[11px] text-ink-3 min-[1400px]:block">{t.sublabel}</span>
+                <span className="hidden text-[11px] text-ink-3 min-[1720px]:block">{t.sublabel}</span>
               </span>
             </button>
           ))}
