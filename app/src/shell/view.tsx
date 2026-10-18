@@ -6,6 +6,7 @@ import { Columns2, Smartphone, UserRound } from 'lucide-react'
  */
 export type View = 'both' | 'member' | 'staff' | 'remote' | PanelView
 export type PanelView = 'panel' | 'wall' | 'drill'
+export type DemoView = Exclude<View, PanelView>
 
 const VIEWS: readonly View[] = ['both', 'member', 'staff', 'remote', 'panel', 'wall', 'drill']
 
@@ -23,13 +24,13 @@ export function writeViewToUrl(view: View) {
   window.history.replaceState(null, '', url)
 }
 
-const OPTIONS: { id: Exclude<View, 'remote' | PanelView>; label: string; Icon: typeof Columns2 }[] = [
+const OPTIONS: { id: Exclude<DemoView, 'remote'>; label: string; Icon: typeof Columns2 }[] = [
   { id: 'both', label: 'Both', Icon: Columns2 },
   { id: 'member', label: 'Member', Icon: Smartphone },
   { id: 'staff', label: 'Staff', Icon: UserRound },
 ]
 
-export function ViewToggle({ view, onChange }: { view: View; onChange: (v: View) => void }) {
+export function ViewToggle({ view, onChange }: { view: DemoView; onChange: (v: DemoView) => void }) {
   return (
     <div className="flex rounded-xl bg-white p-1 text-xs ring-1 ring-line" role="radiogroup" aria-label="Screen">
       {OPTIONS.map(({ id, label, Icon }) => (

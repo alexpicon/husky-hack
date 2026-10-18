@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { PanelRoute } from './panel/PanelRoute'
 import { ReportProvider } from './report/ReportProvider'
 import { LINDA } from './screens/linda/facts'
 import { MEMBER as M1039 } from './screens/m1039/facts'
@@ -11,7 +10,7 @@ import { RemoteView } from './shell/RemoteView'
 import { SessionControl } from './shell/SessionControl'
 import { BothStage, MemberStage, StaffStage } from './shell/Stages'
 import { useWindowSync } from './shell/sync'
-import { initialView, isPanelView, ViewToggle, writeViewToUrl, type View } from './shell/view'
+import { ViewToggle, writeViewToUrl, type DemoView } from './shell/view'
 import { StoryContext, type Scenario, type Zones } from './story/engine'
 import { james } from './story/james'
 import { linda } from './story/linda'
@@ -60,9 +59,10 @@ function fromHash(): Position {
   return { active, steps: n ? { [active]: Number(n) - 1 || 0 } : {} }
 }
 
-export default function App() {
+/** The stories in the view the page opened with; the panel pages never render it. */
+export default function App({ initial }: { initial: DemoView }) {
   const [position, setPosition] = useState<Position>(fromHash)
-  const [view, setView] = useState<View>(initialView)
+  const [view, setView] = useState<DemoView>(initial)
   const { active, steps } = position
   const scenario = scenarios.find((s) => s.id === active)
   const index = Math.min(steps[active] ?? 0, Math.max(0, (scenario?.steps.length ?? 1) - 1))
@@ -107,7 +107,7 @@ export default function App() {
     if (window.location.hash !== hash) window.history.replaceState(null, '', hash)
   }, [active, index, scenario])
 
-  const changeView = (v: View) => {
+  const changeView = (v: DemoView) => {
     setView(v)
     writeViewToUrl(v)
   }
@@ -133,7 +133,6 @@ export default function App() {
       }
     />
   )
-  if (isPanelView(view)) return <PanelRoute view={view} />
   if (view === 'remote') {
     return (
       <StoryContext.Provider value={api}>
