@@ -167,6 +167,8 @@ In the kit, one teller happened to ask James, and he lost $0. 5 other members in
 
 The kit is about 41% scam victims by design (48 of 118 members), and real life is far lower. These numbers show how the design behaves. **They are not accuracy claims.** The rules read only the events file; the Member Key scores them.
 
+**Name any member.** On the Design check, type any of the 118 member IDs (or tap Previous, Next or Random) and the app replays that member's events: each rule that fired, when, and the fact it used, judged only on events up to that moment, shown apart from the member's Member Key row. It is tested on the same members the rules were designed against.
+
 ---
 
 ## Open decisions (`app/src/data/policy.ts`)
