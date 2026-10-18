@@ -4,44 +4,54 @@ import { clampText } from './verify'
 export type SkipperStory = 'linda' | 'michael'
 
 /**
- * What she typed to Skipper and Skipper's note, the one copy staff see. It holds anything only
- * while she shares her answers. `run` is the demo run, `round` Linda's case round (0 for Michael),
- * and `v` counts edits: a newer run wins, then the newer copy.
+ * One member's words to Skipper and Skipper's note, empty unless they share. `round` is Linda's
+ * case round (0 for Michael), and `v` counts edits to this entry alone.
  */
-export type SharedWords = {
-  run: number
-  round: number
-  v: number
-  story: SkipperStory | null
-  words: string
-  note: string | null
-}
+export type SharedEntry = { v: number; round: number; words: string; note: string | null }
 
-export const initialWords: SharedWords = { run: 0, round: 0, v: 0, story: null, words: '', note: null }
+/**
+ * What each member typed to Skipper, the one copy staff see. `run` is the demo run. Each member has
+ * an entry of their own, so publishing one member's words never changes the other's.
+ */
+export type SharedWords = { run: number; linda: SharedEntry; michael: SharedEntry }
+
+const emptyEntry: SharedEntry = { v: 0, round: 0, words: '', note: null }
+
+export const initialWords: SharedWords = { run: 0, linda: emptyEntry, michael: emptyEntry }
+
+/** A new demo run empties it; a window still on an older run never clears a newer one. */
+const forRun = (s: SharedWords, run: number): SharedWords => (run > s.run ? { ...initialWords, run } : s)
 
 export const wordsActions = {
-  publish: (s: SharedWords, story: SkipperStory, run: number, round: number, words: string): SharedWords => ({
-    ...s,
-    story,
-    run,
-    round,
-    words: clampText(words),
-    note: null,
-  }),
+  publish: (s: SharedWords, story: SkipperStory, run: number, round: number, words: string): SharedWords => {
+    if (run < s.run) return s
+    const fresh = forRun(s, run)
+    return { ...fresh, [story]: { ...fresh[story], round, words: clampText(words), note: null } }
+  },
   /** A note only ever goes with the words it was drafted from. */
-  note: (s: SharedWords, story: SkipperStory, words: string, note: string): SharedWords =>
-    s.story === story && s.words === clampText(words) && s.note !== note ? { ...s, note } : s,
-  clear: (s: SharedWords): SharedWords =>
-    s.story === null && !s.words && !s.note ? s : { ...initialWords, run: s.run, v: s.v },
-  /** A new demo run empties it; a window still on an older run never clears a newer one. */
-  forRun: (s: SharedWords, run: number): SharedWords => (run > s.run ? { ...initialWords, run, v: s.v } : s),
+  note: (s: SharedWords, story: SkipperStory, words: string, note: string): SharedWords => {
+    const e = s[story]
+    return e.words && e.words === clampText(words) && e.note !== note ? { ...s, [story]: { ...e, note } } : s
+  },
+  clear: (s: SharedWords, story: SkipperStory): SharedWords =>
+    s[story].words || s[story].note ? { ...s, [story]: emptyEntry } : s,
+  forRun,
 }
 
-/** The same winner whichever window runs it: the newer run, then more edits, then a fixed tie-break. */
+/** Picks the same one of two copies of an entry whichever is passed first: more edits, then a fixed tie-break. */
+function newerEntry(a: SharedEntry, b: SharedEntry): SharedEntry {
+  if (a.v !== b.v) return a.v > b.v ? a : b
+  return JSON.stringify(a) >= JSON.stringify(b) ? a : b
+}
+
+/** The same copy whichever window runs it: the newer run, then each member's newer entry. */
 export function mergeWords(local: SharedWords, incoming: SharedWords): SharedWords {
   if (local.run !== incoming.run) return local.run > incoming.run ? local : incoming
-  if (local.v !== incoming.v) return local.v > incoming.v ? local : incoming
-  return JSON.stringify(local) >= JSON.stringify(incoming) ? local : incoming
+  const linda = newerEntry(local.linda, incoming.linda)
+  const michael = newerEntry(local.michael, incoming.michael)
+  if (linda === local.linda && michael === local.michael) return local
+  if (linda === incoming.linda && michael === incoming.michael) return incoming
+  return { run: local.run, linda, michael }
 }
 
 let current = initialWords
@@ -62,12 +72,23 @@ export function writeWords(next: SharedWords) {
   for (const listener of listeners) listener()
 }
 
+/** One change, as every window makes it: each member's entry it changes counts one more edit. */
+export function editWords(s: SharedWords, change: (s: SharedWords) => SharedWords): SharedWords {
+  const next = change(s)
+  if (next === s) return s
+  const counted = (story: SkipperStory) => (next[story] === s[story] ? next[story] : { ...next[story], v: s[story].v + 1 })
+  return { ...next, linda: counted('linda'), michael: counted('michael') }
+}
+
+/** Her words and Skipper's note for this run and round, or null. */
+export function sharedFor(s: SharedWords, story: SkipperStory, run: number, round: number): SharedEntry | null {
+  const e = s[story]
+  return s.run === run && e.round === round && e.words ? e : null
+}
+
 export function useSharedWords() {
   const state = useSyncExternalStore(subscribe, readWords, readWords)
-  const update = useCallback((change: (s: SharedWords) => SharedWords) => {
-    const next = change(current)
-    if (next !== current) writeWords({ ...next, v: current.v + 1 })
-  }, [])
+  const update = useCallback((change: (s: SharedWords) => SharedWords) => writeWords(editWords(current, change)), [])
   return { state, update }
 }
 

@@ -126,4 +126,11 @@ describe("Skipper's note for staff", () => {
     writeWords(wordsActions.publish(initialWords, 'michael', 0, 0, 'we met online'))
     expect(textOf(<MichaelSkipperNote />)).toContain('His words: “we met online”')
   })
+
+  it("shows each member's own words when both share", () => {
+    writeWords(wordsActions.publish(wordsActions.publish(initialWords, 'linda', 0, 0, words), 'michael', 0, 0, 'we met online'))
+    writeCheck({ ...initialCheck, v: 1, shared: true })
+    expect(textOf(withCase(shared(), <LindaSkipperNote />))).toContain(`Her words: “${words}”`)
+    expect(textOf(<MichaelSkipperNote />)).toContain('His words: “we met online”')
+  })
 })

@@ -6,7 +6,7 @@ import { MICHAEL_NAME } from '../screens/michael/facts'
 import { Panel } from '../screens/staff/parts'
 import { useRun } from '../shell/run'
 import { NOTE_TITLE, wordsTitle } from './copy'
-import { useSharedWords, type SkipperStory } from './shareState'
+import { sharedFor, useSharedWords, type SkipperStory } from './shareState'
 
 type Props = { story: SkipperStory; name: string; pronoun: 'Her' | 'His'; shared: boolean; round: number }
 
@@ -17,13 +17,13 @@ type Props = { story: SkipperStory; name: string; pronoun: 'Her' | 'His'; shared
 function SkipperNote({ story, name, pronoun, shared, round }: Props) {
   const { state } = useSharedWords()
   const { run } = useRun()
-  const ours = state.story === story && state.run === run && state.round === round
-  if (!shared || !ours || !state.words) return null
+  const ours = sharedFor(state, story, run, round)
+  if (!shared || !ours) return null
   return (
-    <Panel title={state.note ? NOTE_TITLE : wordsTitle(name)} icon={<MessageSquareText size={14} aria-hidden />}>
-      {state.note && <p className="text-[16px] leading-snug font-medium text-ink">{`“${state.note}”`}</p>}
-      <p className={`text-[14px] leading-snug text-ink-2 ${state.note ? 'mt-2' : ''}`}>
-        <span className="font-semibold text-ink">{`${pronoun} words:`}</span> {`“${state.words}”`}
+    <Panel title={ours.note ? NOTE_TITLE : wordsTitle(name)} icon={<MessageSquareText size={14} aria-hidden />}>
+      {ours.note && <p className="text-[16px] leading-snug font-medium text-ink">{`“${ours.note}”`}</p>}
+      <p className={`text-[14px] leading-snug text-ink-2 ${ours.note ? 'mt-2' : ''}`}>
+        <span className="font-semibold text-ink">{`${pronoun} words:`}</span> {`“${ours.words}”`}
       </p>
     </Panel>
   )

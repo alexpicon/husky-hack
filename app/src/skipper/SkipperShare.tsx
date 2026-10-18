@@ -4,6 +4,7 @@ import { useMichaelCheck } from '../screens/michael/checkState'
 import { useRun } from '../shell/run'
 import { useWindowSync } from '../shell/sync'
 import { draftNote } from './client'
+import { firstSeen, publishStep } from './publish'
 import {
   heardWords,
   initialWords,
@@ -18,28 +19,18 @@ import {
   type SkipperStory,
 } from './shareState'
 
-/**
- * Fills the shared copy only while she shares: her words go out when she turns sharing on (or
- * types while it is on), and come back out when she turns it off or her case starts over.
- */
+/** Fills the shared copy only while she shares (see `publishStep`), and adds Skipper's note to it. */
 function usePublish(story: SkipperStory, shared: boolean, run: number, round: number) {
   const { state, update } = useSharedWords()
   const version = useSyncExternalStore(subscribeHeard, readHeardVersion, readHeardVersion)
-  const was = useRef({ shared, round })
+  const seen = useRef(firstSeen(shared, round))
 
   useEffect(() => {
-    const before = was.current
-    was.current = { shared, round }
-    const ours = state.story === story
-    // Only a change seen here clears it, so a window that has not yet heard she shares never does.
-    if (ours && state.words && ((before.shared && !shared) || round > before.round)) {
-      update(wordsActions.clear)
-      return
-    }
-    const words = shared ? heardWords(story, run, round) : null
+    const step = publishStep(story, seen.current, { shared, run, round, words: heardWords(story, run, round) }, state)
+    seen.current = step.seen
+    if (step.change) update(step.change)
+    const words = step.sent
     if (!words) return
-    if (ours && state.run === run && state.round === round && state.words === words) return
-    update((s) => wordsActions.publish(s, story, run, round, words))
     void draftNote(words).then((note) => {
       if (note) update((s) => wordsActions.note(s, story, words, note))
     })
