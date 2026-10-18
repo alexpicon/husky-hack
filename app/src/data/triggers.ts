@@ -1,36 +1,7 @@
 import { eventsFor, memberKeys, type KitEvent, type MemberKey } from './kit'
 
-export const TRICKED_RATIO = 3
-export const TRICKED_RAIL_GAP_DAYS = 180
-
-export type TakeoverSignals = {
-  passwordReset: boolean
-  contactChange: boolean
-  newRecipient: boolean
-}
-
-export function takeoverSignals(e: KitEvent): TakeoverSignals {
-  return {
-    passwordReset: e.passwordResetRecent,
-    contactChange: e.profileChangeRecent,
-    newRecipient: e.recipientStatus === 'New',
-  }
-}
-
-const isOutgoingStart = (e: KitEvent) => e.type === 'Payment Initiated'
-
-export function isTakeover(e: KitEvent): boolean {
-  const s = takeoverSignals(e)
-  return isOutgoingStart(e) && s.passwordReset && s.contactChange && s.newRecipient
-}
-
-export function isTricked(e: KitEvent): boolean {
-  if (!isOutgoingStart(e) || !['Wire', 'Cash'].includes(e.rail)) return false
-  if (e.baselineRatio === null || e.baselineRatio < TRICKED_RATIO) return false
-  const longGap =
-    e.daysSinceLastSameRail === null || e.daysSinceLastSameRail >= TRICKED_RAIL_GAP_DAYS
-  return e.recipientStatus === 'New' || longGap
-}
+export { isTakeover, takeoverSignals, type TakeoverSignals } from './takeoverRules'
+export { isTricked, TRICKED_RAIL_GAP_DAYS, TRICKED_RATIO } from './trickedRules'
 
 export function firstHit(member: string, trigger: (e: KitEvent) => boolean) {
   return eventsFor(member).find(trigger)
