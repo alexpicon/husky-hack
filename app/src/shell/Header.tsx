@@ -15,9 +15,10 @@ export function Logo() {
       </svg>
       <div className="leading-none">
         <div className="font-display text-[26px] tracking-tight">Second Look</div>
-        <div className="mt-0.5 text-[10px] font-semibold tracking-[0.16em] text-ink-3 uppercase">
-          for Sound members
-        </div>
+        <p className="mt-1 text-[11px] leading-[13px] font-medium text-ink-2">
+          <span className="block">Facts go to the real member,</span>
+          <span className="block">never to whoever is logged in.</span>
+        </p>
       </div>
     </div>
   )

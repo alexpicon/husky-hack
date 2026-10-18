@@ -1,6 +1,8 @@
 # Second Look
 
-> When something looks wrong, Sound pauses the payment and shows a true fact from its own records, before the money leaves.
+> **Facts go to the real member, never to whoever is logged in.**
+>
+> When something looks wrong, Sound pauses the payment before the money leaves and puts one true fact in front of the right person, using only data Sound already keeps.
 
 ---
 
