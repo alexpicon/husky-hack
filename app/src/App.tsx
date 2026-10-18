@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Header, type Tab } from './shell/Header'
 import { Narrator } from './shell/Narrator'
+import { ReportProvider } from './report/ReportProvider'
+import { LINDA } from './screens/linda/facts'
+import { MEMBER as M1039 } from './screens/m1039/facts'
+import { SARAH } from './screens/sarah/facts'
 import { PilotView } from './shell/PilotView'
 import { RemoteView } from './shell/RemoteView'
 import { SessionControl } from './shell/SessionControl'
@@ -31,6 +35,9 @@ const FALLBACK_ZONES: Zones = { member: { tone: 'member', label: 'What the membe
 const zonesById: Record<string, Zones> = Object.fromEntries(
   scenarios.map((s) => [s.id, s.zones ?? DEFAULT_ZONES[s.id] ?? FALLBACK_ZONES]),
 )
+
+/** The member each story follows: who a report from its screens is for. */
+const MEMBER_OF: Record<string, string> = { [sarah.id]: SARAH, [m1039.id]: M1039, [linda.id]: LINDA }
 
 const PILOT: Tab = { id: 'pilot', label: 'Design check', sublabel: 'Kit data + pilot', tone: 'brand' }
 const tabs: Tab[] = [...scenarios, PILOT]
@@ -129,26 +136,28 @@ export default function App() {
 
   return (
     <StoryContext.Provider value={api}>
-      <Header tabs={tabs} active={active} onSelect={setActive} />
-      <main className={`mx-auto px-6 pt-8 pb-16 lg:px-8 ${width}`}>
-        {!scenario && <PilotView />}
-        {scenario && !step && <p className="text-ink-3">This story is being built.</p>}
-        {step && zones && view === 'both' && (
-          <>
-            {narrator}
-            <BothStage id={id} step={step} zones={zones} />
-          </>
-        )}
-        {step && zones && view === 'member' && (
-          <MemberStage id={id} step={step} zones={zones} narrator={narrator} />
-        )}
-        {step && view === 'staff' && (
-          <>
-            {narrator}
-            <StaffStage id={id} step={step} />
-          </>
-        )}
-      </main>
+      <ReportProvider story={active} member={MEMBER_OF[active] ?? null} clock={step?.clock ?? null}>
+        <Header tabs={tabs} active={active} onSelect={setActive} />
+        <main className={`mx-auto px-6 pt-8 pb-16 lg:px-8 ${width}`}>
+          {!scenario && <PilotView />}
+          {scenario && !step && <p className="text-ink-3">This story is being built.</p>}
+          {step && zones && view === 'both' && (
+            <>
+              {narrator}
+              <BothStage id={id} step={step} zones={zones} />
+            </>
+          )}
+          {step && zones && view === 'member' && (
+            <MemberStage id={id} step={step} zones={zones} narrator={narrator} />
+          )}
+          {step && view === 'staff' && (
+            <>
+              {narrator}
+              <StaffStage id={id} step={step} />
+            </>
+          )}
+        </main>
+      </ReportProvider>
     </StoryContext.Provider>
   )
 }

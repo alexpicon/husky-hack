@@ -1,3 +1,4 @@
+import { ReportBanner } from '../../report/ReportBanner'
 import { StaffWindow } from '../../ui/devices'
 import { day } from '../../ui/format'
 import { ChangeTimeline } from './ChangeTimeline'
@@ -43,6 +44,7 @@ export function TakeoverCase({ member, stage }: { member: 'M1003' | 'M1039'; sta
             </StatusPill>
           }
         />
+        <ReportBanner member={member} />
         {(stage === 'secured' || stage === 'released') && <OutcomeBanner f={f} stage={stage} />}
         <TakeoverActions name={f.name} stage={stage} fullStop={f.fullStop} />
         <div className="grid items-start gap-4 @2xl:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">

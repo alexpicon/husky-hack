@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { Building2, Smartphone, UserX, type LucideIcon } from 'lucide-react'
-import type { Zone, ZoneTone } from '../story/engine'
+import { ZoneToneContext, type Zone, type ZoneTone } from '../story/engine'
 import { Phone } from '../ui/devices'
 
 /** Each zone has its own icon and words as well as its color, so color never carries it alone. */
@@ -34,7 +34,7 @@ export function ZoneFrame({ zone, children }: { zone: Zone; children: ReactNode 
         )}
       </header>
       <div className={`flex min-w-0 flex-col ${zone.tone === 'staff' ? '' : 'items-center'}`}>
-        {children}
+        <ZoneToneContext.Provider value={zone.tone}>{children}</ZoneToneContext.Provider>
       </div>
     </section>
   )

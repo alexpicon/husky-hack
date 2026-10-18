@@ -1,5 +1,8 @@
 import type { ReactNode } from 'react'
-import { ArrowRightLeft, Banknote, Camera, ChevronLeft, CircleDollarSign, Ellipsis } from 'lucide-react'
+import { ArrowRightLeft, Banknote, Camera, ChevronLeft, CircleDollarSign, Ellipsis, ShieldAlert } from 'lucide-react'
+import { reportLinkShown } from '../report/report'
+import { useReportSheet } from '../report/useReportSheet'
+import { useZoneTone } from '../story/engine'
 
 /** Colors sampled from Sound's current mobile app. */
 export const SOUND = {
@@ -52,6 +55,8 @@ type ScreenProps = {
   tab?: SoundTab
   back?: boolean
   right?: ReactNode
+  /** Shows "I think I've been scammed" under the title. Unset, POLICY.reportLink decides. */
+  report?: boolean
   children: ReactNode
 }
 
@@ -59,19 +64,38 @@ type ScreenProps = {
  * A full Sound app screen for the 340 x 652 phone body: navy title bar, grey canvas, tab bar.
  * Pair it with <Phone statusBar="navy"> so the status bar matches.
  */
-export function SoundAppScreen({ title, tab, back = false, right, children }: ScreenProps) {
+export function SoundAppScreen({ title, tab, back = false, right, report, children }: ScreenProps) {
+  const zone = useZoneTone()
+  const sheet = useReportSheet()
+  const linked = sheet.available && (report ?? reportLinkShown(zone))
   return (
     <div className="flex h-full flex-col" style={{ ...soundFont, background: SOUND.canvas, color: SOUND.text }}>
       <header
-        className="relative flex h-[52px] shrink-0 items-center justify-center px-12 shadow-[0_2px_6px_rgb(0_0_0/0.18)]"
+        className="shrink-0 shadow-[0_2px_6px_rgb(0_0_0/0.18)]"
         style={{ background: `linear-gradient(180deg, ${SOUND.navy}, ${SOUND.navyLight})` }}
       >
-        {back && <ChevronLeft size={24} className="absolute left-3 text-white" aria-hidden />}
-        <h2 className="truncate text-[19px] font-semibold text-white">{title}</h2>
-        {right && <div className="absolute right-4 text-[15px] text-white">{right}</div>}
+        <div className={`relative flex items-center justify-center px-12 ${linked ? 'h-9' : 'h-[52px]'}`}>
+          {back && <ChevronLeft size={24} className="absolute left-3 text-white" aria-hidden />}
+          <h2 className="truncate text-[19px] font-semibold text-white">{title}</h2>
+          {right && <div className="absolute right-4 text-[15px] text-white">{right}</div>}
+        </div>
+        {linked && (
+          <div className="flex justify-center pb-1">
+            <button
+              type="button"
+              onClick={sheet.open}
+              className="flex h-5 items-center gap-1.5 rounded-full bg-white/15 px-3 text-[13px] font-semibold text-white transition hover:bg-white/25"
+            >
+              <ShieldAlert size={14} aria-hidden />
+              I think I've been scammed
+            </button>
+          </div>
+        )}
       </header>
-      <div className="min-h-0 flex-1 overflow-y-auto px-3.5 py-4">{children}</div>
+      {/* The link adds 8px to the title bar, so the content gives 8px back and every screen keeps its height. */}
+      <div className={`min-h-0 flex-1 overflow-y-auto px-3.5 pb-4 ${linked ? 'pt-2' : 'pt-4'}`}>{children}</div>
       <SoundTabBar active={tab} />
+      {sheet.sheet}
     </div>
   )
 }

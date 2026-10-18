@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { Building2, Check, Phone as PhoneIcon, ShieldCheck } from 'lucide-react'
 import { motion } from 'motion/react'
+import { ReportRow } from '../../report/ReportRow'
 import { money } from '../../ui/format'
 import { Source } from '../../ui/primitives'
 import { afterPause, sarah } from './facts'
@@ -60,6 +61,7 @@ export function Secured() {
               </div>
             </div>
           </motion.div>
+          <ReportRow />
         </div>
       </SarahsPhone>
     </div>

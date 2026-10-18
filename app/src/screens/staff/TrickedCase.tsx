@@ -1,5 +1,6 @@
 import { Quote } from 'lucide-react'
 import { motion } from 'motion/react'
+import { ReportBanner } from '../../report/ReportBanner'
 import { StaffWindow } from '../../ui/devices'
 import { day } from '../../ui/format'
 import { Source } from '../../ui/primitives'
@@ -60,6 +61,7 @@ export function TrickedCase({
           caseId={caseId}
           pill={<CasePill state={state} stage={stage} />}
         />
+        <ReportBanner member={member} />
         <motion.div
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}

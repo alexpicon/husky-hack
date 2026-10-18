@@ -56,3 +56,8 @@ export const StoryContext = createContext<StoryApi>({
 
 /** Lets a tap inside a member or staff screen advance the story. */
 export const useStory = () => useContext(StoryContext)
+
+/** The zone a screen is drawn in, so a screen can tell whose device it is on. */
+export const ZoneToneContext = createContext<ZoneTone | null>(null)
+
+export const useZoneTone = () => useContext(ZoneToneContext)
