@@ -269,3 +269,11 @@ cd app && npm install && npm run dev
 **Presenting on several laptops.** `?view=member` shows the member's screens full size and `?view=staff` the staff console; the switch next to Back/Next does the same. **Start session** gives a short code, a QR code for the phone remote (`?view=remote`), and links for a member screen and a staff screen. Every device in the session shares the step, the phone look, Sarah's and M1039's answers, Linda's case, Michael's check, James's answers and the report. Without a session, windows on one laptop stay in sync, and so do laptops that open `npm run demo` on the same network (Vite prints the address). If the Wi-Fi blocks laptop-to-laptop traffic, use a phone hotspot.
 
 **Before presenting, click New run** (beside **Start session**, or in the session panel). A session keeps its answers for 12 hours, so a rehearsal ending such as "Wire cancelled" would still be there; New run clears the answers on every screen in the session and puts the story on screen back at step 1. For a fresh code instead, close every demo window, open one, and click **Start session**.
+
+---
+
+## Data, credits and license
+
+- **Challenge materials and synthetic data** in `huskyhacks/` were provided by **HuskyHack 2026 and Sound Credit Union** for the event. The data is synthetic, not real Sound member data, and belongs to them.
+- **Voice recordings and photos** in the "Real or AI?" drill are credited in [`app/public/voice-check/CREDITS.md`](app/public/voice-check/CREDITS.md).
+- **Second Look's own code and documentation** are proprietary to Alexander Picon and Chaski AI. All rights reserved (see [`LICENSE`](LICENSE)). The source is public to read, not licensed for reuse.
